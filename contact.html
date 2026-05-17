@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — Surds</title>
+  <meta name="description" content="Talk to Surds about your HVAC controls or building intelligence project."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span>
+      Surds
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="technologies.html">Technologies</a></li>
+      <li><a href="case-studies.html">Projects</a></li>
+      <li><a href="news/index.html">Insights</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding: clamp(60px,8vw,100px) 0;">
+  <div class="container">
+    <div class="eyebrow">Contact</div>
+    <h1>Tell us what your building is doing.</h1>
+    <p class="lede">
+      The more specific the better — a control narrative, a recent commissioning report, even a
+      photo of your mechanical room helps us point you to the right person within a day.
+    </p>
+  </div>
+</header>
+
+<section class="section-light">
+  <div class="container">
+    <div class="split">
+      <div class="col-text">
+        <form class="contact-form" onsubmit="event.preventDefault(); document.getElementById('thanks').style.display='block'; this.style.display='none';">
+          <div class="row">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required>
+            </div>
+            <div>
+              <label for="org">Organization</label>
+              <input id="org" name="org" type="text" required>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" required>
+            </div>
+            <div>
+              <label for="phone">Phone (optional)</label>
+              <input id="phone" name="phone" type="tel">
+            </div>
+          </div>
+          <div>
+            <label for="type">Building type</label>
+            <select id="type" name="type">
+              <option>Healthcare</option>
+              <option>Cultural / museum</option>
+              <option>Higher education</option>
+              <option>Commercial office</option>
+              <option>Laboratory / R&amp;D</option>
+              <option>Data center</option>
+              <option>Government / civic</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="stage">Project stage</label>
+            <select id="stage" name="stage">
+              <option>Pre-design / concept</option>
+              <option>Design development</option>
+              <option>Construction documents</option>
+              <option>Construction / commissioning</option>
+              <option>Operating building — retro-commissioning</option>
+              <option>Operating building — analytics &amp; tuning</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div>
+            <label for="msg">Tell us about your building</label>
+            <textarea id="msg" name="msg" placeholder="Square footage, vintage, what's working, what isn't, what you've already tried — whatever feels relevant." required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary" style="border: 0; cursor: pointer; font-family: inherit;">Send message</button>
+          </div>
+          <p class="muted" style="font-size: 0.85rem;">
+            We respond within one business day. Confidentiality is the default — you do not need
+            an NDA to start a conversation.
+          </p>
+        </form>
+
+        <div id="thanks" style="display:none; padding: 32px; background: var(--ink); color: var(--paper); border-left: 4px solid var(--accent);">
+          <h3 style="color: var(--paper);">Thank you.</h3>
+          <p>
+            Your note is in. A member of our team will be in touch within one business day —
+            sooner if your project has a time pressure we should know about.
+          </p>
+        </div>
+      </div>
+      <div class="col-media">
+        <div style="background: var(--paper-2); padding: 40px; border: 1px solid var(--rule);">
+          <h3>Direct contact</h3>
+          <p class="muted">Write to us — the same address reaches every member of the team.</p>
+          <div class="divider" style="margin: 24px 0;"></div>
+
+          <div style="margin-bottom: 24px;">
+            <div class="muted" style="font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 6px;">Email</div>
+            <a href="mailto:automate@surds.co.in" style="font-family: var(--serif); font-size: 1.4rem;">automate@surds.co.in</a>
+          </div>
+
+          <div class="divider" style="margin: 24px 0;"></div>
+
+          <h4 style="font-family: var(--sans); letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.78rem; color: var(--accent); margin-bottom: 12px;">Office</h4>
+          <p style="font-size: 0.95rem; line-height: 1.7;">
+            <strong>Surds</strong><br>
+            STEP-IIT Kharagpur<br>
+            Science and Technology Entrepreneurs' Park<br>
+            Indian Institute of Technology<br>
+            Kharagpur, West Bengal 721302<br>
+            India
+          </p>
+          <p class="muted" style="font-size: 0.85rem; font-style: italic; margin-top: 16px;">
+            Incubated at the IIT Kharagpur entrepreneurship park. Visits by appointment.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
+          <span class="brand-mark" style="background: var(--accent);">S</span>
+          Surds
+        </div>
+        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
+          Independent HVAC controls &amp; building intelligence. IIT Kharagpur, India.
+        </p>
+      </div>
+      <div>
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="equipment.html">Equipment guide</a></li>
+          <li><a href="technologies.html">Technologies</a></li>
+          <li><a href="case-studies.html">Projects</a></li>
+          <li><a href="news/index.html">Insights</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <ul>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Office</h4>
+        <ul>
+          <li>STEP-IIT Kharagpur</li>
+          <li>Kharagpur, West Bengal 721302</li>
+          <li>automate@surds.co.in</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Surds. All rights reserved.</span>
+      <span>Privacy · Terms · Accessibility</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

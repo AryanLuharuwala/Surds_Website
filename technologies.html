@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Technologies &amp; Protocols — Surds</title>
+  <meta name="description" content="The communication protocols, data schemas, and integration stack behind a working building management system."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span>
+      Surds
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="technologies.html">Technologies</a></li>
+      <li><a href="case-studies.html">Projects</a></li>
+      <li><a href="news/index.html">Insights</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding: clamp(60px,8vw,100px) 0;">
+  <div class="container">
+    <div class="eyebrow">Technologies &amp; protocols</div>
+    <h1>The communications stack of a working building.</h1>
+    <p class="lede">
+      Four protocols, two data schemas, and a deliberate cyber posture. The stack hasn't gotten
+      simpler — but the principles have stabilized enough that we can write them down.
+    </p>
+  </div>
+</header>
+
+<!-- ============= STACK DIAGRAM ============= -->
+<section class="section-light">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">The stack</div>
+      <h2>From the damper actuator to the dashboard.</h2>
+      <p>Five tiers. Data flows up; commands flow down. Every project is some configuration of this picture.</p>
+    </div>
+
+    <div style="background: linear-gradient(160deg, #0e1a26, #06101a); padding: 60px; border-left: 4px solid var(--accent);">
+      <svg viewBox="0 0 1100 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <!-- Tier 0: physical -->
+        <rect x="40" y="490" width="1020" height="80" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
+        <text x="60" y="514" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 0 · PHYSICAL</text>
+        <text x="60" y="534" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">Valves · dampers · sensors · VFDs · contactors</text>
+        <text x="60" y="556" fill="rgba(246,242,236,0.45)" font-size="10" font-family="Inter">4–20 mA · 0–10 V · dry contacts · resistive</text>
+
+        <!-- Tier 1: field -->
+        <rect x="40" y="380" width="1020" height="100" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
+        <text x="60" y="404" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 1 · FIELD CONTROLLERS</text>
+        <text x="60" y="426" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">DDC controllers — one per VAV, AHU, chiller, RTU</text>
+        <g font-family="Inter" font-size="10" fill="rgba(246,242,236,0.65)">
+          <rect x="60" y="438" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="120" y="456" text-anchor="middle">BACnet MS/TP</text>
+          <rect x="190" y="438" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="250" y="456" text-anchor="middle">Modbus RTU</text>
+          <rect x="320" y="438" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="380" y="456" text-anchor="middle">LonWorks</text>
+          <rect x="450" y="438" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="510" y="456" text-anchor="middle">KNX</text>
+        </g>
+
+        <!-- Tier 2: supervisory -->
+        <rect x="40" y="270" width="1020" height="100" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
+        <text x="60" y="294" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 2 · SUPERVISORY</text>
+        <text x="60" y="316" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">Aggregation · scheduling · global logic · alarms</text>
+        <g font-family="Inter" font-size="10" fill="rgba(246,242,236,0.65)">
+          <rect x="60" y="328" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="120" y="346" text-anchor="middle">BACnet/IP</text>
+          <rect x="190" y="328" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="250" y="346" text-anchor="middle">BACnet/SC</text>
+          <rect x="320" y="328" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="380" y="346" text-anchor="middle">Modbus TCP</text>
+          <rect x="450" y="328" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="510" y="346" text-anchor="middle">OPC UA</text>
+        </g>
+
+        <!-- Tier 3: integration -->
+        <rect x="40" y="160" width="1020" height="100" fill="#142231" stroke="#b87333" stroke-width="2"/>
+        <text x="60" y="184" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 3 · INTEGRATION / EDGE</text>
+        <text x="60" y="206" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">Tagging · normalization · cloud egress · model translation</text>
+        <g font-family="Inter" font-size="10" fill="rgba(246,242,236,0.65)">
+          <rect x="60" y="218" width="120" height="28" fill="#0a141f" stroke="#b87333"/>
+          <text x="120" y="236" text-anchor="middle">MQTT/sparkplug</text>
+          <rect x="190" y="218" width="120" height="28" fill="#0a141f" stroke="#b87333"/>
+          <text x="250" y="236" text-anchor="middle">REST / HTTPS</text>
+          <rect x="320" y="218" width="120" height="28" fill="#0a141f" stroke="#b87333"/>
+          <text x="380" y="236" text-anchor="middle">Haystack tags</text>
+          <rect x="450" y="218" width="120" height="28" fill="#0a141f" stroke="#b87333"/>
+          <text x="510" y="236" text-anchor="middle">Brick schema</text>
+        </g>
+
+        <!-- Tier 4: applications -->
+        <rect x="40" y="50" width="1020" height="100" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
+        <text x="60" y="74" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 4 · APPLICATIONS</text>
+        <text x="60" y="96" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">Historian · analytics · FDD · digital twin · UI</text>
+        <g font-family="Inter" font-size="10" fill="rgba(246,242,236,0.65)">
+          <rect x="60" y="108" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="120" y="126" text-anchor="middle">Time-series DB</text>
+          <rect x="190" y="108" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="250" y="126" text-anchor="middle">SkySpark</text>
+          <rect x="320" y="108" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="380" y="126" text-anchor="middle">Grafana / BI</text>
+          <rect x="450" y="108" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
+          <text x="510" y="126" text-anchor="middle">CMMS / IWMS</text>
+        </g>
+
+        <!-- Flow arrows -->
+        <g stroke="#d99858" stroke-width="2" fill="none">
+          <path d="M 950 480 L 950 380"/>
+          <polygon points="950,380 944,392 956,392" fill="#d99858"/>
+          <path d="M 950 370 L 950 270"/>
+          <polygon points="950,270 944,282 956,282" fill="#d99858"/>
+          <path d="M 950 260 L 950 160"/>
+          <polygon points="950,160 944,172 956,172" fill="#d99858"/>
+          <path d="M 950 150 L 950 50"/>
+          <polygon points="950,50 944,62 956,62" fill="#d99858"/>
+        </g>
+        <text x="975" y="220" fill="#d99858" font-size="10" font-family="Inter" letter-spacing="2" transform="rotate(-90 975 220)">DATA UP</text>
+
+        <g stroke="#7ab8d6" stroke-width="2" fill="none">
+          <path d="M 990 60 L 990 480"/>
+          <polygon points="990,490 984,478 996,478" fill="#7ab8d6"/>
+        </g>
+        <text x="1015" y="220" fill="#7ab8d6" font-size="10" font-family="Inter" letter-spacing="2" transform="rotate(90 1015 220)">COMMANDS DOWN</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============= PROTOCOLS ============= -->
+<section class="section-warm">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Protocols</div>
+      <h2>Four field protocols you can't avoid.</h2>
+      <p>Pick the right one for the right layer; force-fit none of them.</p>
+    </div>
+
+    <div class="protocol">
+      <div class="protocol-tag">
+        <div class="name">BACnet</div>
+        <div class="since">Open · ASHRAE 135 · since 1995</div>
+      </div>
+      <div class="protocol-body">
+        <h4>The default building-automation protocol.</h4>
+        <p>
+          Born in ASHRAE committee work in the late '80s. BACnet's object model — analog input,
+          binary value, schedule, calendar, trend log — maps cleanly onto how HVAC actually
+          thinks. MS/TP for the field bus; BACnet/IP for the supervisor; BACnet/SC for the
+          cyber-conscious 2026 version that wraps everything in TLS.
+        </p>
+        <p>
+          Strengths: rich object model, broad vendor support, built-in scheduling and trending.
+          Weaknesses: discoverability across subnets is hard; MS/TP is fragile beyond ~30
+          devices; security is bolted on, not native (BACnet/SC fixes this).
+        </p>
+        <div class="protocol-specs">
+          <div><span class="k">Speed (MS/TP)</span>9.6–115.2 kbps</div>
+          <div><span class="k">Devices / segment</span>~32 typical</div>
+          <div><span class="k">IP version</span>UDP 47808</div>
+          <div><span class="k">Secure variant</span>BACnet/SC (TLS 1.3)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="protocol">
+      <div class="protocol-tag">
+        <div class="name">Modbus</div>
+        <div class="since">Open · since 1979</div>
+      </div>
+      <div class="protocol-body">
+        <h4>The simple, ugly, ubiquitous register protocol.</h4>
+        <p>
+          Forty-seven years old and still everywhere — every chiller, every power meter, every
+          VFD will speak Modbus to you if you ask nicely. The protocol itself is dead simple:
+          read or write 16-bit registers over RS-485 or TCP. Documentation lives in the device
+          manual; there is no self-describing object model.
+        </p>
+        <p>
+          Use Modbus when BACnet isn't available and you control both ends. Avoid it as a
+          building-wide backbone — register maps are vendor-specific and brittle.
+        </p>
+        <div class="protocol-specs">
+          <div><span class="k">RTU baud</span>9600 / 19200 / 38400</div>
+          <div><span class="k">TCP port</span>502</div>
+          <div><span class="k">Address space</span>16-bit registers</div>
+          <div><span class="k">Self-describing?</span>No</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="protocol">
+      <div class="protocol-tag">
+        <div class="name">MQTT</div>
+        <div class="since">Open · ISO/IEC 20922 · since 1999</div>
+      </div>
+      <div class="protocol-body">
+        <h4>Lightweight pub/sub for cloud egress.</h4>
+        <p>
+          Originally written by IBM for telemetry over flaky satellite links. The pub/sub model
+          suits HVAC well — publish a temperature topic, anyone interested subscribes. With the
+          Sparkplug-B payload spec on top, you get a coherent way to describe edge devices and
+          their birth/death lifecycle.
+        </p>
+        <p>
+          Not a replacement for BACnet — runs alongside it, north of the supervisory layer. The
+          most common path for getting BMS data to a cloud historian or analytics platform.
+        </p>
+        <div class="protocol-specs">
+          <div><span class="k">TCP ports</span>1883 / 8883 (TLS)</div>
+          <div><span class="k">Payload</span>Bytes · JSON · Sparkplug-B</div>
+          <div><span class="k">QoS levels</span>0 / 1 / 2</div>
+          <div><span class="k">Pattern</span>Publish · Subscribe</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="protocol">
+      <div class="protocol-tag">
+        <div class="name">LonWorks</div>
+        <div class="since">Open · since 1990</div>
+      </div>
+      <div class="protocol-body">
+        <h4>The other open protocol — graceful, declining.</h4>
+        <p>
+          Echelon's network technology, popular in the 1990s for lighting, elevators, and parts
+          of HVAC. The Standard Network Variable Type (SNVT) model is genuinely well-designed.
+          New installations are rare, but you'll meet it in retrofit work — particularly on
+          older campuses and Class-A office towers from the late '90s.
+        </p>
+        <p>
+          When integrating, plan on a LonWorks-to-BACnet gateway. Pure-Lon ecosystems are no
+          longer worth committing to for new projects.
+        </p>
+        <div class="protocol-specs">
+          <div><span class="k">Physical</span>TP/FT-10 (twisted pair)</div>
+          <div><span class="k">Speed</span>78 kbps</div>
+          <div><span class="k">Self-describing?</span>Yes (SNVT)</div>
+          <div><span class="k">Status (2026)</span>Legacy maintenance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SCHEMAS ============= -->
+<section class="section-light">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Data schemas</div>
+      <h2>Tagging is half the work.</h2>
+      <p>A protocol moves bytes. A schema makes them legible across vendors, across buildings, and across the next decade.</p>
+    </div>
+
+    <div class="split">
+      <div class="col-text">
+        <h3>Project Haystack</h3>
+        <p style="color: var(--muted);">
+          A tag-based metadata model. Each point gets a set of tags: <code>discharge</code>,
+          <code>air</code>, <code>temp</code>, <code>sensor</code>, plus references to the
+          equipment that owns it. Lightweight, easy to retrofit, and the de-facto standard for
+          North American commercial work.
+        </p>
+        <pre style="background: var(--ink); color: var(--paper); padding: 24px; font-size: 0.85rem; overflow-x: auto; line-height: 1.6;">id: @AHU3.DAT
+dis: "AHU-3 Discharge-Air Temp"
+discharge
+air
+temp
+sensor
+point
+unit: "°F"
+equipRef: @AHU3
+siteRef: @LindenAve</pre>
+      </div>
+      <div class="col-text">
+        <h3>Brick Schema</h3>
+        <p style="color: var(--muted);">
+          An RDF/OWL ontology developed by a university consortium. More formal than Haystack —
+          uses explicit class hierarchies and relationships (<code>isPartOf</code>,
+          <code>feeds</code>, <code>hasPoint</code>). The right tool when you need to reason
+          across a building's structure, not just query its points.
+        </p>
+        <pre style="background: var(--ink); color: var(--paper); padding: 24px; font-size: 0.85rem; overflow-x: auto; line-height: 1.6;">@prefix bldg: &lt;http://linden.org#&gt; .
+bldg:AHU3 a brick:AHU ;
+  brick:feeds bldg:Zone5N, bldg:Zone6N ;
+  brick:hasPoint bldg:DAT_3 .
+bldg:DAT_3 a brick:Discharge_Air_Temperature_Sensor ;
+  brick:hasUnit unit:DEG_F .</pre>
+      </div>
+    </div>
+
+    <table class="compare" style="margin-top: 40px;">
+      <thead>
+        <tr>
+          <th>Trait</th>
+          <th>Project Haystack</th>
+          <th>Brick Schema</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Origin</td>
+          <td>Industry consortium (J2 Innovations, others)</td>
+          <td>UC Berkeley, UCSD, IBM Research</td>
+        </tr>
+        <tr>
+          <td>Model</td>
+          <td>Tag soup with marker tags</td>
+          <td>Formal ontology (RDF / OWL)</td>
+        </tr>
+        <tr>
+          <td>Ease of adoption</td>
+          <td><span class="yes">Very easy</span> — JSON/Trio, no triplestore</td>
+          <td><span class="partial">Moderate</span> — needs RDF tooling</td>
+        </tr>
+        <tr>
+          <td>Reasoning power</td>
+          <td><span class="partial">Limited</span> — query by tag presence</td>
+          <td><span class="yes">High</span> — SPARQL, inheritance, inference</td>
+        </tr>
+        <tr>
+          <td>Tooling ecosystem</td>
+          <td>SkySpark, J2, Niagara — broad</td>
+          <td>Academic + emerging commercial</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>Operating buildings, FDD, dashboards</td>
+          <td>Research, multi-building portfolios, twins</td>
+        </tr>
+        <tr>
+          <td>Our recommendation</td>
+          <td>Default choice for most projects</td>
+          <td>Where ontological rigor is required</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============= CYBER ============= -->
+<section class="section-warm">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">OT cyber</div>
+      <h2>A building that is integrated is a building that is connected.</h2>
+      <p>Five non-negotiables. Everything beyond these is hardening; nothing below them is acceptable.</p>
+    </div>
+
+    <div class="icon-grid">
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
+        <h4>Network segmentation</h4>
+        <p>Controls network is its own VLAN, with explicit firewall rules to anything beyond it. No flat L2 across IT and OT.</p>
+      </div>
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h4>Signed firmware</h4>
+        <p>Every controller firmware update is cryptographically signed by the vendor and verified before flashing. No "TFTP and pray."</p>
+      </div>
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l4 4-4 4-4-4z"/><path d="M2 12l4 4 4-4-4-4z"/><path d="M22 12l-4 4-4-4 4-4z"/><path d="M12 14l4 4-4 4-4-4z"/></svg></div>
+        <h4>Credentialed access</h4>
+        <p>Per-person accounts on the supervisor and the edge gateway. No shared "admin/admin." Rotate on staff turnover.</p>
+      </div>
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
+        <h4>Audit trail</h4>
+        <p>Every setpoint write, every override, every login — logged, immutable, retained for two years minimum.</p>
+      </div>
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h4>Patching cadence</h4>
+        <p>Defined maintenance windows for OT patches. Test in a lab environment before pushing to production controllers.</p>
+      </div>
+      <div class="icon-tile">
+        <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
+        <h4>Vendor remote access</h4>
+        <p>Time-bounded, just-in-time access for vendor support — not a permanent VPN tunnel. Logged and witnessed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= INTEGRATION PATTERNS ============= -->
+<section class="section-light">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Integration patterns</div>
+      <h2>Three architectures we deploy most.</h2>
+      <p>Each one solves a different ownership and operations situation.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <span class="num">A</span>
+        <h3>Single-vendor stack</h3>
+        <p style="color: var(--muted);">
+          One vendor's controllers, supervisor, and graphics. Cleanest install, fastest
+          deployment. Highest lock-in. Right for small-to-mid commercial when the owner doesn't
+          plan to own the building for fifteen years.
+        </p>
+      </div>
+      <div class="card">
+        <span class="num">B</span>
+        <h3>Multi-vendor on BACnet</h3>
+        <p style="color: var(--muted);">
+          Different vendors per system (chillers, AHUs, lighting), unified through BACnet/IP at
+          the supervisor. The default we recommend for institutional owners. Each system bid
+          competitively; the integration is the engineering work.
+        </p>
+      </div>
+      <div class="card">
+        <span class="num">C</span>
+        <h3>Federated cloud HBMS</h3>
+        <p style="color: var(--muted);">
+          Existing BMS stays in place; an edge gateway publishes tagged data to a cloud
+          historian that aggregates across multiple buildings. The path most portfolios actually
+          take — incremental, no rip-and-replace.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark center">
+  <div class="container">
+    <div class="eyebrow center">Talk specifics</div>
+    <h2 style="max-width: 22ch; margin: 0 auto 24px;">Every building's stack is a little different.</h2>
+    <p style="max-width: 52ch; margin: 0 auto 32px; color: rgba(246,242,236,0.78);">
+      Tell us what's installed today and where you want to be in three years. We'll sketch a
+      migration that doesn't strand anything that still has useful life.
+    </p>
+    <a href="contact.html" class="btn btn-primary">Start a conversation</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
+          <span class="brand-mark" style="background: var(--accent);">S</span>
+          Surds
+        </div>
+        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
+          Independent HVAC controls &amp; building intelligence. IIT Kharagpur, India.
+        </p>
+      </div>
+      <div>
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="equipment.html">Equipment guide</a></li>
+          <li><a href="technologies.html">Technologies</a></li>
+          <li><a href="case-studies.html">Projects</a></li>
+          <li><a href="news/index.html">Insights</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <ul>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Office</h4>
+        <ul>
+          <li>STEP-IIT Kharagpur</li>
+          <li>Kharagpur, West Bengal 721302</li>
+          <li>automate@surds.co.in</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Surds. All rights reserved.</span>
+      <span>Privacy · Terms · Accessibility</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects — Surds</title>
+  <meta name="description" content="Selected HVAC building-management projects: healthcare, cultural, higher education, and workplace."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span>
+      Surds
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="technologies.html">Technologies</a></li>
+      <li><a href="case-studies.html">Projects</a></li>
+      <li><a href="news/index.html">Insights</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding: clamp(60px,8vw,100px) 0;">
+  <div class="container">
+    <div class="eyebrow">Selected projects</div>
+    <h1>Forty buildings, one approach.</h1>
+    <p class="lede">
+      Hospitals, museums, university campuses, and Class-A office towers. The
+      mechanical equipment varies; the discipline doesn't.
+    </p>
+  </div>
+</header>
+
+<section class="section-light">
+  <div class="container">
+    <article class="split" style="margin-bottom: 96px;">
+      <div class="col-media project project-1" style="height: 420px;">
+        <div>
+          <span class="pill">Healthcare</span>
+          <h3>Saint Marguerite Regional Medical Center</h3>
+        </div>
+      </div>
+      <div class="col-text">
+        <div class="eyebrow">Riverdale, IL · 620 beds · 1.4M sq ft</div>
+        <h2>An 18-month BMS migration with zero ICU downtime.</h2>
+        <p>
+          Saint Marguerite's controls platform had been three generations old, with critical
+          care areas riding a pneumatic loop the manufacturer had stopped supporting in 2011.
+          Replacing it without disrupting OR or ICU service was the constraint that shaped every
+          decision.
+        </p>
+        <p>
+          We phased the migration room-by-room over eighteen months, running the new BACnet/IP
+          network in parallel with the legacy pneumatic loop for each suite, switching only
+          after seventy-two hours of side-by-side validation. The ICU and four ORs never came
+          offline.
+        </p>
+        <div class="stats" style="background: var(--ink); padding: 32px; margin-top: 32px;">
+          <div class="stat"><span class="n" style="font-size: 2rem;">0</span><span class="l">unplanned outages</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">18%</span><span class="l">energy reduction</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">$1.2M</span><span class="l">annual savings</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="split" style="margin-bottom: 96px;">
+      <div class="col-text">
+        <div class="eyebrow">Linden Park, NY · 1908 Beaux-Arts · 220k sq ft</div>
+        <h2>Linden Avenue Museum of Art — humidity envelope ±3% RH.</h2>
+        <p>
+          The Linden's textile collection requires a tighter humidity envelope than most clean
+          rooms. The 2019 mechanical retrofit had delivered the equipment but not the
+          intelligence — operators relied on a phone tree for envelope deviations.
+        </p>
+        <p>
+          We installed an HBMS layer over the existing BMS, mapping every gallery to its
+          collection profile and writing collection-specific deviation rules. The night-shift
+          response time fell from ninety minutes to under two.
+        </p>
+        <p>
+          Featured in our primer: <a href="news/an-introduction-to-hbms.html">An Introduction to
+          HBMS →</a>
+        </p>
+        <div class="stats" style="background: var(--ink); padding: 32px; margin-top: 32px;">
+          <div class="stat"><span class="n" style="font-size: 2rem;">±3%</span><span class="l">sustained envelope</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">2 min</span><span class="l">deviation response</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">2.1 yr</span><span class="l">payback period</span></div>
+        </div>
+      </div>
+      <div class="col-media project project-2" style="height: 420px;">
+        <div>
+          <span class="pill">Cultural</span>
+          <h3>Linden Avenue Museum of Art</h3>
+        </div>
+      </div>
+    </article>
+
+    <article class="split" style="margin-bottom: 96px;">
+      <div class="col-media project project-3" style="height: 420px;">
+        <div>
+          <span class="pill">Higher Ed</span>
+          <h3>Riverbend University Sciences Quad</h3>
+        </div>
+      </div>
+      <div class="col-text">
+        <div class="eyebrow">Riverbend, ON · 4 buildings · shared central plant</div>
+        <h2>31% kW/ton reduction after a sequence rework.</h2>
+        <p>
+          Four research buildings on a shared chilled-water loop, none of which trusted the
+          others' setpoints. Each had quietly overridden the central plant's reset schedule to
+          guarantee its own supply temperature, locking the chillers into the worst case for the
+          whole loop.
+        </p>
+        <p>
+          The fix was almost entirely software. We rewrote the central-plant reset logic to
+          honor the most-demanding building's load while protecting the rest with floating
+          minimum-flow controls, and we built a dashboard so the four building operators could
+          finally see what the others were asking for.
+        </p>
+        <div class="stats" style="background: var(--ink); padding: 32px; margin-top: 32px;">
+          <div class="stat"><span class="n" style="font-size: 2rem;">31%</span><span class="l">kW/ton reduction</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">$430k</span><span class="l">annual savings</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">8 mo.</span><span class="l">project duration</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="split">
+      <div class="col-text">
+        <div class="eyebrow">Hollis &amp; Park HQ Tower · Chicago, IL · 22 stories · 480k sq ft</div>
+        <h2>Post-return-to-office IAQ overhaul.</h2>
+        <p>
+          After two years of intermittent occupancy, Hollis &amp; Park returned to a five-day
+          office model — and discovered that their ventilation schedule, sized for 2019
+          occupancy patterns, was simultaneously over-ventilating empty floors and
+          under-ventilating dense conference rooms.
+        </p>
+        <p>
+          We deployed CO₂-driven demand-controlled ventilation on every floor, tied to the
+          existing rooftop air handlers and supplemented by per-floor humidity and PM2.5
+          sensing. Tenants now receive a quarterly IAQ report; the operations team gets a daily
+          one.
+        </p>
+        <div class="stats" style="background: var(--ink); padding: 32px; margin-top: 32px;">
+          <div class="stat"><span class="n" style="font-size: 2rem;">22%</span><span class="l">ventilation energy reduction</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">98%</span><span class="l">hours within ASHRAE 62.1</span></div>
+          <div class="stat"><span class="n" style="font-size: 2rem;">+12 pts</span><span class="l">tenant satisfaction (NPS)</span></div>
+        </div>
+      </div>
+      <div class="col-media project project-4" style="height: 420px;">
+        <div>
+          <span class="pill">Workplace</span>
+          <h3>Hollis &amp; Park HQ Tower</h3>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section-dark center">
+  <div class="container">
+    <div class="eyebrow center">Get in touch</div>
+    <h2 style="max-width: 22ch; margin: 0 auto 24px;">Have a building like one of these? We'd like to hear about it.</h2>
+    <a href="contact.html" class="btn btn-primary">Start a conversation</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
+          <span class="brand-mark" style="background: var(--accent);">S</span>
+          Surds
+        </div>
+        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
+          Independent HVAC controls &amp; building intelligence. IIT Kharagpur, India.
+        </p>
+      </div>
+      <div>
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="equipment.html">Equipment guide</a></li>
+          <li><a href="technologies.html">Technologies</a></li>
+          <li><a href="case-studies.html">Projects</a></li>
+          <li><a href="news/index.html">Insights</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <ul>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Office</h4>
+        <ul>
+          <li>STEP-IIT Kharagpur</li>
+          <li>Kharagpur, West Bengal 721302</li>
+          <li>automate@surds.co.in</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Surds. All rights reserved.</span>
+      <span>Privacy · Terms · Accessibility</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

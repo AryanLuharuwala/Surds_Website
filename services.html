@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services — Surds</title>
+  <meta name="description" content="HVAC controls design, BMS integration, fault detection &amp; analytics, and operations &amp; tuning."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">S</span>
+      Surds
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    <ul class="nav-links">
+      <li><a href="services.html">Services</a></li>
+      <li><a href="equipment.html">Equipment</a></li>
+      <li><a href="technologies.html">Technologies</a></li>
+      <li><a href="case-studies.html">Projects</a></li>
+      <li><a href="news/index.html">Insights</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<header class="hero" style="padding: clamp(60px,8vw,100px) 0;">
+  <div class="container">
+    <div class="eyebrow">Services</div>
+    <h1>Four practices, one objective.</h1>
+    <p class="lede">
+      Specification, integration, analytics, and operation. Each one stands alone; together they
+      are the difference between a building that works on day one and a building that still
+      works on day one thousand.
+    </p>
+  </div>
+</header>
+
+<section class="section-light">
+  <div class="container">
+    <div class="split">
+      <div class="col-text">
+        <div class="eyebrow">01 · Design &amp; specification</div>
+        <h2>The contract documents that will be read in court.</h2>
+        <p>
+          We write the BMS portion of the contract documents — control narratives, sequences of
+          operation, point lists, panel schedules, and submittal requirements — to a standard
+          that holds up through three rounds of value engineering and survives the controls
+          contractor's interpretation.
+        </p>
+        <p class="muted">
+          Typical engagement: 4–10% of mechanical fee, depending on building type and the level
+          of integration with adjacent systems (security, lighting, metering, fire).
+        </p>
+        <ul style="padding-left: 1.2em; color: var(--muted);">
+          <li>Owner project requirements (OPR) translation</li>
+          <li>Control narrative authorship in plain English, with diagrams</li>
+          <li>Point list (operational / diagnostic / archival, separated)</li>
+          <li>Open-protocol enforcement (BACnet, Modbus, MQTT)</li>
+          <li>Cyber requirements in the spec, not as a bolt-on</li>
+        </ul>
+      </div>
+      <div class="col-media">
+        <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" style="background:var(--paper-2); border:1px solid var(--rule);">
+          <!-- Document stack illustration -->
+          <rect x="80" y="60" width="280" height="240" fill="#f6f2ec" stroke="#1c2a3a" stroke-width="1.2"/>
+          <rect x="100" y="80" width="280" height="240" fill="#f6f2ec" stroke="#1c2a3a" stroke-width="1.2"/>
+          <rect x="120" y="100" width="280" height="240" fill="#f6f2ec" stroke="#1c2a3a" stroke-width="1.5"/>
+          <line x1="140" y1="130" x2="380" y2="130" stroke="#1c2a3a" stroke-width="0.8"/>
+          <line x1="140" y1="150" x2="350" y2="150" stroke="#1c2a3a" stroke-width="0.5" opacity="0.6"/>
+          <line x1="140" y1="170" x2="360" y2="170" stroke="#1c2a3a" stroke-width="0.5" opacity="0.6"/>
+          <line x1="140" y1="190" x2="320" y2="190" stroke="#1c2a3a" stroke-width="0.5" opacity="0.6"/>
+          <line x1="140" y1="210" x2="370" y2="210" stroke="#1c2a3a" stroke-width="0.5" opacity="0.6"/>
+          <rect x="140" y="240" width="60" height="60" fill="#b87333" opacity="0.18" stroke="#b87333" stroke-width="1"/>
+          <rect x="220" y="240" width="60" height="60" fill="#b87333" opacity="0.3" stroke="#b87333" stroke-width="1"/>
+          <rect x="300" y="240" width="60" height="60" fill="#b87333" opacity="0.5" stroke="#b87333" stroke-width="1"/>
+          <text x="260" y="120" text-anchor="middle" font-family="Cormorant Garamond" font-size="14" fill="#1c2a3a" font-style="italic">Sequence of Operations</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-warm">
+  <div class="container">
+    <div class="split">
+      <div class="col-media">
+        <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" style="background:var(--paper); border:1px solid var(--rule);">
+          <!-- Network nodes -->
+          <g stroke="#1c2a3a" stroke-width="1" fill="none">
+            <line x1="250" y1="180" x2="100" y2="80"/>
+            <line x1="250" y1="180" x2="400" y2="80"/>
+            <line x1="250" y1="180" x2="80" y2="200"/>
+            <line x1="250" y1="180" x2="420" y2="200"/>
+            <line x1="250" y1="180" x2="120" y2="300"/>
+            <line x1="250" y1="180" x2="380" y2="300"/>
+            <line x1="250" y1="180" x2="250" y2="60"/>
+            <line x1="250" y1="180" x2="250" y2="310"/>
+          </g>
+          <circle cx="250" cy="180" r="32" fill="#0e1a26"/>
+          <text x="250" y="184" text-anchor="middle" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">HBMS</text>
+          <g fill="#b87333">
+            <circle cx="100" cy="80" r="14"/>
+            <circle cx="400" cy="80" r="14"/>
+            <circle cx="80" cy="200" r="14"/>
+            <circle cx="420" cy="200" r="14"/>
+            <circle cx="120" cy="300" r="14"/>
+            <circle cx="380" cy="300" r="14"/>
+            <circle cx="250" cy="60" r="14"/>
+            <circle cx="250" cy="310" r="14"/>
+          </g>
+          <g fill="#1c2a3a" font-size="9" font-family="Inter" text-anchor="middle">
+            <text x="100" y="55">CHILLERS</text>
+            <text x="400" y="55">BOILERS</text>
+            <text x="50" y="200">VAV NET</text>
+            <text x="450" y="200">METER</text>
+            <text x="120" y="328">LIGHTING</text>
+            <text x="380" y="328">ACCESS</text>
+            <text x="250" y="40">ROOFTOP</text>
+            <text x="250" y="338">FIRE</text>
+          </g>
+        </svg>
+      </div>
+      <div class="col-text">
+        <div class="eyebrow">02 · Integration &amp; commissioning</div>
+        <h2>BACnet, Modbus, LonWorks, MQTT — pick three.</h2>
+        <p>
+          We integrate multi-vendor controls into one coherent system, then prove it works
+          before the punch list is closed. Our commissioning includes functional performance
+          testing of every sequence, not just every device — because devices pass tests every
+          day inside buildings that don't.
+        </p>
+        <p>
+          We've handled phased migrations on operating hospitals, museums with humidity
+          envelopes measured in single-digit percentages, and data centers that cannot lose a
+          single CRAH unit during cutover. The first phase of every project is a network and
+          protocol audit.
+        </p>
+        <ul style="padding-left: 1.2em; color: var(--muted);">
+          <li>Protocol gateway design and configuration</li>
+          <li>Point mapping with Project Haystack or Brick schema</li>
+          <li>Functional performance testing, by sequence</li>
+          <li>Live cutover playbooks for occupied buildings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-light">
+  <div class="container">
+    <div class="split">
+      <div class="col-text">
+        <div class="eyebrow">03 · Fault detection &amp; analytics</div>
+        <h2>Continuous commissioning, not annual audits.</h2>
+        <p>
+          A building's tune-up shouldn't be a once-a-year event. We deploy rule-based and
+          ML-driven fault detection that runs every minute against your live data, flagging
+          drifts, anomalies, and inefficiencies in priority order — and routing them into
+          whatever ticketing or CMMS system your team already uses.
+        </p>
+        <p>
+          Our analytics layer is vendor-neutral. We work with SkySpark, Switch Automation,
+          KGS Buildings, and bespoke pipelines built on InfluxDB/Grafana — whatever fits the
+          owner's existing stack and operational team.
+        </p>
+        <ul style="padding-left: 1.2em; color: var(--muted);">
+          <li>Rule libraries tuned to your building, not a generic template</li>
+          <li>Predictive maintenance for fans, pumps, and chillers</li>
+          <li>Energy attribution by equipment, zone, and use</li>
+          <li>Custom dashboards built around the operator's workflow</li>
+        </ul>
+      </div>
+      <div class="col-media">
+        <div class="dashboard" style="margin: 0;">
+          <div class="dashboard-head"><span>Live faults · today</span><span>14 open</span></div>
+          <div style="display:grid; gap:8px; font-size: 0.84rem;">
+            <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(217,112,112,0.12); border-left:3px solid #d97070;">
+              <span>AHU-3 economizer stuck closed</span><span style="color:#d97070;">CRIT</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(214,182,90,0.12); border-left:3px solid #d6b65a;">
+              <span>CH-2 approach temp drift</span><span style="color:#d6b65a;">WARN</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(214,182,90,0.12); border-left:3px solid #d6b65a;">
+              <span>VAV 5-N simultaneous heat/cool</span><span style="color:#d6b65a;">WARN</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(111,210,138,0.10); border-left:3px solid #6fd28a;">
+              <span>Boiler stack drift — auto-resolved</span><span style="color:#6fd28a;">OK</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:10px; background:rgba(111,210,138,0.10); border-left:3px solid #6fd28a;">
+              <span>Filter ΔP — 14d to service</span><span style="color:#6fd28a;">INFO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-warm">
+  <div class="container">
+    <div class="split">
+      <div class="col-media">
+        <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" style="background:var(--paper); border:1px solid var(--rule);">
+          <!-- Calendar / cycle illustration -->
+          <circle cx="250" cy="180" r="120" fill="none" stroke="#1c2a3a" stroke-width="1"/>
+          <circle cx="250" cy="180" r="80" fill="none" stroke="#b87333" stroke-width="1" stroke-dasharray="4 4"/>
+          <g font-family="Inter" font-size="10" fill="#1c2a3a" text-anchor="middle" letter-spacing="2">
+            <text x="250" y="55">RETUNE</text>
+            <text x="370" y="185">MONITOR</text>
+            <text x="250" y="315">REPORT</text>
+            <text x="130" y="185">RESPOND</text>
+          </g>
+          <g fill="#b87333">
+            <circle cx="250" cy="60" r="6"/>
+            <circle cx="370" cy="180" r="6"/>
+            <circle cx="250" cy="300" r="6"/>
+            <circle cx="130" cy="180" r="6"/>
+          </g>
+          <text x="250" y="175" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="22" fill="#1c2a3a">Operations</text>
+          <text x="250" y="200" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="22" fill="#1c2a3a">cycle</text>
+        </svg>
+      </div>
+      <div class="col-text">
+        <div class="eyebrow">04 · Operations &amp; tuning</div>
+        <h2>We stay on the building.</h2>
+        <p>
+          The most consistent finding from our analytics is that buildings drift. Sequences are
+          overridden during a heatwave and never restored; setpoints are widened to silence a
+          complaint and forgotten; meters fail and nobody notices because the spreadsheet they
+          fed is no longer being read.
+        </p>
+        <p>
+          Our operations engagement is a relationship, not a service contract. Monthly retunes,
+          quarterly business reviews, and a named engineer who picks up the phone.
+        </p>
+        <ul style="padding-left: 1.2em; color: var(--muted);">
+          <li>Monthly setpoint and sequence reviews</li>
+          <li>Seasonal optimization (summer/winter changeovers)</li>
+          <li>Retro-commissioning every 3–5 years</li>
+          <li>After-hours response, with a 30-minute SLA</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark center">
+  <div class="container">
+    <div class="eyebrow center">Tell us about your building</div>
+    <h2 style="max-width: 24ch; margin: 0 auto 24px;">If you got this far, you probably have a specific building in mind.</h2>
+    <a href="contact.html" class="btn btn-primary">Start a conversation</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
+          <span class="brand-mark" style="background: var(--accent);">S</span>
+          Surds
+        </div>
+        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
+          Independent HVAC controls &amp; building intelligence. IIT Kharagpur, India.
+        </p>
+      </div>
+      <div>
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="equipment.html">Equipment guide</a></li>
+          <li><a href="technologies.html">Technologies</a></li>
+          <li><a href="case-studies.html">Projects</a></li>
+          <li><a href="news/index.html">Insights</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Firm</h4>
+        <ul>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Office</h4>
+        <ul>
+          <li>STEP-IIT Kharagpur</li>
+          <li>Kharagpur, West Bengal 721302</li>
+          <li>automate@surds.co.in</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Surds. All rights reserved.</span>
+      <span>Privacy · Terms · Accessibility</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -84,6 +84,70 @@ document.addEventListener('DOMContentLoaded', () => {
     render('ahu');
   }
 
+  // Scroll progress bar (top of page)
+  const sp = document.createElement('div');
+  sp.className = 'scroll-progress';
+  document.body.appendChild(sp);
+  const onScroll = () => {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    sp.style.width = `${Math.min(100, Math.max(0, pct * 100))}%`;
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Display headline: 'in' class triggers underline reveal + ensures words animate
+  document.querySelectorAll('.display').forEach(d => {
+    requestAnimationFrame(() => d.classList.add('in'));
+  });
+
+  // Magnetic buttons — gentle cursor attraction
+  document.querySelectorAll('.magnetic').forEach(el => {
+    const strength = parseFloat(el.dataset.magnetic || '0.35');
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      el.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+
+  // Mouse-parallax inside .parallax-stage — each .parallax-layer with data-depth moves
+  document.querySelectorAll('.parallax-stage').forEach(stage => {
+    const layers = stage.querySelectorAll('.parallax-layer');
+    stage.addEventListener('mousemove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      layers.forEach(l => {
+        const depth = parseFloat(l.dataset.depth || '8');
+        l.style.transform = `translate(${-x * depth}px, ${-y * depth}px)`;
+      });
+    });
+    stage.addEventListener('mouseleave', () => {
+      layers.forEach(l => { l.style.transform = ''; });
+    });
+  });
+
+  // SVG draw-on-scroll: compute path length and animate stroke offset
+  document.querySelectorAll('.draw-path').forEach(p => {
+    try {
+      const len = p.getTotalLength();
+      p.style.setProperty('--len', len);
+    } catch (_) {}
+  });
+  if ('IntersectionObserver' in window) {
+    const drawIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); drawIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.draw-path').forEach(p => drawIO.observe(p));
+  }
+
   // Scroll-reveal: fade + lift elements as they enter the viewport
   const reveals = document.querySelectorAll('.reveal');
   if (reveals.length && 'IntersectionObserver' in window) {

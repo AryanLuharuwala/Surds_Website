@@ -1404,6 +1404,282 @@ footer a:hover { color: var(--accent-2); }
   margin-top: 6px;
 }
 
+/* ============================================================
+   Scroll progress bar (top of page)
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.05s linear;
+  box-shadow: 0 0 12px rgba(184,115,51,0.6);
+}
+
+/* Magnetic effect target */
+.magnetic {
+  display: inline-block;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+/* ============================================================
+   Asymmetric layouts — break the centered-grid pattern
+   ============================================================ */
+.offset-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0 32px;
+  align-items: start;
+}
+.offset-row > .offset-a { grid-column: 1 / span 5; padding-top: 0; }
+.offset-row > .offset-b { grid-column: 7 / span 6; padding-top: 120px; }
+.offset-row > .offset-c { grid-column: 2 / span 6; padding-top: 60px; }
+@media (max-width: 880px) {
+  .offset-row > .offset-a,
+  .offset-row > .offset-b,
+  .offset-row > .offset-c { grid-column: 1 / -1; padding-top: 32px; }
+}
+
+/* ============================================================
+   Kinetic display headline
+   ============================================================ */
+.display {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 9vw, 8rem);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  margin: 0;
+  font-weight: 500;
+}
+.display .accent { color: var(--accent); }
+.display .italic { font-style: italic; font-weight: 400; }
+.display .small {
+  font-family: var(--sans);
+  font-size: 0.18em;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  color: rgba(246,242,236,0.55);
+  margin-left: 0.4em;
+  font-weight: 400;
+}
+.display .underline {
+  background-image: linear-gradient(transparent 70%, rgba(184,115,51,0.55) 70%);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s;
+  background-position: 0 88%;
+}
+.display.in .underline { background-size: 100% 100%; }
+.display .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.55em);
+  animation: word-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.display .word:nth-child(1) { animation-delay: 0.05s; }
+.display .word:nth-child(2) { animation-delay: 0.15s; }
+.display .word:nth-child(3) { animation-delay: 0.25s; }
+.display .word:nth-child(4) { animation-delay: 0.35s; }
+.display .word:nth-child(5) { animation-delay: 0.45s; }
+.display .word:nth-child(6) { animation-delay: 0.55s; }
+.display .word:nth-child(7) { animation-delay: 0.65s; }
+@keyframes word-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mouse-parallax layer */
+.parallax-stage { position: relative; }
+.parallax-layer {
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+/* ============================================================
+   Marquee phrase strip (kinetic copy, replaces the dark process strip)
+   ============================================================ */
+.phrase-strip {
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 28px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.phrase-track {
+  display: inline-flex;
+  gap: 56px;
+  animation: phrase-roll 50s linear infinite;
+  padding-left: 100%;
+}
+.phrase-track > span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 18px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--ink-2);
+}
+.phrase-track .sep {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+  align-self: center;
+}
+@keyframes phrase-roll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   Field-journal illustration cards (replacing Picsum gallery)
+   ============================================================ */
+.journal {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 32px;
+}
+.note {
+  background: #fdf9f1;
+  border: 1px solid rgba(184,115,51,0.18);
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 12px 30px -20px rgba(14,26,38,0.15);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+}
+.note:hover {
+  transform: translateY(-6px) rotate(-0.4deg);
+  box-shadow: 0 24px 60px -30px rgba(14,26,38,0.35);
+}
+.note .stamp {
+  position: absolute;
+  top: -10px; right: 20px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  padding: 4px 12px;
+  transform: rotate(-3deg);
+  background: var(--paper);
+  z-index: 2;
+}
+.note .scribble {
+  background: #faf2dd;
+  margin: 16px -30px;
+  padding: 24px 30px;
+  border-top: 1px dashed rgba(184,115,51,0.28);
+  border-bottom: 1px dashed rgba(184,115,51,0.28);
+}
+.note .scribble svg { width: 100%; height: auto; display: block; }
+.note h3 {
+  font-size: 1.55rem;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+.note .meta {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.note p {
+  font-size: 0.93rem;
+  color: var(--ink-2);
+  line-height: 1.65;
+  margin: 14px 0 0;
+}
+.note .pen {
+  margin-top: 18px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.note.span-4 { grid-column: span 4; }
+.note.span-5 { grid-column: span 5; }
+.note.span-6 { grid-column: span 6; }
+.note.span-7 { grid-column: span 7; }
+.note.span-8 { grid-column: span 8; }
+.note.tilt-l { transform: rotate(-0.6deg); }
+.note.tilt-r { transform: rotate(0.5deg); }
+.note.tilt-l:hover { transform: translateY(-6px) rotate(-1deg); }
+.note.tilt-r:hover { transform: translateY(-6px) rotate(0.9deg); }
+@media (max-width: 880px) {
+  .note.span-4, .note.span-5, .note.span-6, .note.span-7, .note.span-8 { grid-column: span 12; }
+  .note.tilt-l, .note.tilt-r { transform: none; }
+}
+
+/* SVG path-draw on scroll */
+.draw-path {
+  stroke-dasharray: var(--len, 1000);
+  stroke-dashoffset: var(--len, 1000);
+}
+.draw-path.in {
+  animation: draw 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* Wax-seal badge */
+.seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 22px 12px 12px;
+  border: 1px solid var(--accent);
+  background: rgba(184,115,51,0.05);
+  border-radius: 999px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.seal .seal-dot {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--paper);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  position: relative;
+  overflow: hidden;
+}
+.seal .seal-dot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed rgba(246,242,236,0.6);
+  border-radius: 50%;
+  animation: seal-rotate 18s linear infinite;
+}
+@keyframes seal-rotate { to { transform: rotate(360deg); } }
+
+/* Inline fact (bigger numerals with short text) */
+.fact {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  border-top: 1px solid var(--rule);
+  padding-top: 18px;
+  margin-bottom: 12px;
+}
+.fact .n {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: var(--accent);
+  line-height: 1;
+}
+.fact .t { font-size: 0.95rem; color: var(--muted); }
+
 /* ---------- Utility ---------- */
 .center { text-align: center; }
 .muted { color: var(--muted); }

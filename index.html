@@ -31,21 +31,45 @@
 </nav>
 
 <!-- ====================== HERO ====================== -->
-<header class="hero" style="padding: clamp(80px, 12vw, 140px) 0 0;">
+<header class="hero parallax-stage" style="padding: clamp(80px, 12vw, 140px) 0 0;">
   <div class="container">
-    <div class="eyebrow">HVAC Controls · Building Intelligence · Commissioning</div>
-    <h1>Buildings should run themselves. Almost.</h1>
-    <p class="lede">
-      Surds designs and operates the intelligence that sits between your mechanical plant and
-      the people who occupy your buildings — quieter, healthier, and measurably more efficient.
-    </p>
-    <div class="hero-actions">
-      <a href="news/an-introduction-to-hbms.html" class="btn btn-primary">Read the HBMS primer</a>
-      <a href="equipment.html" class="btn">Explore equipment</a>
+    <div class="parallax-layer" data-depth="10" style="margin-bottom: 28px;">
+      <span class="seal"><span class="seal-dot">S</span> est. IIT Kharagpur · automating the basement</span>
+    </div>
+
+    <h1 class="display parallax-layer" data-depth="4">
+      <span class="word">Buildings</span>
+      <span class="word italic">should</span>
+      <span class="word">run</span>
+      <span class="word"><span class="underline accent">themselves.</span></span>
+      <br>
+      <span class="word">Almost.</span>
+      <span class="small">a Surds field manual</span>
+    </h1>
+
+    <div class="offset-row" style="margin-top: 56px;">
+      <div class="offset-a parallax-layer" data-depth="6">
+        <p style="font-family: var(--serif); font-size: 1.3rem; font-style: italic; color: rgba(246,242,236,0.85); margin: 0;">
+          We build the small intelligence that sits between your chillers and the people in
+          your building. <span style="color: var(--accent-2);">Quieter. Healthier. Cheaper to run.</span>
+        </p>
+        <div class="hero-actions" style="margin-top: 28px;">
+          <a href="news/an-introduction-to-hbms.html" class="btn btn-primary magnetic" data-magnetic="0.25">Read the HBMS primer →</a>
+          <a href="equipment.html" class="btn magnetic" data-magnetic="0.18">Explore equipment</a>
+        </div>
+      </div>
+      <div class="offset-b parallax-layer" data-depth="14" style="font-size: 0.92rem; color: rgba(246,242,236,0.65); line-height: 1.7;">
+        <div style="border-top: 1px solid rgba(255,255,255,0.18); padding-top: 14px; max-width: 36ch;">
+          <span style="font-family: var(--sans); letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.72rem; color: var(--accent-2);">Currently watching</span><br>
+          <span style="font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--paper);">
+            an AHU on its third filter this monsoon, a chiller refusing to stage down, a museum gallery that won't let go of 53% RH.
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- Animated rooftop-to-basement building diagram -->
-    <div style="margin-top: 80px; position: relative;">
+    <div class="parallax-layer" data-depth="22" style="margin-top: 56px; position: relative;">
       <svg viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-height: 60vh;">
         <defs>
           <linearGradient id="hero-supply" x1="0" x2="1" y1="0" y2="0">
@@ -65,8 +89,8 @@
         <!-- Sky / context -->
         <rect width="1200" height="520" fill="none"/>
 
-        <!-- Building outline -->
-        <rect x="220" y="60" width="760" height="380" fill="rgba(255,255,255,0.02)" stroke="rgba(216,207,191,0.18)" stroke-width="1"/>
+        <!-- Building outline (draws on scroll) -->
+        <rect x="220" y="60" width="760" height="380" fill="rgba(255,255,255,0.02)" stroke="rgba(216,207,191,0.4)" stroke-width="1.2" class="draw-path"/>
         <!-- Floor lines -->
         <g stroke="rgba(216,207,191,0.12)" stroke-width="0.6">
           <line x1="220" y1="120" x2="980" y2="120"/>
@@ -202,10 +226,20 @@
 <!-- ====================== WHAT WE DO ====================== -->
 <section class="section-light">
   <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">What we do</div>
-      <h2>The intelligence layer of a working building.</h2>
-      <p>Four practices, one objective: a building that does what you actually wanted it to do.</p>
+    <div class="offset-row reveal" style="margin-bottom: 56px;">
+      <div class="offset-a">
+        <div class="eyebrow">What we do</div>
+        <h2 style="font-size: clamp(2rem, 4.4vw, 3.6rem); line-height: 1.04; margin: 0;">
+          The intelligence<br>
+          <em style="color: var(--accent);">in the basement.</em>
+        </h2>
+      </div>
+      <div class="offset-b" style="padding-top: 80px;">
+        <p style="font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--muted); max-width: 38ch; margin: 0;">
+          Four practices, one objective — a building that does, every minute, what you actually
+          wanted it to do. Nothing more, nothing less, ideally <span style="color: var(--accent);">a little less</span>.
+        </p>
+      </div>
     </div>
 
     <div class="icon-grid reveal reveal-delay-1">
@@ -731,46 +765,6 @@
   </div>
 </section>
 
-<!-- ====================== PROJECTS ====================== -->
-<section class="section-warm">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">Selected projects</div>
-      <h2>Hospitals, museums, campuses, and labs.</h2>
-      <p>Four projects from the last three years. Every one was originally somebody else's "no.".</p>
-    </div>
-    <div class="projects">
-      <a href="case-studies.html" class="project project-1">
-        <div>
-          <span class="pill">Healthcare</span>
-          <h3>Saint Marguerite Regional Medical Center</h3>
-          <p>620-bed hospital · phased BMS migration over 18 months with zero downtime in ICU and OR suites.</p>
-        </div>
-      </a>
-      <a href="case-studies.html" class="project project-2">
-        <div>
-          <span class="pill">Cultural</span>
-          <h3>Linden Avenue Museum of Art</h3>
-          <p>1908 Beaux-Arts building with strict humidity envelopes for the textile collection. Setpoint band ±3% RH.</p>
-        </div>
-      </a>
-      <a href="case-studies.html" class="project project-3">
-        <div>
-          <span class="pill">Higher Ed</span>
-          <h3>Riverbend University Sciences Quad</h3>
-          <p>Four-building chilled-water loop with shared central plant. 31% kW/ton reduction after sequence rework.</p>
-        </div>
-      </a>
-      <a href="case-studies.html" class="project project-4">
-        <div>
-          <span class="pill">Workplace</span>
-          <h3>Hollis &amp; Park HQ Tower</h3>
-          <p>22-story Class A office, post-COVID return-to-office IAQ overhaul. CO₂-driven ventilation control on all floors.</p>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
 
 <!-- ====================== INSIGHTS ====================== -->
 <section class="section-light">
@@ -844,74 +838,201 @@
   </div>
 </section>
 
-<!-- ====================== CINEMATIC GALLERY ====================== -->
-<section class="section-warm" id="about">
+<!-- ====================== FIELD JOURNAL ====================== -->
+<section class="section-warm" id="about" style="overflow: hidden;">
   <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">From the field</div>
-      <h2>The buildings we keep awake.</h2>
-      <p>Mechanical rooms at 3 a.m. · galleries holding seventeenth-century textiles · operating theatres mid-procedure · server halls at full tilt.</p>
+
+    <!-- Asymmetric, anti-template intro -->
+    <div class="offset-row reveal" style="margin-bottom: 64px;">
+      <div class="offset-a">
+        <div class="eyebrow">Field journal</div>
+        <h2 style="font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.05; margin: 0;">
+          Pages torn from the<br>
+          <em style="color: var(--accent);">night-shift notebook.</em>
+        </h2>
+      </div>
+      <div class="offset-b">
+        <p style="font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--ink-2); max-width: 38ch; margin: 0;">
+          The interesting hours in a building are the ones nobody is there for. These are five
+          field notes from buildings we keep awake on your behalf — drawn, mostly badly, at
+          the end of a long shift.
+        </p>
+      </div>
     </div>
 
-    <div class="gallery">
-      <a href="case-studies.html" class="cinema span-7 tall reveal" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.4), rgba(184,115,51,0.15)), url('https://picsum.photos/seed/Surds-plant/1200/900');">
-        <span class="scan"></span>
-        <span class="monogram">S</span>
-        <div>
-          <span class="cinema-tag">Central Plant · 03:14</span>
-          <h3>Where the building's electricity goes.</h3>
-          <p>800-ton centrifugal lead, screw lag. CHW ΔT held at 12.8 °F across a full night cycle. Tower CT-1 dropping condenser water to within 6 °F of wet-bulb.</p>
-        </div>
-      </a>
+    <div class="journal">
+      <!-- Note 1 — central plant -->
+      <article class="note span-7 tilt-l reveal">
+        <span class="stamp">03:14 · plant</span>
+        <div class="meta">Central plant · 800 tons</div>
+        <h3>The basement, where most of the electricity actually goes.</h3>
+        <p>CHW ΔT held at 12.8 °F across the full night. CT-1 dropping condenser water to within 6 °F of wet-bulb. Lead chiller staged off at 04:20 — load dropped below 35%.</p>
+        <div class="scribble">
+          <svg viewBox="0 0 600 180">
+            <!-- Sketched chiller + tower -->
+            <rect x="20" y="60" width="180" height="90" fill="none" stroke="#b87333" stroke-width="2" stroke-dasharray="3 2" rx="2"/>
+            <circle cx="110" cy="105" r="28" fill="none" stroke="#b87333" stroke-width="2"/>
+            <circle cx="110" cy="105" r="16" fill="rgba(184,115,51,0.15)"/>
+            <text x="110" y="170" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="13" fill="#1c2a3a">CH-1 · 600t</text>
 
-      <div style="grid-column: span 5; display: grid; gap: 16px;">
-        <a href="case-studies.html" class="cinema short reveal reveal-delay-1" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.4), rgba(122,184,214,0.18)), url('https://picsum.photos/seed/Surds-control/900/500');">
-          <span class="scan"></span>
-          <span class="monogram">02</span>
-          <div>
-            <span class="cinema-tag">Operations</span>
-            <h3>The control room.</h3>
-            <p>Operator dashboards rebuilt around how the night-shift actually works.</p>
-          </div>
-        </a>
-        <a href="case-studies.html" class="cinema short reveal reveal-delay-2" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.4), rgba(217,112,112,0.12)), url('https://picsum.photos/seed/Surds-tower/900/500');">
-          <span class="scan"></span>
-          <span class="monogram">03</span>
-          <div>
-            <span class="cinema-tag">Heat Rejection</span>
-            <h3>Cooling tower, 4:15 a.m.</h3>
-            <p>Variable-speed fans tracking a moving wet bulb in real time.</p>
-          </div>
-        </a>
+            <!-- Sketched piping (hand-drawn wobble) -->
+            <path d="M 200 90 Q 260 92, 310 88 Q 360 84, 420 90" fill="none" stroke="#7ab8d6" stroke-width="2.2"/>
+            <path d="M 200 120 Q 260 118, 310 122 Q 360 126, 420 120" fill="none" stroke="#d99858" stroke-width="2.2"/>
+            <text x="245" y="80" font-family="Inter" font-size="9" fill="#7ab8d6">CHWS 44°</text>
+            <text x="245" y="140" font-family="Inter" font-size="9" fill="#d99858">CHWR 56°</text>
+
+            <!-- Sketched cooling tower -->
+            <path d="M 430 50 L 430 150 L 560 150 L 560 50" fill="none" stroke="#b87333" stroke-width="2" stroke-dasharray="3 2"/>
+            <line x1="450" y1="50" x2="450" y2="150" stroke="#5a7090" stroke-width="1"/>
+            <line x1="475" y1="50" x2="475" y2="150" stroke="#5a7090" stroke-width="1"/>
+            <line x1="500" y1="50" x2="500" y2="150" stroke="#5a7090" stroke-width="1"/>
+            <line x1="525" y1="50" x2="525" y2="150" stroke="#5a7090" stroke-width="1"/>
+            <line x1="545" y1="50" x2="545" y2="150" stroke="#5a7090" stroke-width="1"/>
+            <circle cx="495" cy="40" r="10" fill="none" stroke="#b87333" stroke-width="1.8"><animateTransform attributeName="transform" type="rotate" from="0 495 40" to="360 495 40" dur="4s" repeatCount="indefinite"/></circle>
+            <text x="495" y="170" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="13" fill="#1c2a3a">CT-1</text>
+
+            <!-- Pencil annotation -->
+            <text x="280" y="48" font-family="Cormorant Garamond" font-style="italic" font-size="14" fill="#b87333" transform="rotate(-2 280 48)">~6° approach — best of week</text>
+            <path d="M 280 55 L 470 60" stroke="#b87333" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+          </svg>
+        </div>
+        <p class="pen">— J.R., 04:38 IST, pencil on graph paper</p>
+      </article>
+
+      <!-- Note 2 — VAV zone trouble -->
+      <article class="note span-5 tilt-r reveal reveal-delay-1">
+        <span class="stamp">flagged</span>
+        <div class="meta">VAV 5-N · re-balance?</div>
+        <h3>Zone too cold. Damper at 28%. Something's lying.</h3>
+        <p>Zone reads 69.8 °F at a 72 setpoint, but the damper is nearly closed. Probably the adjacent perimeter VAV dumping reheat backwards. Marked for hand-balance Friday.</p>
+        <div class="scribble">
+          <svg viewBox="0 0 400 160">
+            <!-- Floor plan sketch -->
+            <rect x="20" y="30" width="360" height="100" fill="none" stroke="#1c2a3a" stroke-width="1.6" stroke-dasharray="2 2"/>
+            <line x1="200" y1="30" x2="200" y2="130" stroke="#1c2a3a" stroke-width="1" stroke-dasharray="2 2"/>
+            <rect x="40" y="60" width="80" height="40" fill="rgba(122,184,214,0.18)" stroke="#7ab8d6" stroke-width="1.5"/>
+            <text x="80" y="84" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="14" fill="#1c2a3a">5-N · 69.8°</text>
+            <rect x="220" y="60" width="80" height="40" fill="rgba(217,112,112,0.18)" stroke="#d97070" stroke-width="1.5"/>
+            <text x="260" y="84" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="14" fill="#1c2a3a">5-S · 74.2°</text>
+            <!-- Arrow indicating drift -->
+            <path d="M 220 80 Q 175 60, 130 80" stroke="#b87333" stroke-width="1.5" fill="none"/>
+            <polygon points="130,80 138,76 138,84" fill="#b87333"/>
+            <text x="175" y="50" text-anchor="middle" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#b87333">heat creep?</text>
+            <!-- circle around suspect zone -->
+            <circle cx="80" cy="80" r="46" fill="none" stroke="#b87333" stroke-width="1.4" stroke-dasharray="3 2"/>
+          </svg>
+        </div>
+        <p class="pen">— P.I., 09:12, marker on plan print-out</p>
+      </article>
+
+      <!-- Note 3 — museum gallery RH -->
+      <article class="note span-5 tilt-l reveal reveal-delay-1">
+        <span class="stamp">02:48 · gallery</span>
+        <div class="meta">Linden Ave · textile gallery</div>
+        <h3>RH drifted four points. Held it inside the envelope by 02:51.</h3>
+        <p>Conservator phoned at 23:14. We isolated the dehumidifier (DH-3), brought DH-4 online, and modulated the reheat. The exposure was 11 minutes total — below the alert threshold.</p>
+        <div class="scribble">
+          <svg viewBox="0 0 400 160">
+            <!-- RH chart sketch -->
+            <line x1="20" y1="130" x2="380" y2="130" stroke="#1c2a3a" stroke-width="1"/>
+            <line x1="20" y1="40" x2="20" y2="130" stroke="#1c2a3a" stroke-width="1"/>
+            <!-- Envelope band -->
+            <rect x="20" y="60" width="360" height="40" fill="rgba(184,115,51,0.1)" stroke="none"/>
+            <line x1="20" y1="60" x2="380" y2="60" stroke="#b87333" stroke-width="0.8" stroke-dasharray="3 2"/>
+            <line x1="20" y1="100" x2="380" y2="100" stroke="#b87333" stroke-width="0.8" stroke-dasharray="3 2"/>
+            <text x="385" y="63" font-family="Inter" font-size="9" fill="#b87333">53%</text>
+            <text x="385" y="103" font-family="Inter" font-size="9" fill="#b87333">47%</text>
+            <!-- RH curve drifting out then coming back -->
+            <path d="M 20 80 Q 100 78, 160 76 Q 200 56, 240 48 Q 280 56, 320 76 Q 360 82, 380 82" fill="none" stroke="#3d8db3" stroke-width="2.2"/>
+            <!-- Excursion marker -->
+            <circle cx="220" cy="52" r="4" fill="#d97070"/>
+            <text x="234" y="50" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#d97070">+4 pt excursion</text>
+            <!-- Recovery annotation -->
+            <text x="290" y="68" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#5a8070">DH-4 online</text>
+            <path d="M 285 72 L 270 78" stroke="#5a8070" stroke-width="0.8" fill="none"/>
+          </svg>
+        </div>
+        <p class="pen">— A.P., 02:55, sleep-deprived</p>
+      </article>
+
+      <!-- Note 4 — IAQ tile -->
+      <article class="note span-7 tilt-r reveal reveal-delay-2">
+        <span class="stamp">monsoon brief</span>
+        <div class="meta">Hollis &amp; Park · 22nd-floor conf. rm.</div>
+        <h3>The CO₂ curve nobody else is reading.</h3>
+        <p>Twelve people walk into a 4-person room at 10 a.m. The CO₂ goes from 540 to 1620 in 22 minutes. The DCV loop adds outdoor air, the chiller bumps a stage, the meeting ends, and the room settles by 11:30. We watched it. We logged it. We bill it.</p>
+        <div class="scribble">
+          <svg viewBox="0 0 600 160">
+            <!-- CO2 trace -->
+            <line x1="20" y1="130" x2="580" y2="130" stroke="#1c2a3a" stroke-width="1"/>
+            <line x1="20" y1="30" x2="20" y2="130" stroke="#1c2a3a" stroke-width="1"/>
+            <!-- threshold -->
+            <line x1="20" y1="70" x2="580" y2="70" stroke="#b87333" stroke-width="0.8" stroke-dasharray="4 3"/>
+            <text x="585" y="73" font-family="Inter" font-size="9" fill="#b87333">1000 ppm</text>
+            <!-- curve -->
+            <path d="M 20 122 L 80 120 L 140 116 Q 170 96, 220 60 Q 260 36, 320 36 L 360 38 Q 410 50, 460 90 Q 510 116, 580 124" fill="none" stroke="#3d8db3" stroke-width="2.4"/>
+            <!-- Markers -->
+            <circle cx="160" cy="108" r="3" fill="#1c2a3a"/>
+            <text x="166" y="104" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#1c2a3a">10:00 · meeting starts</text>
+            <circle cx="340" cy="36" r="3" fill="#d97070"/>
+            <text x="348" y="34" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#d97070">10:22 · 1620 ppm peak</text>
+            <circle cx="490" cy="108" r="3" fill="#5a8070"/>
+            <text x="498" y="106" font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#5a8070">11:30 · settled</text>
+          </svg>
+        </div>
+        <p class="pen">— M.W., 14:02, on the iPad while standing in a lobby</p>
+      </article>
+
+      <!-- Note 5 — full-width composite -->
+      <article class="note span-12 reveal reveal-delay-3" style="grid-column: span 12;">
+        <span class="stamp">summary · week 20</span>
+        <div class="meta">Portfolio · 14 buildings · automate@surds.co.in if you want the spreadsheet</div>
+        <h3>What a week looks like across everything we run.</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 18px;">
+          <div class="fact"><span class="n">2,840</span><span class="t">MWh delivered across the portfolio</span></div>
+          <div class="fact"><span class="n">−26%</span><span class="t">vs. the same week last year</span></div>
+          <div class="fact"><span class="n">96.4%</span><span class="t">zones within ±1°F of setpoint</span></div>
+          <div class="fact"><span class="n">11</span><span class="t">FDD rules fired and auto-resolved</span></div>
+        </div>
+        <div class="scribble" style="margin-top: 24px;">
+          <svg viewBox="0 0 1100 120">
+            <!-- One sparkline per building, sketched -->
+            <g font-family="Cormorant Garamond" font-style="italic" font-size="11" fill="#1c2a3a">
+              <text x="20" y="22">Saint Marg.</text>
+              <text x="180" y="22">Linden Ave</text>
+              <text x="340" y="22">Riverbend</text>
+              <text x="500" y="22">Hollis &amp; Park</text>
+              <text x="660" y="22">Banyan Park</text>
+              <text x="820" y="22">Tata House</text>
+              <text x="980" y="22">+ 8 more</text>
+            </g>
+            <g fill="none" stroke="#b87333" stroke-width="1.8">
+              <path class="draw-path" d="M 20 80 L 50 70 L 80 90 L 110 60 L 140 76"/>
+              <path class="draw-path" d="M 180 84 L 210 72 L 240 80 L 270 64 L 300 70"/>
+              <path class="draw-path" d="M 340 76 L 370 90 L 400 60 L 430 70 L 460 50"/>
+              <path class="draw-path" d="M 500 70 L 530 80 L 560 60 L 590 90 L 620 64"/>
+              <path class="draw-path" d="M 660 90 L 690 60 L 720 80 L 750 50 L 780 70"/>
+              <path class="draw-path" d="M 820 74 L 850 86 L 880 56 L 910 80 L 940 60"/>
+            </g>
+            <g fill="#d99858">
+              <circle cx="140" cy="76" r="3"/><circle cx="300" cy="70" r="3"/>
+              <circle cx="460" cy="50" r="3"/><circle cx="620" cy="64" r="3"/>
+              <circle cx="780" cy="70" r="3"/><circle cx="940" cy="60" r="3"/>
+            </g>
+          </svg>
+        </div>
+      </article>
+    </div>
+
+    <!-- Closing note, off-center -->
+    <div class="offset-row reveal reveal-delay-2" style="margin-top: 64px;">
+      <div class="offset-c">
+        <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: var(--ink); margin: 0;">
+          We don't keep the notes secret. Drop us a line at
+          <a href="mailto:automate@surds.co.in" style="color: var(--accent); border-bottom: 1px solid var(--accent);">automate@surds.co.in</a>
+          and we'll send the actual sketchbook scan from any of these nights.
+        </p>
       </div>
-
-      <a href="case-studies.html" class="cinema span-4 reveal reveal-delay-1" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.35), rgba(184,115,51,0.18)), url('https://picsum.photos/seed/Surds-museum/900/600');">
-        <span class="scan"></span>
-        <span class="monogram">04</span>
-        <div>
-          <span class="cinema-tag">Cultural · Linden Ave</span>
-          <h3>Galleries that breathe carefully.</h3>
-          <p>±3% RH humidity envelopes maintained across a 1908 Beaux-Arts envelope.</p>
-        </div>
-      </a>
-      <a href="case-studies.html" class="cinema span-4 reveal reveal-delay-2" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.35), rgba(122,184,214,0.18)), url('https://picsum.photos/seed/Surds-hospital/900/600');">
-        <span class="scan"></span>
-        <span class="monogram">05</span>
-        <div>
-          <span class="cinema-tag">Healthcare · Saint Marguerite</span>
-          <h3>620 beds, zero outages.</h3>
-          <p>Phased BMS migration through occupied OR and ICU suites.</p>
-        </div>
-      </a>
-      <a href="case-studies.html" class="cinema span-4 reveal reveal-delay-3" style="background-image: linear-gradient(135deg, rgba(14,26,38,0.35), rgba(184,115,51,0.18)), url('https://picsum.photos/seed/Surds-tower-glass/900/600');">
-        <span class="scan"></span>
-        <span class="monogram">06</span>
-        <div>
-          <span class="cinema-tag">Workplace · Hollis &amp; Park</span>
-          <h3>22 floors, demand-controlled.</h3>
-          <p>CO₂-driven ventilation on every floor; quarterly IAQ reports to tenants.</p>
-        </div>
-      </a>
     </div>
   </div>
 </section>
@@ -1121,23 +1242,23 @@
   </div>
 </section>
 
-<!-- ====================== PROCESS STRIP (continuous loop) ====================== -->
-<section class="process-strip">
-  <div class="process-track">
-    <span class="process-token"><span class="dot-orange"></span> Specify</span>
-    <span class="process-token"><span class="dot-orange"></span> Integrate</span>
-    <span class="process-token"><span class="dot-orange"></span> Commission</span>
-    <span class="process-token"><span class="dot-orange"></span> Tune</span>
-    <span class="process-token"><span class="dot-orange"></span> Analyze</span>
-    <span class="process-token"><span class="dot-orange"></span> Retune</span>
-    <span class="process-token"><span class="dot-orange"></span> Stay</span>
-    <span class="process-token"><span class="dot-orange"></span> Specify</span>
-    <span class="process-token"><span class="dot-orange"></span> Integrate</span>
-    <span class="process-token"><span class="dot-orange"></span> Commission</span>
-    <span class="process-token"><span class="dot-orange"></span> Tune</span>
-    <span class="process-token"><span class="dot-orange"></span> Analyze</span>
-    <span class="process-token"><span class="dot-orange"></span> Retune</span>
-    <span class="process-token"><span class="dot-orange"></span> Stay</span>
+<!-- ====================== PHRASE MARQUEE (kinetic copy) ====================== -->
+<section class="phrase-strip" aria-hidden="true">
+  <div class="phrase-track">
+    <span>Specify <span class="sep"></span></span>
+    <span>Integrate <span class="sep"></span></span>
+    <span>Commission <span class="sep"></span></span>
+    <span>Tune <span class="sep"></span></span>
+    <span>Analyse <span class="sep"></span></span>
+    <span>Retune <span class="sep"></span></span>
+    <span>Stay on the building <span class="sep"></span></span>
+    <span>Specify <span class="sep"></span></span>
+    <span>Integrate <span class="sep"></span></span>
+    <span>Commission <span class="sep"></span></span>
+    <span>Tune <span class="sep"></span></span>
+    <span>Analyse <span class="sep"></span></span>
+    <span>Retune <span class="sep"></span></span>
+    <span>Stay on the building <span class="sep"></span></span>
   </div>
 </section>
 

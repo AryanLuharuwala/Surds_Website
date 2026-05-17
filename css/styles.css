@@ -1,5 +1,5 @@
 /* ============================================================
-   Surds — Site Styles
+   Surds, Site Styles
    Inspired by long-form architecture/heritage editorial layouts
    ============================================================ */
 
@@ -1426,7 +1426,7 @@ footer a:hover { color: var(--accent-2); }
 }
 
 /* ============================================================
-   Asymmetric layouts — break the centered-grid pattern
+   Asymmetric layouts, break the centered-grid pattern
    ============================================================ */
 .offset-row {
   display: grid;
@@ -1787,12 +1787,12 @@ img, svg { max-width: 100%; }
   .tile .label { font-size: 0.62rem; }
   .tile .delta { font-size: 0.66rem; }
 
-  /* Signal stage — pull padding in, smaller gauges */
+  /* Signal stage, pull padding in, smaller gauges */
   .signal-stage { padding: 56px 0; }
   .gauge { width: 130px; height: 130px; }
   .gauge .label .v { font-size: 1.8rem; }
 
-  /* Tables — horizontal scroll instead of mashing into the viewport */
+  /* Tables, horizontal scroll instead of mashing into the viewport */
   .compare {
     display: block;
     overflow-x: auto;
@@ -1866,7 +1866,7 @@ img, svg { max-width: 100%; }
   .timeline-item { padding-left: 44px; padding-bottom: 26px; }
   .timeline-item::before { left: 4px; }
 
-  /* Project tiles — already in .project but ensure pills wrap */
+  /* Project tiles, already in .project but ensure pills wrap */
   .project .pill { font-size: 0.66rem; padding: 3px 8px; }
 }
 
@@ -1901,7 +1901,7 @@ img, svg { max-width: 100%; }
   .badge::before { margin-right: 14px; }
 }
 
-/* Touch devices — disable parallax/magnetic transforms (they need a precise pointer) */
+/* Touch devices, disable parallax/magnetic transforms (they need a precise pointer) */
 @media (hover: none) and (pointer: coarse) {
   .magnetic,
   .parallax-layer { transform: none !important; }
@@ -1930,7 +1930,7 @@ img, svg { max-width: 100%; }
     background-position: 0 0.02em;
   }
 
-  /* Section heads — centering looks weird when text is short and viewport is narrow.
+  /* Section heads, centering looks weird when text is short and viewport is narrow.
      Left-align on mobile so eyebrow, headline, and lede share one edge. */
   .section-head {
     text-align: left;
@@ -1950,18 +1950,18 @@ img, svg { max-width: 100%; }
   .section-warm.center h2,
   .section-warm.center p { margin-left: 0; }
 
-  /* Asymmetric headlines that use inline <br> — let them wrap naturally instead */
+  /* Asymmetric headlines that use inline <br>, let them wrap naturally instead */
   .offset-row h2 br { display: none; }
   .offset-row h2 { font-size: clamp(1.7rem, 6vw, 2.4rem); line-height: 1.1; }
 
-  /* "Currently watching" sidecar in hero — keep inside the viewport edge */
+  /* "Currently watching" sidecar in hero, keep inside the viewport edge */
   .offset-row > .offset-b > div { max-width: 100%; }
 
   /* Article hero lede and breadcrumbs */
   .article-hero .narrow > p { font-size: 1.1rem; }
   .article-hero .byline { font-size: 1rem; }
 
-  /* Quote wall — left-align the giant quotation mark so it's not clipped */
+  /* Quote wall, left-align the giant quotation mark so it's not clipped */
   .quote::before { left: 8px; font-size: 7rem; top: -22px; }
 
   /* Footer brand line stays tidy */

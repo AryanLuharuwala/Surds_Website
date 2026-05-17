@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Psychrometrics for HVAC Operators — Surds</title>
+  <title>Psychrometrics for HVAC Operators | Surds</title>
   <meta name="description" content="The chart every HVAC operator has seen but few have actually used. A practical walkthrough with examples from real buildings."/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
     <h1>Psychrometrics for HVAC Operators</h1>
     <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: rgba(246,242,236,0.82); max-width: 52ch;">
       The chart every HVAC operator has seen on a poster, but few have actually used to make a
-      decision. A practical walkthrough — with examples from buildings we run.
+      decision. A practical walkthrough, with examples from buildings we run.
     </p>
     <div class="byline">by Alyson Park, P.E. · Founding Principal</div>
     <div class="meta">11 min read · May 2026</div>
@@ -87,23 +87,23 @@
     <h2>What the chart shows</h2>
 
     <p>
-      The psychrometric chart plots the properties of moist air — specifically, dry air mixed
-      with some amount of water vapor — under standard atmospheric pressure. Every point on the
+      The psychrometric chart plots the properties of moist air, specifically, dry air mixed
+      with some amount of water vapor, under standard atmospheric pressure. Every point on the
       chart represents one specific condition of air. Knowing the state point tells you
       everything thermodynamic you need to know about that air sample.
     </p>
 
     <p>
-      Five quantities matter, and they're not independent — pick any two and the rest are
+      Five quantities matter, and they're not independent, pick any two and the rest are
       determined.
     </p>
 
     <ol>
-      <li><strong>Dry-bulb temperature</strong> (DBT) — what a regular thermometer reads. The horizontal axis.</li>
-      <li><strong>Humidity ratio</strong> (W) — pounds of water vapor per pound of dry air. The vertical axis.</li>
-      <li><strong>Relative humidity</strong> (RH) — water vapor present compared to saturation at that temperature, as a percentage. Curved lines sweeping up through the chart.</li>
-      <li><strong>Wet-bulb temperature</strong> (WBT) — what a thermometer wrapped in a wet wick reads. Lines sloping down-and-right.</li>
-      <li><strong>Enthalpy</strong> (h) — total energy per pound of dry air. Lines nearly parallel to wet-bulb lines, in BTU per pound dry air.</li>
+      <li><strong>Dry-bulb temperature</strong> (DBT), what a regular thermometer reads. The horizontal axis.</li>
+      <li><strong>Humidity ratio</strong> (W), pounds of water vapor per pound of dry air. The vertical axis.</li>
+      <li><strong>Relative humidity</strong> (RH), water vapor present compared to saturation at that temperature, as a percentage. Curved lines sweeping up through the chart.</li>
+      <li><strong>Wet-bulb temperature</strong> (WBT), what a thermometer wrapped in a wet wick reads. Lines sloping down-and-right.</li>
+      <li><strong>Enthalpy</strong> (h), total energy per pound of dry air. Lines nearly parallel to wet-bulb lines, in BTU per pound dry air.</li>
     </ol>
 
     <div class="figure">
@@ -177,7 +177,7 @@
         </svg>
       </div>
       <figcaption>
-        A standard psychrometric chart. The blue saturation curve is the upper limit — air at
+        A standard psychrometric chart. The blue saturation curve is the upper limit, air at
         100% RH. The orange comfort zone is the small rectangle inside which most occupants
         will not complain. Process lines show a typical cooling-and-dehumidification path: A is
         the hot, humid outdoor air; B is the cool, saturated air leaving a cooling coil; C is
@@ -194,8 +194,8 @@
 
     <h3>1. Sensible heating</h3>
     <p>
-      Pure sensible heating — through a hot-water coil, an electric heater, or a heat-pump
-      condenser — is a horizontal line moving to the right. Dry-bulb temperature increases;
+      Pure sensible heating, through a hot-water coil, an electric heater, or a heat-pump
+      condenser, is a horizontal line moving to the right. Dry-bulb temperature increases;
       humidity ratio is constant. Relative humidity falls as a side-effect, because the same
       amount of water vapor in warmer air is a smaller fraction of saturation.
     </p>
@@ -203,7 +203,7 @@
     <h3>2. Sensible cooling</h3>
     <p>
       The mirror image. A horizontal line moving left. This is what happens when an air sample
-      brushes past a cooling coil whose surface temperature is above the air's dew point —
+      brushes past a cooling coil whose surface temperature is above the air's dew point,
       no condensation, just temperature drop. Relative humidity rises.
     </p>
 
@@ -218,9 +218,9 @@
     <h3>4. Humidification</h3>
     <p>
       Adding moisture. Two flavors. <strong>Isothermal humidification</strong> (steam) is a
-      near-vertical line — moisture up, temperature roughly constant.
-      <strong>Adiabatic humidification</strong> (evaporative — wetted media or ultrasonic spray)
-      is a line along a constant wet-bulb temperature — moisture up, dry-bulb down. The second
+      near-vertical line, moisture up, temperature roughly constant.
+      <strong>Adiabatic humidification</strong> (evaporative, wetted media or ultrasonic spray)
+      is a line along a constant wet-bulb temperature, moisture up, dry-bulb down. The second
       is the basis of evaporative cooling, and of cooling towers.
     </p>
 
@@ -245,7 +245,7 @@
     <p>
       A tenant called: <em>"the conference room is cold but the air feels heavy."</em> When we
       pulled the data, the zone was 69 °F at 64% RH. Plotted on the chart, that's at the
-      edge of the comfort zone — technically in spec on temperature, well outside on humidity.
+      edge of the comfort zone, technically in spec on temperature, well outside on humidity.
       What we found: the AHU was cooling with a low supply-air temperature setpoint (52 °F) and
       then dialing the airflow way down to avoid overcooling. Result: small volumes of very
       cold, very saturated air that condensed back out moisture in the duct and never properly
@@ -257,9 +257,9 @@
     <h3>Example 2: The economizer that wasn't</h3>
     <p>
       In a downtown office, the AHU's economizer was supposed to use outdoor air when it was
-      cool enough — the classic "free cooling." The control sequence used dry-bulb temperature:
+      cool enough, the classic "free cooling." The control sequence used dry-bulb temperature:
       "open economizer when OA &lt; 65 °F." On a humid May morning, the building was
-      bringing in 60 °F outdoor air at 95% RH — which, by enthalpy, was carrying about as much
+      bringing in 60 °F outdoor air at 95% RH, which, by enthalpy, was carrying about as much
       energy as 78 °F dry indoor air. The chiller had to work twice as hard to dehumidify it.
       The fix is to switch to enthalpy-based control: "open economizer when h(OA) &lt; h(RA)."
       The chart makes this obvious; the dry-bulb-only sequence does not.
@@ -268,10 +268,10 @@
     <h3>Example 3: The museum gallery</h3>
     <p>
       The Linden Avenue Museum's textile gallery requires 50% RH ± 3%. In April, the outdoor air
-      is often around 45 °F and 70% RH — at a humidity ratio well below the gallery's target.
+      is often around 45 °F and 70% RH, at a humidity ratio well below the gallery's target.
       Bringing in ventilation air and heating it dry-bulb (process 1, sensible heating) drops
       the relative humidity to about 20%. The gallery needs both heat <em>and</em> moisture
-      addition. The chart shows you can't get there with a heating coil alone — you need
+      addition. The chart shows you can't get there with a heating coil alone, you need
       steam humidification, sized to the OA flow at that outdoor condition. The chart is also
       what the original designer used to size the humidifier; using it to verify what's
       installed is how we catch that the humidifier is undersized for the design day.
@@ -298,7 +298,7 @@
       wrong for the other. The chart helps you see which kind of load you have.
     </p>
 
-    <h2>Get it on the wall — and look at it</h2>
+    <h2>Get it on the wall, and look at it</h2>
 
     <p>
       The chart isn't a quiz item. It's an analytical tool. The next time you have a comfort

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ahu: {
         name: 'Air-Handling Unit AHU-3',
         sub: 'Roof mechanical penthouse · East stack',
-        body: 'Variable-air-volume unit with economizer and energy-recovery wheel. Supplies floors 4–7 of the north wing. Currently in occupied mode; discharge-air setpoint reset on outdoor-air temperature.',
+        body: 'Variable-air-volume unit with economizer and energy-recovery wheel. Supplies floors 4-7 of the north wing. Currently in occupied mode; discharge-air setpoint reset on outdoor-air temperature.',
         specs: {
           'Supply CFM': '24,000',
           'Disch. Temp': '55.2 °F',
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chiller: {
         name: 'Chiller CH-1',
         sub: 'Central plant · Subbasement',
-        body: 'Water-cooled centrifugal, 600-ton nominal. Lead chiller in a 2N configuration with CH-2. Condenser water reset is enabled. IPLV trending at 0.43 kW/ton — within commissioning spec.',
+        body: 'Water-cooled centrifugal, 600-ton nominal. Lead chiller in a 2N configuration with CH-2. Condenser water reset is enabled. IPLV trending at 0.43 kW/ton, within commissioning spec.',
         specs: {
           'Load': '78%',
           'CHWS': '44.0 °F',
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       vav: {
         name: 'VAV Zone 5-North',
         sub: 'Floor 5 · Open office',
-        body: 'Pressure-independent VAV with hot-water reheat. Zone is currently slightly cool and the damper is at 28% — likely overcooled by adjacent perimeter zone. Flagged for re-balancing.',
+        body: 'Pressure-independent VAV with hot-water reheat. Zone is currently slightly cool and the damper is at 28%, likely overcooled by adjacent perimeter zone. Flagged for re-balancing.',
         specs: {
           'Zone temp': '69.8 °F',
           'Setpoint': '72.0 °F',
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => d.classList.add('in'));
   });
 
-  // Magnetic buttons — gentle cursor attraction (skip on touch)
+  // Magnetic buttons, gentle cursor attraction (skip on touch)
   if (!isTouch) document.querySelectorAll('.magnetic').forEach(el => {
     const strength = parseFloat(el.dataset.magnetic || '0.35');
     el.addEventListener('mousemove', (e) => {
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Mouse-parallax inside .parallax-stage — each .parallax-layer with data-depth moves
+  // Mouse-parallax inside .parallax-stage, each .parallax-layer with data-depth moves
   if (!isTouch) document.querySelectorAll('.parallax-stage').forEach(stage => {
     const layers = stage.querySelectorAll('.parallax-layer');
     stage.addEventListener('mousemove', (e) => {
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1800 + Math.random() * 1200);
   });
 
-  // Tiny line chart in dashboard mock — render dynamically
+  // Tiny line chart in dashboard mock, render dynamically
   document.querySelectorAll('.chart').forEach(chart => {
     const w = 600, h = 140;
     const points = JSON.parse(chart.dataset.points || '[]');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>An Introduction to HBMS — Surds</title>
+  <title>An Introduction to HBMS | Surds</title>
   <meta name="description" content="Holistic Building Management Systems (HBMS) integrate HVAC controls, live telemetry, and operational history into one workable model of your building. A primer."/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,7 +34,7 @@
     <div class="breadcrumb"><a href="../index.html" style="color:var(--accent-2);">Insights</a> · Building Intelligence</div>
     <h1>An Introduction to HBMS</h1>
     <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: rgba(246,242,236,0.82); max-width: 50ch;">
-      Holistic Building Management Systems — what they are, what they aren't, and why the
+      Holistic Building Management Systems, what they are, what they aren't, and why the
       hardware in your mechanical room is only ever half the story.
     </p>
     <div class="byline">by Jordan Reyes, P.E., LEED AP</div>
@@ -101,8 +101,8 @@
     </p>
     <p>
       Three pieces of information. Three different systems. Three people on a phone tree to
-      assemble a single sentence. The conservator's question — <em>was the collection
-      exposed?</em> — was still unanswered an hour later.
+      assemble a single sentence. The conservator's question, <em>was the collection
+      exposed?</em>, was still unanswered an hour later.
     </p>
     <p>
       This is the gap that <strong>HBMS</strong>, or Holistic Building Management Systems, is
@@ -116,7 +116,7 @@
 
     <p>
       A building management system (BMS), in the conventional sense, is the network of
-      controllers that decides — second by second — what your fans, valves, dampers, pumps,
+      controllers that decides, second by second, what your fans, valves, dampers, pumps,
       compressors, and meters should be doing. It exists primarily to <em>operate</em> the
       building. It is, by design, a real-time system.
     </p>
@@ -131,12 +131,12 @@
       </li>
       <li>
         <strong>Operational context.</strong> Maintenance records, commissioning sequences,
-        service tickets, equipment specs, photographs, drawings, and warranty paperwork — all
+        service tickets, equipment specs, photographs, drawings, and warranty paperwork, all
         anchored to the same equipment objects the BMS is controlling.
       </li>
       <li>
         <strong>An interpretive layer.</strong> Fault detection, anomaly flags, energy
-        attribution, and predictive maintenance — none of which the BMS itself is in a position
+        attribution, and predictive maintenance, none of which the BMS itself is in a position
         to perform without saturating its own bandwidth.
       </li>
     </ol>
@@ -162,13 +162,13 @@
       a screwdriver, and institutional memory.
     </p>
     <p>
-      <strong>The DDC era (1985–2000).</strong> Direct digital control replaced air signals with
+      <strong>The DDC era (1985-2000).</strong> Direct digital control replaced air signals with
       microcontrollers. For the first time, setpoints could be changed from a workstation. But
       every manufacturer used proprietary protocols, and "integrating" a building meant
-      committing — for the next twenty years — to whatever brand had won the bid.
+      committing, for the next twenty years, to whatever brand had won the bid.
     </p>
     <p>
-      <strong>The open-protocol era (2000–2015).</strong> BACnet, LonWorks, and Modbus pried the
+      <strong>The open-protocol era (2000-2015).</strong> BACnet, LonWorks, and Modbus pried the
       lid open. Owners could specify multi-vendor systems and get them to talk. The data was
       finally portable; the historical depth, mostly, was not. Trends were retained on the
       operator workstation, and when the workstation was replaced, the trends went with it.
@@ -187,7 +187,7 @@
     <h2>How it works: the building as a queryable object</h2>
 
     <p>
-      The technical heart of an HBMS is a tagged data model — a structured directory of every
+      The technical heart of an HBMS is a tagged data model, a structured directory of every
       sensor, actuator, piece of equipment, zone, and meter in the building, with a stable
       identity, a known relationship to everything else, and a layer of standardized metadata
       attached.
@@ -198,7 +198,7 @@
       <em>this point is the discharge-air temperature, it belongs to AHU-3, AHU-3 serves zones
       5-N through 7-N, and those zones are on the cold side of the building.</em> Once that's
       true, it becomes possible to write a query like <em>"show me every AHU that's economizing
-      while its return air is colder than its outdoor air"</em> — and have it work across every
+      while its return air is colder than its outdoor air"</em>, and have it work across every
       building in your portfolio.
     </p>
 
@@ -260,7 +260,7 @@
     <p>
       Every point from every system, sampled at a useful rate, retained essentially forever. A
       modern time-series database can hold a billion data points without breaking a sweat. The
-      hard part isn't storing — it's making the storage interrogable. Asking <em>"what was the
+      hard part isn't storing, it's making the storage interrogable. Asking <em>"what was the
       condenser-water supply temp at 3 a.m. on April 14 last year?"</em> should be the work of a
       few seconds, not a few hours.
     </p>
@@ -270,7 +270,7 @@
       Rule-based FDD codifies the things a careful operator would notice if they had time to
       watch every point: <em>simultaneous heating and cooling in the same zone, economizers
       stuck closed when they should be open, a chiller running with no load.</em> Machine
-      learning extends this to anomalies that don't have a named rule yet — drift in fan power
+      learning extends this to anomalies that don't have a named rule yet, drift in fan power
       relative to airflow, for example, that quietly predicts a failing belt three weeks early.
     </p>
 
@@ -280,7 +280,7 @@
       building's gas burn last winter was the morning warm-up; this much was the night setback;
       this much was the kitchen exhaust.</em> Owners with five buildings can do the same thing
       across the portfolio and find that one site is structurally twice as expensive as the
-      others — and why.
+      others, and why.
     </p>
 
     <h3>4. The digital twin</h3>
@@ -337,7 +337,7 @@
 
     <p>
       The museum we were called about that winter night had been our client for six years. They
-      had a good BMS — installed in a 2019 mechanical retrofit, well specified, properly
+      had a good BMS, installed in a 2019 mechanical retrofit, well specified, properly
       commissioned. What they didn't have, until we built it for them, was a layer above the
       BMS that knew which dehumidifier served which gallery, which gallery had what collection,
       and which collection had what envelope.
@@ -354,7 +354,7 @@
       <h4>Field note · Linden Avenue</h4>
       <p>
         Before HBMS, the museum's facility team carried five separate maintenance binders, three
-        Excel sheets, and two phone-tree printouts. After HBMS, they carried one tablet — and
+        Excel sheets, and two phone-tree printouts. After HBMS, they carried one tablet, and
         the binders went into the archive, not the trash, because the metadata they contained
         had been digitized and re-anchored to the live equipment objects. Operational memory
         doesn't have to be destroyed to be modernized.
@@ -373,14 +373,14 @@
       Few owners can afford to instrument every space at full resolution. A clinical-grade
       operating theater, a textile gallery, and a server closet earn richer instrumentation than
       a corridor or a lobby. The exercise of <em>writing down</em> which spaces matter most,
-      and why, is itself useful — and often the first time the owner and the design team have
+      and why, is itself useful, and often the first time the owner and the design team have
       had that conversation in one room.
     </p>
 
     <h3>Point density</h3>
     <p>
       A modern VAV box has, depending on configuration, between eight and twenty points. Most
-      owners need eight. The temptation to specify all twenty leads to point bloat — and to a
+      owners need eight. The temptation to specify all twenty leads to point bloat, and to a
       historian that is more expensive than the equipment it monitors. Decide which points are
       <em>operational</em>, which are <em>diagnostic</em>, and which are <em>archival</em>, and
       treat them differently.
@@ -392,7 +392,7 @@
       "RTU-1-DAT" and "AHU01.DA-T" and "Air Handler 1 / Discharge Air" are the same point
       written three times. A naming standard, written before the first controller ships, costs
       almost nothing. Imposing one retroactively, across a portfolio of forty buildings, costs
-      a small fortune. Choose Haystack tags or Brick relationships — both work — and write them
+      a small fortune. Choose Haystack tags or Brick relationships, both work, and write them
       into the contract documents.
     </p>
 
@@ -401,7 +401,7 @@
       An HBMS can only fault-check sequences that have been written down. A surprising number
       of buildings operate under sequences that exist only in the head of the controls
       contractor who commissioned them. Re-deriving sequences five years later, from the
-      controllers themselves, is a real and recurring discipline — but it is far easier with an
+      controllers themselves, is a real and recurring discipline, but it is far easier with an
       HBMS in place than without one.
     </p>
 
@@ -418,8 +418,8 @@
     <p>
       An HBMS is not a deliverable; it is a relationship. The facility team that will operate
       the system needs to be in the room when it is designed, not when it is commissioned.
-      Their language — the words they use for spaces, the tools they actually open in the
-      morning — should drive the user interface, not the other way around.
+      Their language, the words they use for spaces, the tools they actually open in the
+      morning, should drive the user interface, not the other way around.
     </p>
 
     <h2>Where it goes next</h2>
@@ -429,19 +429,19 @@
     </p>
     <p>
       <strong>Grid-interactive operation.</strong> As utilities move to time-of-use and
-      demand-response pricing, buildings with HBMS become legible to the grid — they can shed
+      demand-response pricing, buildings with HBMS become legible to the grid, they can shed
       load, pre-cool, or shift heat-pump duty in response to a price signal without surprising
       their occupants. The buildings that already see themselves can already participate.
     </p>
     <p>
       <strong>Indoor-air-quality accountability.</strong> Post-pandemic, occupants expect to be
-      able to ask what the air in their room is doing — and increasingly, regulators expect
+      able to ask what the air in their room is doing, and increasingly, regulators expect
       owners to be able to answer. An HBMS is the only practical place that answer lives.
     </p>
     <p>
       <strong>Model-assisted operation.</strong> Large language models are turning out to be
-      useful translators between the operator's intent — <em>"why is the third floor cold on
-      Monday mornings?"</em> — and the data the historian has been quietly accumulating for
+      useful translators between the operator's intent, <em>"why is the third floor cold on
+      Monday mornings?"</em>, and the data the historian has been quietly accumulating for
       years. We don't expect autonomous buildings any time soon. We do expect operators to
       spend less time hunting and more time deciding.
     </p>
@@ -450,13 +450,13 @@
     <p>
       The mechanical room is the easy part. The valves and pumps and compressors have, on the
       whole, gotten quietly better every year for a long time. What hasn't kept up is the
-      institution's ability to <em>know its own building</em> — to remember what was tried last
+      institution's ability to <em>know its own building</em>, to remember what was tried last
       winter, to find the drawing that explains why this damper is wired backwards, to notice
       that this gallery has been three points dry for six straight nights.
     </p>
     <p>
       HBMS is, at heart, a project of institutional memory. It is what the building knows about
-      itself, written down in a form that the next operator — and the operator after that — can
+      itself, written down in a form that the next operator, and the operator after that, can
       read. Buildings outlive the people who run them. The systems that run buildings should
       too.
     </p>

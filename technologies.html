@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Technologies &amp; Protocols — Surds</title>
+  <title>Technologies &amp; Protocols | Surds</title>
   <meta name="description" content="The communication protocols, data schemas, and integration stack behind a working building management system."/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
     <h1>The communications stack of a working building.</h1>
     <p class="lede">
       Four protocols, two data schemas, and a deliberate cyber posture. The stack hasn't gotten
-      simpler — but the principles have stabilized enough that we can write them down.
+      simpler, but the principles have stabilized enough that we can write them down.
     </p>
   </div>
 </header>
@@ -55,12 +55,12 @@
         <rect x="40" y="490" width="1020" height="80" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
         <text x="60" y="514" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 0 · PHYSICAL</text>
         <text x="60" y="534" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">Valves · dampers · sensors · VFDs · contactors</text>
-        <text x="60" y="556" fill="rgba(246,242,236,0.45)" font-size="10" font-family="Inter">4–20 mA · 0–10 V · dry contacts · resistive</text>
+        <text x="60" y="556" fill="rgba(246,242,236,0.45)" font-size="10" font-family="Inter">4-20 mA · 0-10 V · dry contacts · resistive</text>
 
         <!-- Tier 1: field -->
         <rect x="40" y="380" width="1020" height="100" fill="#142231" stroke="#3a5670" stroke-width="1.5"/>
         <text x="60" y="404" fill="#d99858" font-size="11" font-family="Inter" letter-spacing="2">TIER 1 · FIELD CONTROLLERS</text>
-        <text x="60" y="426" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">DDC controllers — one per VAV, AHU, chiller, RTU</text>
+        <text x="60" y="426" fill="rgba(246,242,236,0.7)" font-size="13" font-family="Cormorant Garamond" font-style="italic">DDC controllers, one per VAV, AHU, chiller, RTU</text>
         <g font-family="Inter" font-size="10" fill="rgba(246,242,236,0.65)">
           <rect x="60" y="438" width="120" height="28" fill="#0a141f" stroke="#3a5670"/>
           <text x="120" y="456" text-anchor="middle">BACnet MS/TP</text>
@@ -157,8 +157,8 @@
       <div class="protocol-body">
         <h4>The default building-automation protocol.</h4>
         <p>
-          Born in ASHRAE committee work in the late '80s. BACnet's object model — analog input,
-          binary value, schedule, calendar, trend log — maps cleanly onto how HVAC actually
+          Born in ASHRAE committee work in the late '80s. BACnet's object model, analog input,
+          binary value, schedule, calendar, trend log, maps cleanly onto how HVAC actually
           thinks. MS/TP for the field bus; BACnet/IP for the supervisor; BACnet/SC for the
           cyber-conscious 2026 version that wraps everything in TLS.
         </p>
@@ -168,7 +168,7 @@
           devices; security is bolted on, not native (BACnet/SC fixes this).
         </p>
         <div class="protocol-specs">
-          <div><span class="k">Speed (MS/TP)</span>9.6–115.2 kbps</div>
+          <div><span class="k">Speed (MS/TP)</span>9.6-115.2 kbps</div>
           <div><span class="k">Devices / segment</span>~32 typical</div>
           <div><span class="k">IP version</span>UDP 47808</div>
           <div><span class="k">Secure variant</span>BACnet/SC (TLS 1.3)</div>
@@ -184,14 +184,14 @@
       <div class="protocol-body">
         <h4>The simple, ugly, ubiquitous register protocol.</h4>
         <p>
-          Forty-seven years old and still everywhere — every chiller, every power meter, every
+          Forty-seven years old and still everywhere, every chiller, every power meter, every
           VFD will speak Modbus to you if you ask nicely. The protocol itself is dead simple:
           read or write 16-bit registers over RS-485 or TCP. Documentation lives in the device
           manual; there is no self-describing object model.
         </p>
         <p>
           Use Modbus when BACnet isn't available and you control both ends. Avoid it as a
-          building-wide backbone — register maps are vendor-specific and brittle.
+          building-wide backbone, register maps are vendor-specific and brittle.
         </p>
         <div class="protocol-specs">
           <div><span class="k">RTU baud</span>9600 / 19200 / 38400</div>
@@ -211,12 +211,12 @@
         <h4>Lightweight pub/sub for cloud egress.</h4>
         <p>
           Originally written by IBM for telemetry over flaky satellite links. The pub/sub model
-          suits HVAC well — publish a temperature topic, anyone interested subscribes. With the
+          suits HVAC well, publish a temperature topic, anyone interested subscribes. With the
           Sparkplug-B payload spec on top, you get a coherent way to describe edge devices and
           their birth/death lifecycle.
         </p>
         <p>
-          Not a replacement for BACnet — runs alongside it, north of the supervisory layer. The
+          Not a replacement for BACnet, runs alongside it, north of the supervisory layer. The
           most common path for getting BMS data to a cloud historian or analytics platform.
         </p>
         <div class="protocol-specs">
@@ -234,11 +234,11 @@
         <div class="since">Open · since 1990</div>
       </div>
       <div class="protocol-body">
-        <h4>The other open protocol — graceful, declining.</h4>
+        <h4>The other open protocol, graceful, declining.</h4>
         <p>
           Echelon's network technology, popular in the 1990s for lighting, elevators, and parts
           of HVAC. The Standard Network Variable Type (SNVT) model is genuinely well-designed.
-          New installations are rare, but you'll meet it in retrofit work — particularly on
+          New installations are rare, but you'll meet it in retrofit work, particularly on
           older campuses and Class-A office towers from the late '90s.
         </p>
         <p>
@@ -288,7 +288,7 @@ siteRef: @LindenAve</pre>
       <div class="col-text">
         <h3>Brick Schema</h3>
         <p style="color: var(--muted);">
-          An RDF/OWL ontology developed by a university consortium. More formal than Haystack —
+          An RDF/OWL ontology developed by a university consortium. More formal than Haystack,
           uses explicit class hierarchies and relationships (<code>isPartOf</code>,
           <code>feeds</code>, <code>hasPoint</code>). The right tool when you need to reason
           across a building's structure, not just query its points.
@@ -323,17 +323,17 @@ bldg:DAT_3 a brick:Discharge_Air_Temperature_Sensor ;
         </tr>
         <tr>
           <td>Ease of adoption</td>
-          <td><span class="yes">Very easy</span> — JSON/Trio, no triplestore</td>
-          <td><span class="partial">Moderate</span> — needs RDF tooling</td>
+          <td><span class="yes">Very easy</span>, JSON/Trio, no triplestore</td>
+          <td><span class="partial">Moderate</span>, needs RDF tooling</td>
         </tr>
         <tr>
           <td>Reasoning power</td>
-          <td><span class="partial">Limited</span> — query by tag presence</td>
-          <td><span class="yes">High</span> — SPARQL, inheritance, inference</td>
+          <td><span class="partial">Limited</span>, query by tag presence</td>
+          <td><span class="yes">High</span>, SPARQL, inheritance, inference</td>
         </tr>
         <tr>
           <td>Tooling ecosystem</td>
-          <td>SkySpark, J2, Niagara — broad</td>
+          <td>SkySpark, J2, Niagara, broad</td>
           <td>Academic + emerging commercial</td>
         </tr>
         <tr>
@@ -379,7 +379,7 @@ bldg:DAT_3 a brick:Discharge_Air_Temperature_Sensor ;
       <div class="icon-tile">
         <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
         <h4>Audit trail</h4>
-        <p>Every setpoint write, every override, every login — logged, immutable, retained for two years minimum.</p>
+        <p>Every setpoint write, every override, every login, logged, immutable, retained for two years minimum.</p>
       </div>
       <div class="icon-tile">
         <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
@@ -389,7 +389,7 @@ bldg:DAT_3 a brick:Discharge_Air_Temperature_Sensor ;
       <div class="icon-tile">
         <div class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg></div>
         <h4>Vendor remote access</h4>
-        <p>Time-bounded, just-in-time access for vendor support — not a permanent VPN tunnel. Logged and witnessed.</p>
+        <p>Time-bounded, just-in-time access for vendor support, not a permanent VPN tunnel. Logged and witnessed.</p>
       </div>
     </div>
   </div>
@@ -429,7 +429,7 @@ bldg:DAT_3 a brick:Discharge_Air_Temperature_Sensor ;
         <p style="color: var(--muted);">
           Existing BMS stays in place; an edge gateway publishes tagged data to a cloud
           historian that aggregates across multiple buildings. The path most portfolios actually
-          take — incremental, no rip-and-replace.
+          take, incremental, no rip-and-replace.
         </p>
       </div>
     </div>

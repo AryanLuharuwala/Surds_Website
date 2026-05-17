@@ -1697,3 +1697,289 @@ footer a:hover { color: var(--accent-2); }
   font-size: 1.3rem;
   color: var(--muted);
 }
+
+/* ============================================================
+   Phone & tablet responsiveness
+   ============================================================ */
+
+/* Always prevent horizontal scroll from rogue elements */
+html, body { overflow-x: hidden; }
+img, svg { max-width: 100%; }
+
+/* Hide the on-page-load scroll-progress on very small screens (saves a px) */
+@media (max-width: 480px) {
+  .scroll-progress { height: 2px; }
+}
+
+/* Tablet & below */
+@media (max-width: 880px) {
+  :root { --gutter: 22px; }
+  section { padding: 64px 0; }
+  .hero { padding: 64px 0 32px !important; }
+
+  h1 { font-size: clamp(2rem, 8vw, 2.8rem); }
+  h2 { font-size: clamp(1.55rem, 5.5vw, 2.2rem); line-height: 1.15; }
+  h3 { font-size: 1.25rem; }
+
+  .display {
+    font-size: clamp(2.2rem, 9.5vw, 3.4rem);
+    line-height: 1.05;
+    max-width: 100%;
+  }
+  .display br { display: none; }
+  .display .small {
+    display: block;
+    margin: 12px 0 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+  }
+  .display .word { transform: translateY(0.4em); }
+
+  .hero .lede { font-size: 1.05rem; }
+
+  .lede { font-size: 1.05rem; }
+
+  /* Asymmetric layouts collapse cleanly */
+  .offset-row { grid-template-columns: 1fr; gap: 28px; }
+  .offset-row > .offset-a,
+  .offset-row > .offset-b,
+  .offset-row > .offset-c {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+
+  /* Buttons / CTAs */
+  .btn { padding: 12px 20px; font-size: 0.78rem; }
+  .hero-actions { gap: 12px; flex-wrap: wrap; }
+  .seal { font-size: 0.85rem; padding: 10px 18px 10px 10px; }
+  .seal .seal-dot { width: 30px; height: 30px; font-size: 0.7rem; }
+
+  /* Section header pattern (legacy) */
+  .section-head { margin-bottom: 40px; }
+  .section-head p { font-size: 1.1rem; }
+
+  /* Cards */
+  .card, .icon-tile, .equip-card .equip-body, .note { padding: 22px; }
+  .icon-grid { gap: 16px; }
+  .cards { gap: 18px; }
+
+  /* Journal notes */
+  .note .scribble { margin: 14px -22px; padding: 18px 22px; }
+  .note h3 { font-size: 1.25rem; }
+  .note .stamp { font-size: 0.72rem; padding: 3px 9px; }
+
+  /* Showcase blocks */
+  .showcase, .showcase.flip { grid-template-columns: 1fr; }
+  .showcase .showcase-body { padding: 28px; }
+  .showcase .showcase-art { min-height: 260px; }
+  .showcase .key { font-size: 0.82rem; gap: 4px 14px; }
+
+  /* Equipment encyclopedia */
+  .equip-grid { gap: 18px; }
+  .equip-card .equip-art { height: 180px; }
+
+  /* Live dashboard */
+  .dashboard { padding: 16px; }
+  .dashboard-head { font-size: 0.7rem; flex-wrap: wrap; gap: 8px; }
+  .dashboard-tiles { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { padding: 12px; }
+  .tile .val { font-size: 1.3rem; }
+  .tile .label { font-size: 0.62rem; }
+  .tile .delta { font-size: 0.66rem; }
+
+  /* Signal stage — pull padding in, smaller gauges */
+  .signal-stage { padding: 56px 0; }
+  .gauge { width: 130px; height: 130px; }
+  .gauge .label .v { font-size: 1.8rem; }
+
+  /* Tables — horizontal scroll instead of mashing into the viewport */
+  .compare {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.82rem;
+  }
+  .compare th, .compare td { padding: 10px 12px; }
+
+  /* Article body */
+  .article-body { padding: 50px 0; }
+  .article-body p, .article-body ul, .article-body ol { font-size: 1rem; line-height: 1.7; }
+  .article-body blockquote { font-size: 1.15rem; padding: 0.4em 0 0.4em 18px; margin: 1.4em 0; line-height: 1.4; }
+  .article-hero h1 { font-size: clamp(1.9rem, 7vw, 2.4rem); }
+  .article-hero-img { margin-top: 40px; height: clamp(220px, 40vh, 320px); }
+
+  /* Hero building diagram */
+  .hero svg { max-height: 48vh; }
+
+  /* Phrase marquee */
+  .phrase-track > span { font-size: 1.05rem; gap: 14px; }
+  .phrase-track { gap: 36px; }
+
+  /* Ticker */
+  .ticker { padding: 14px 0; }
+  .ticker-item .val { font-size: 1rem; }
+  .ticker-item .lbl, .ticker-item .delta { font-size: 0.65rem; }
+  .ticker-track { gap: 32px; }
+
+  /* System explorer */
+  .system-explorer { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
+  .system-explorer .stage { min-height: 280px; }
+
+  /* Refrigeration cycle */
+  .refrig { grid-template-columns: 1fr; padding: 28px; gap: 22px; }
+
+  /* Protocol cards */
+  .protocol { grid-template-columns: 1fr; }
+  .protocol .protocol-tag { padding: 22px; }
+  .protocol .protocol-tag .name { font-size: 1.8rem; }
+  .protocol .protocol-body { padding: 22px; }
+
+  /* Quote wall */
+  .quote { padding: 24px; }
+  .quote p { font-size: 1.05rem; }
+
+  /* Stats */
+  .stats { grid-template-columns: 1fr 1fr; gap: 16px; padding: 28px 0; }
+  .stat .n { font-size: 2rem; }
+
+  /* Glossary collapses to one column */
+  .glossary { columns: 1; }
+
+  /* News cards / projects */
+  .news-grid { gap: 18px; }
+  .news-card .news-img { height: 160px; }
+  .project { height: 280px !important; padding: 22px; }
+
+  /* Contact form */
+  .contact-form .row { grid-template-columns: 1fr; gap: 16px; }
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select { padding: 12px 14px; font-size: 0.95rem; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 32px; }
+  .footer-bottom { font-size: 0.7rem; flex-direction: column; align-items: flex-start; }
+
+  /* Timeline */
+  .timeline::before { left: 12px; }
+  .timeline-item { padding-left: 44px; padding-bottom: 26px; }
+  .timeline-item::before { left: 4px; }
+
+  /* Project tiles — already in .project but ensure pills wrap */
+  .project .pill { font-size: 0.66rem; padding: 3px 8px; }
+}
+
+/* Phone-specific tightening */
+@media (max-width: 480px) {
+  :root { --gutter: 18px; }
+  body { font-size: 16px; line-height: 1.6; }
+
+  .nav-inner { padding: 14px var(--gutter); }
+  .brand { font-size: 1.15rem; }
+  .brand-mark { width: 24px; height: 24px; font-size: 0.85rem; }
+  .nav-toggle { font-size: 1.3rem; padding: 4px 6px; }
+
+  .hero { padding: 48px 0 24px !important; }
+  .display { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+
+  .hero-actions { width: 100%; }
+  .hero-actions .btn { flex: 1 1 auto; text-align: center; min-width: 0; }
+
+  .stats { grid-template-columns: 1fr; }
+  .dashboard-tiles { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+
+  .section-head { margin-bottom: 32px; }
+
+  /* Make the article hero meta wrap nicely */
+  .article-hero .meta { font-size: 0.72rem; }
+
+  /* Shrink badges row */
+  .badges { gap: 14px; padding: 22px 0; }
+  .badge { font-size: 0.92rem; }
+  .badge::before { margin-right: 14px; }
+}
+
+/* Touch devices — disable parallax/magnetic transforms (they need a precise pointer) */
+@media (hover: none) and (pointer: coarse) {
+  .magnetic,
+  .parallax-layer { transform: none !important; }
+  /* Re-enable card lift on tap-and-hold */
+  .lift:hover, .cinema:hover, .note:hover { transform: translateY(-2px); }
+}
+
+/* ============================================================
+   Text alignment fixes for narrow screens
+   ============================================================ */
+@media (max-width: 880px) {
+  /* Balance multi-line headings so words don't orphan awkwardly */
+  h1, h2, h3, .display { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+
+  /* Kinetic words: keep them all on the baseline, no half-pixel drift */
+  .display .word {
+    vertical-align: baseline;
+    line-height: 1;
+  }
+  .display { word-spacing: 0.02em; }
+
+  /* The underline highlight on .display was slightly clipping on small screens */
+  .display .underline {
+    padding: 0;
+    background-position: 0 0.02em;
+  }
+
+  /* Section heads — centering looks weird when text is short and viewport is narrow.
+     Left-align on mobile so eyebrow, headline, and lede share one edge. */
+  .section-head {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+  .section-head p { margin-left: 0; }
+
+  /* Stop inline-style centered eyebrows/CTAs from breaking alignment */
+  .center,
+  .section-dark.center .container > * { text-align: left; }
+  .section-dark.center h2,
+  .section-dark.center p,
+  .section-light.center h2,
+  .section-light.center p,
+  .section-warm.center h2,
+  .section-warm.center p { margin-left: 0; }
+
+  /* Asymmetric headlines that use inline <br> — let them wrap naturally instead */
+  .offset-row h2 br { display: none; }
+  .offset-row h2 { font-size: clamp(1.7rem, 6vw, 2.4rem); line-height: 1.1; }
+
+  /* "Currently watching" sidecar in hero — keep inside the viewport edge */
+  .offset-row > .offset-b > div { max-width: 100%; }
+
+  /* Article hero lede and breadcrumbs */
+  .article-hero .narrow > p { font-size: 1.1rem; }
+  .article-hero .byline { font-size: 1rem; }
+
+  /* Quote wall — left-align the giant quotation mark so it's not clipped */
+  .quote::before { left: 8px; font-size: 7rem; top: -22px; }
+
+  /* Footer brand line stays tidy */
+  footer .brand { font-size: 1.2rem; }
+  footer .brand-mark { width: 26px; height: 26px; }
+}
+
+@media (max-width: 480px) {
+  .display .small {
+    display: block;
+    margin-top: 14px;
+    margin-left: 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+  }
+  /* Keep magnetic CTAs from overflowing in a column */
+  .hero-actions .btn { white-space: nowrap; padding: 12px 16px; font-size: 0.74rem; }
+  /* Reduce gallery / dashboard inner gutters one more notch */
+  .dashboard-head { font-size: 0.62rem; }
+  .ticker-item { gap: 8px; }
+}

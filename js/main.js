@@ -1,9 +1,16 @@
+// Detect coarse pointer (touch device) once, used to skip mouse-only effects
+const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
 // Mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
   if (toggle && links) {
     toggle.addEventListener('click', () => links.classList.toggle('open'));
+    // Close menu after tapping a link
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => links.classList.remove('open'));
+    });
   }
 
   // System explorer (article interactive)
@@ -101,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(() => d.classList.add('in'));
   });
 
-  // Magnetic buttons — gentle cursor attraction
-  document.querySelectorAll('.magnetic').forEach(el => {
+  // Magnetic buttons — gentle cursor attraction (skip on touch)
+  if (!isTouch) document.querySelectorAll('.magnetic').forEach(el => {
     const strength = parseFloat(el.dataset.magnetic || '0.35');
     el.addEventListener('mousemove', (e) => {
       const r = el.getBoundingClientRect();
@@ -116,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Mouse-parallax inside .parallax-stage — each .parallax-layer with data-depth moves
-  document.querySelectorAll('.parallax-stage').forEach(stage => {
+  if (!isTouch) document.querySelectorAll('.parallax-stage').forEach(stage => {
     const layers = stage.querySelectorAll('.parallax-layer');
     stage.addEventListener('mousemove', (e) => {
       const r = stage.getBoundingClientRect();

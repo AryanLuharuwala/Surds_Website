@@ -46,7 +46,7 @@
       <span class="small">a Surds field manual</span>
     </h1>
 
-    <div class="offset-row" style="margin-top: 56px;">
+    <div class="offset-row" style="margin-top: 36px;">
       <div class="offset-a parallax-layer" data-depth="6">
         <p style="font-family: var(--serif); font-size: 1.3rem; font-style: italic; color: rgba(246,242,236,0.85); margin: 0;">
           We build the small intelligence that sits between your chillers and the people in
@@ -225,7 +225,7 @@
 <!-- ====================== WHAT WE DO ====================== -->
 <section class="section-light">
   <div class="container">
-    <div class="offset-row reveal" style="margin-bottom: 56px;">
+    <div class="offset-row reveal" style="margin-bottom: 36px;">
       <div class="offset-a">
         <div class="eyebrow">What we do</div>
         <h2 style="font-size: clamp(2rem, 4.4vw, 3.6rem); line-height: 1.04; margin: 0;">
@@ -284,7 +284,7 @@
       </div>
     </div>
 
-    <div class="center" style="margin-top: 56px;">
+    <div class="center" style="margin-top: 36px;">
       <a href="services.html" class="btn" style="border-color: var(--ink); color: var(--ink);">Explore all services</a>
     </div>
   </div>
@@ -663,56 +663,96 @@
       </div>
       <div class="col-media">
         <div class="psychart">
-          <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
-            <!-- Axes -->
-            <line x1="50" y1="340" x2="470" y2="340" stroke="#1c2a3a" stroke-width="1.2"/>
-            <line x1="50" y1="20" x2="50" y2="340" stroke="#1c2a3a" stroke-width="1.2"/>
-            <!-- Dry-bulb axis ticks -->
-            <g font-family="Inter" font-size="9" fill="#5a6b7a" text-anchor="middle">
-              <text x="50" y="358">40</text>
-              <text x="120" y="358">55</text>
-              <text x="190" y="358">70</text>
-              <text x="260" y="358">85</text>
-              <text x="330" y="358">100</text>
-              <text x="400" y="358">115</text>
+          <svg viewBox="0 0 560 380" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+            <!-- Plot frame -->
+            <rect x="60" y="30" width="440" height="290" fill="none" stroke="rgba(28,42,58,0.08)" stroke-width="1"/>
+
+            <!-- Grid lines -->
+            <g stroke="rgba(28,42,58,0.06)" stroke-width="0.6">
+              <line x1="60" y1="100" x2="500" y2="100"/>
+              <line x1="60" y1="170" x2="500" y2="170"/>
+              <line x1="60" y1="240" x2="500" y2="240"/>
+              <line x1="130" y1="30" x2="130" y2="320"/>
+              <line x1="200" y1="30" x2="200" y2="320"/>
+              <line x1="270" y1="30" x2="270" y2="320"/>
+              <line x1="340" y1="30" x2="340" y2="320"/>
+              <line x1="410" y1="30" x2="410" y2="320"/>
             </g>
-            <text x="260" y="375" text-anchor="middle" font-family="Inter" font-size="10" fill="#1c2a3a" letter-spacing="2">DRY-BULB TEMPERATURE °F</text>
-            <text x="20" y="180" text-anchor="middle" font-family="Inter" font-size="10" fill="#1c2a3a" letter-spacing="2" transform="rotate(-90 20 180)">HUMIDITY RATIO</text>
 
-            <!-- Saturation curve (100% RH) -->
-            <path d="M 50 320 Q 120 290 190 240 Q 260 170 330 90 Q 400 30 470 20" stroke="#3d8db3" stroke-width="2" fill="none"/>
-            <text x="120" y="285" font-family="Inter" font-size="8" fill="#3d8db3">100% RH</text>
+            <!-- Axes -->
+            <line x1="60" y1="320" x2="500" y2="320" stroke="#1c2a3a" stroke-width="1.2"/>
+            <line x1="60" y1="30" x2="60" y2="320" stroke="#1c2a3a" stroke-width="1.2"/>
 
-            <!-- 80% RH -->
-            <path d="M 50 326 Q 130 310 210 270 Q 290 210 370 130 Q 440 70 470 50" stroke="#3d8db3" stroke-width="0.8" fill="none" opacity="0.5"/>
-            <text x="170" y="295" font-family="Inter" font-size="8" fill="#3d8db3" opacity="0.7">80%</text>
+            <!-- Dry-bulb axis ticks -->
+            <g font-family="Inter" font-size="10" fill="#5a6b7a" text-anchor="middle">
+              <text x="60" y="338">40</text>
+              <text x="130" y="338">55</text>
+              <text x="200" y="338">70</text>
+              <text x="270" y="338">85</text>
+              <text x="340" y="338">100</text>
+              <text x="410" y="338">115</text>
+            </g>
+            <text x="280" y="362" text-anchor="middle" font-family="Inter" font-size="10" fill="#1c2a3a" letter-spacing="2">DRY-BULB TEMPERATURE °F</text>
+            <text x="28" y="175" text-anchor="middle" font-family="Inter" font-size="10" fill="#1c2a3a" letter-spacing="2" transform="rotate(-90 28 175)">HUMIDITY RATIO</text>
 
-            <!-- 60% RH -->
-            <path d="M 50 332 Q 150 325 240 295 Q 330 245 410 175 Q 450 130 470 100" stroke="#3d8db3" stroke-width="0.8" fill="none" opacity="0.4"/>
-            <text x="220" y="313" font-family="Inter" font-size="8" fill="#3d8db3" opacity="0.6">60%</text>
+            <!-- RH curves: lightest in back, saturation in front -->
+            <!-- 20% -->
+            <path d="M 60 314 Q 200 312 340 308 Q 430 304 500 296" stroke="#7ab8d6" stroke-width="0.8" fill="none" opacity="0.35"/>
+            <!-- 40% -->
+            <path d="M 60 308 Q 200 304 320 290 Q 410 270 470 240" stroke="#7ab8d6" stroke-width="0.8" fill="none" opacity="0.45"/>
+            <!-- 60% -->
+            <path d="M 60 300 Q 180 290 280 260 Q 380 220 460 160" stroke="#7ab8d6" stroke-width="0.8" fill="none" opacity="0.55"/>
+            <!-- 80% -->
+            <path d="M 60 290 Q 170 270 260 220 Q 360 150 440 70" stroke="#7ab8d6" stroke-width="0.9" fill="none" opacity="0.65"/>
+            <!-- 100% RH (saturation) — anchor curve -->
+            <path d="M 60 280 Q 140 248 220 200 Q 310 130 400 60 Q 460 28 500 24" stroke="#3d8db3" stroke-width="2.2" fill="none"/>
 
-            <!-- 40% RH -->
-            <path d="M 50 336 Q 180 333 280 320 Q 380 290 440 230" stroke="#3d8db3" stroke-width="0.8" fill="none" opacity="0.35"/>
-            <text x="280" y="330" font-family="Inter" font-size="8" fill="#3d8db3" opacity="0.5">40%</text>
+            <!-- RH labels — placed along the right edge, never inside the plot -->
+            <g font-family="Inter" font-size="9" font-weight="500" text-anchor="start">
+              <text x="506" y="22" fill="#3d8db3">100% RH</text>
+              <text x="446" y="72" fill="#7ab8d6">80%</text>
+              <text x="466" y="158" fill="#7ab8d6" opacity="0.75">60%</text>
+              <text x="476" y="238" fill="#7ab8d6" opacity="0.65">40%</text>
+              <text x="506" y="298" fill="#7ab8d6" opacity="0.55">20%</text>
+            </g>
 
-            <!-- 20% RH -->
-            <path d="M 50 339 Q 200 337 320 335 Q 420 330 470 320" stroke="#3d8db3" stroke-width="0.8" fill="none" opacity="0.3"/>
-            <text x="350" y="340" font-family="Inter" font-size="8" fill="#3d8db3" opacity="0.5">20%</text>
+            <!-- Comfort zone rectangle (72°F dry-bulb ± 5°F at 30–60% RH) -->
+            <rect x="187" y="248" width="65" height="35" fill="rgba(184,115,51,0.14)" stroke="#b87333" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="219" y="237" text-anchor="middle" font-family="Cormorant Garamond" font-size="14" font-style="italic" fill="#b87333">comfort zone</text>
 
-            <!-- Comfort zone -->
-            <rect x="180" y="265" width="80" height="40" fill="rgba(184,115,51,0.18)" stroke="#b87333" stroke-width="1" stroke-dasharray="3 2"/>
-            <text x="220" y="260" text-anchor="middle" font-family="Cormorant Garamond" font-size="13" font-style="italic" fill="#b87333">comfort</text>
+            <!-- Process path: 95°F outdoor → 55°F supply → 72°F zone -->
+            <!-- A: outdoor air (hot/humid) -->
+            <circle cx="335" cy="175" r="5" fill="#d97070"/>
+            <!-- B: supply air (cool/saturated, on 100% RH curve) -->
+            <circle cx="135" cy="262" r="5" fill="#3d8db3"/>
+            <!-- C: zone air (in comfort) -->
+            <circle cx="220" cy="266" r="5" fill="#5a8070"/>
 
-            <!-- Sample state points -->
-            <circle cx="320" cy="180" r="5" fill="#d97070"/>
-            <text x="328" y="178" font-family="Inter" font-size="9" fill="#d97070">95°F outdoor</text>
-            <circle cx="220" cy="280" r="5" fill="#b87333"/>
-            <text x="228" y="278" font-family="Inter" font-size="9" fill="#b87333">supply 55°F</text>
-            <circle cx="200" cy="288" r="5" fill="#5a8070"/>
-            <text x="155" y="305" font-family="Inter" font-size="9" fill="#5a8070">zone 72°F</text>
+            <!-- Process arrow lines -->
+            <path d="M 335 175 L 135 262" stroke="#b87333" stroke-width="1.3" fill="none" stroke-dasharray="4 3"/>
+            <path d="M 135 262 L 220 266" stroke="#b87333" stroke-width="1.3" fill="none" stroke-dasharray="4 3"/>
 
-            <!-- Cooling+dehumidification path -->
-            <path d="M 320 180 L 200 288" stroke="#b87333" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+            <!-- Callouts: leader lines + labels OUTSIDE the chart so they never overlap -->
+            <!-- A label (upper right) -->
+            <line x1="335" y1="175" x2="406" y2="120" stroke="#d97070" stroke-width="0.7"/>
+            <g font-family="Inter" font-size="10" font-weight="500" fill="#d97070">
+              <text x="412" y="118">A · outdoor</text>
+              <text x="412" y="132" font-size="9" font-weight="400" opacity="0.85">95°F · 65% RH</text>
+            </g>
+
+            <!-- B label (lower left, outside axis area) -->
+            <line x1="135" y1="262" x2="80" y2="178" stroke="#3d8db3" stroke-width="0.7"/>
+            <g font-family="Inter" font-size="10" font-weight="500" fill="#3d8db3">
+              <text x="60" y="172" text-anchor="start">B · supply</text>
+              <text x="60" y="186" font-size="9" font-weight="400" opacity="0.85">55°F · saturated</text>
+            </g>
+
+            <!-- C label (below comfort zone) -->
+            <line x1="220" y1="266" x2="280" y2="300" stroke="#5a8070" stroke-width="0.7"/>
+            <g font-family="Inter" font-size="10" font-weight="500" fill="#5a8070">
+              <text x="286" y="298">C · zone</text>
+              <text x="286" y="312" font-size="9" font-weight="400" opacity="0.85">72°F · 50% RH</text>
+            </g>
           </svg>
         </div>
       </div>
@@ -842,7 +882,7 @@
   <div class="container">
 
     <!-- Asymmetric, anti-template intro -->
-    <div class="offset-row reveal" style="margin-bottom: 64px;">
+    <div class="offset-row reveal" style="margin-bottom: 40px;">
       <div class="offset-a">
         <div class="eyebrow">Field journal</div>
         <h2 style="font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.05; margin: 0;">
@@ -1024,7 +1064,7 @@
     </div>
 
     <!-- Closing note, off-center -->
-    <div class="offset-row reveal reveal-delay-2" style="margin-top: 64px;">
+    <div class="offset-row reveal reveal-delay-2" style="margin-top: 40px;">
       <div class="offset-c">
         <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: var(--ink); margin: 0;">
           We don't keep the notes secret. Drop us a line at

@@ -3,271 +3,393 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Surds — We turn buildings into live 3D twins</title>
-  <meta name="description" content="Surds turns any building into a live holographic 3D twin — every HVAC sensor mapped, watched and tuned in real time." />
+  <title>SURDS · the AI layer for physical spaces</title>
+  <meta name="description" content="Surds turns any 3D space into a volume of live data. 100% anonymous spatial intelligence that reads the thermal body signature, never the face." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav__in">
-    <a href="index.html" class="brand"><span class="brand__mark">S</span> Surds</a>
-    <button class="nav__toggle" aria-label="Menu">☰</button>
-    <ul class="nav__links">
-      <li><a href="index.html" class="active">Twin</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="technologies.html">Technology</a></li>
-      <li><a href="equipment.html">Sensors</a></li>
-      <li><a href="case-studies.html">Work</a></li>
-      <li><a href="news/index.html">Insights</a></li>
-    </ul>
-    <a href="contact.html" class="nav__cta">Scan my building</a>
-  </div>
+<nav class="dock">
+  <a href="#top" class="brand">SURDS</a>
+  <a href="#idea" class="hideable">The idea</a>
+  <a href="#build" class="hideable">The build</a>
+  <a href="#features" class="hideable">What it does</a>
+  <a href="#talk">Talk →</a>
 </nav>
 
-<!-- ============ HERO — WEBGL FILM ============ -->
-<header class="hero">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero__fallback" style="display:none"><div class="holo-fallback"></div></div>
-  <div class="hero__in wrap">
-    <div class="hero__copy">
-      <div class="eyebrow">HVAC · BIM · LIVE 3D</div>
-      <h1>WE TURN<br>BUILDINGS<br><span class="l2 green">INTO LIVE 3D.</span></h1>
-      <p class="hero__sub">Concrete becomes a holographic twin. Every sensor mapped, watched and tuned in real time.</p>
-      <div class="hero__actions">
-        <a href="#twin" class="btn btn--solid magnetic" data-magnetic="0.2">See the twin</a>
-        <a href="contact.html" class="btn magnetic" data-magnetic="0.16">Scan my building</a>
-      </div>
+<!-- ============ HERO ============ -->
+<section class="scene" id="top" style="padding-bottom:clamp(26px,4vw,50px)">
+  <div class="scene__in">
+    <div class="stack" style="align-items:flex-start;max-width:780px">
+      <span class="sticker sticker--amber" style="--r:-3deg;--rin:-14deg"><span class="tag">The AI layer for physical spaces</span></span>
+      <h1 class="mega sticker" style="background:none;border:0;box-shadow:none;outline:0;padding:0;--r:0deg;--rin:-6deg">SUR<span class="g">DS</span></h1>
+      <span class="sticker sticker--ink" style="--r:2deg;--rin:12deg;max-width:36ch"><span class="say">Turn any <span class="o">3D space</span> into a volume of <span class="g">live data.</span> Scroll, and a flat drawing becomes a thinking twin.</span></span>
+      <span class="hand hand--cream sticker" style="background:none;border:0;box-shadow:none;outline:0;padding:0;font-size:1.7rem;--r:-2deg;--rin:-10deg">↓ scroll the space to life</span>
     </div>
-  </div>
-  <div class="hero__phase"><span class="blink"></span> <span id="hero-phase-label">INITIALISING</span></div>
-  <div class="hero__hud">
-    <div>MODEL · <b>aurora-tower.glb</b></div>
-    <div>SENSORS · <b>42 LIVE</b></div>
-    <div>FAULTS · <b>1</b></div>
-  </div>
-</header>
 
-<!-- ============ TICKER ============ -->
-<div class="ticker" aria-label="Live feed">
-  <div class="ticker__track" id="ticker">
-    <span class="tk"><span class="pin"></span><span class="k">Floor 03</span><span class="v" data-flicker data-base="72.3" data-drift="0.4" data-unit="°F">72.3°F</span><span class="d">in band</span></span>
-    <span class="tk"><span class="k">CH-1</span><span class="v" data-flicker data-base="0.49" data-drift="0.02" data-decimals="2" data-unit=" kW/ton">0.49 kW/ton</span><span class="d">−4%</span></span>
-    <span class="tk"><span class="k">Zone RH</span><span class="v" data-flicker data-base="48.6" data-drift="0.3" data-unit="%">48.6%</span><span class="d">±3</span></span>
-    <span class="tk"><span class="pin"></span><span class="k">Plant load</span><span class="v" data-flicker data-base="412" data-drift="8" data-decimals="0" data-unit=" kW">412 kW</span><span class="d">−8% Mon</span></span>
-    <span class="tk"><span class="k">CHW ΔT</span><span class="v" data-flicker data-base="12.8" data-drift="0.4" data-unit="°F">12.8°F</span><span class="d">spec</span></span>
-    <span class="tk"><span class="k">Faults</span><span class="v">1</span><span class="d warn">VAV 3-E</span></span>
-    <span class="tk"><span class="pin"></span><span class="k">CO₂</span><span class="v" data-flicker data-base="534" data-drift="12" data-decimals="0" data-unit=" ppm">534 ppm</span><span class="d">good</span></span>
-    <!-- duplicate for seamless loop -->
-    <span class="tk"><span class="pin"></span><span class="k">Floor 03</span><span class="v">72.3°F</span><span class="d">in band</span></span>
-    <span class="tk"><span class="k">CH-1</span><span class="v">0.49 kW/ton</span><span class="d">−4%</span></span>
-    <span class="tk"><span class="k">Zone RH</span><span class="v">48.6%</span><span class="d">±3</span></span>
-    <span class="tk"><span class="pin"></span><span class="k">Plant load</span><span class="v">412 kW</span><span class="d">−8% Mon</span></span>
-    <span class="tk"><span class="k">CHW ΔT</span><span class="v">12.8°F</span><span class="d">spec</span></span>
-    <span class="tk"><span class="k">Faults</span><span class="v">1</span><span class="d warn">VAV 3-E</span></span>
-    <span class="tk"><span class="pin"></span><span class="k">CO₂</span><span class="v">534 ppm</span><span class="d">good</span></span>
-  </div>
-</div>
-
-<!-- ============ STATS ============ -->
-<section class="section--tight">
-  <div class="wrap">
-    <div class="stats reveal">
-      <div class="stat"><div class="n">42M</div><div class="t">sq ft under watch</div></div>
-      <div class="stat"><div class="n">−22%</div><div class="t">avg. energy cut</div></div>
-      <div class="stat"><div class="n">9k+</div><div class="t">live points mapped</div></div>
-      <div class="stat"><div class="n">24/7</div><div class="t">fault detection</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ WHAT WE DO ============ -->
-<section class="section">
-  <div class="wrap">
-    <div class="shead reveal">
-      <div><div class="eyebrow">What we do</div><h2>THREE MOVES.<br>ONE LIVE BUILDING.</h2></div>
-      <p class="lede">No long story. We model the building in 3D, wire every system into one feed, and run it for you.</p>
-    </div>
-    <div class="moves reveal">
-      <div class="move">
-        <div class="move__n">01 / DESIGN</div>
-        <div class="move__art">
-          <svg viewBox="0 0 200 200" width="160" height="160">
-            <g stroke="#C54D2D" fill="none" stroke-width="1.2" opacity="0.9">
-              <rect x="60" y="40" width="80" height="120" fill="rgba(197,77,45,0.05)"/>
-              <path d="M60 40 L80 24 L160 24 L140 40"/><path d="M140 40 L160 24 L160 144 L140 160"/>
-              <line x1="60" y1="70" x2="140" y2="70"/><line x1="60" y1="100" x2="140" y2="100"/><line x1="60" y1="130" x2="140" y2="130"/>
-              <line x1="100" y1="40" x2="100" y2="160"/>
-            </g>
-            <g fill="#DB6A3F"><circle cx="100" cy="70" r="3.5"/><circle cx="80" cy="130" r="3.5"/></g>
-          </svg>
-        </div>
-        <h3>Model it</h3>
-        <p>A 3D BIM twin with the control logic written straight into it.</p>
-      </div>
-      <div class="move">
-        <div class="move__n">02 / CONNECT</div>
-        <div class="move__art">
-          <svg viewBox="0 0 200 200" width="160" height="160">
-            <g stroke="#C54D2D" stroke-width="1.2" fill="none" opacity="0.9">
-              <line x1="100" y1="100" x2="40" y2="40"/><line x1="100" y1="100" x2="160" y2="40"/>
-              <line x1="100" y1="100" x2="36" y2="160"/><line x1="100" y1="100" x2="164" y2="160"/><line x1="100" y1="100" x2="100" y2="28"/>
-            </g>
-            <g fill="#DB6A3F"><rect x="26" y="30" width="28" height="18"/><rect x="146" y="30" width="28" height="18"/><rect x="22" y="150" width="28" height="18"/><rect x="150" y="150" width="28" height="18"/><rect x="86" y="18" width="28" height="18"/></g>
-            <circle cx="100" cy="100" r="7" fill="#C54D2D"/>
-          </svg>
-        </div>
-        <h3>Wire it up</h3>
-        <p>BACnet, Modbus, MQTT — every point speaking one language.</p>
-      </div>
-      <div class="move">
-        <div class="move__n">03 / OPERATE</div>
-        <div class="move__art">
-          <svg viewBox="0 0 200 200" width="160" height="160">
-            <polyline points="20,140 50,128 80,132 110,96 140,108 180,60" fill="none" stroke="#C54D2D" stroke-width="2.2"/>
-            <polyline points="20,168 50,160 80,164 110,140 140,148 180,118" fill="none" stroke="#DB6A3F" stroke-width="1.2" opacity="0.55"/>
-            <g fill="#C54D2D"><circle cx="110" cy="96" r="4"/><circle cx="180" cy="60" r="4"/></g>
-            <line x1="20" y1="178" x2="180" y2="178" stroke="rgba(197,77,45,0.3)"/>
-          </svg>
-        </div>
-        <h3>Run it</h3>
-        <p>Continuous tuning and 24/7 fault detection. We stay on the building.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PIPELINE ============ -->
-<section class="section--tight gridbg">
-  <div class="wrap">
-    <div class="shead reveal"><div><div class="eyebrow">How it happens</div><h2>SOLID → SCAN → MESH → LIVE.</h2></div></div>
-    <div class="pipe reveal">
-      <div class="pstep"><div class="pstep__n">01</div>
-        <div class="pstep__art"><svg viewBox="0 0 120 130" width="92"><path d="M30 40 L48 28 L100 28 L82 40Z" fill="#4b4838"/><path d="M82 40 L100 28 L100 100 L82 112Z" fill="#313227"/><rect x="30" y="40" width="52" height="72" fill="#403d30"/></svg></div>
-        <h3>Solid</h3><p>A real building, as built.</p></div>
-      <div class="pstep"><div class="pstep__n">02</div>
-        <div class="pstep__art"><svg viewBox="0 0 120 130" width="92"><rect x="30" y="40" width="52" height="72" fill="#403d30"/><path d="M82 40 L100 28 L100 100 L82 112Z" fill="#313227"/><path d="M30 40 L48 28 L100 28 L82 40Z" fill="#4b4838"/><rect x="26" y="64" width="78" height="9" fill="rgba(197,77,45,0.75)"/></svg></div>
-        <h3>Scan</h3><p>We survey and trend it.</p></div>
-      <div class="pstep"><div class="pstep__n">03</div>
-        <div class="pstep__art"><svg viewBox="0 0 120 130" width="92"><g stroke="#C54D2D" fill="rgba(197,77,45,0.05)" stroke-width="1"><rect x="30" y="40" width="52" height="72"/><path d="M30 40 L48 28 L100 28 L82 40"/><path d="M82 40 L100 28 L100 100 L82 112"/><line x1="30" y1="64" x2="82" y2="64"/><line x1="30" y1="88" x2="82" y2="88"/><line x1="56" y1="40" x2="56" y2="112"/></g></svg></div>
-        <h3>Mesh</h3><p>It becomes a 3D twin.</p></div>
-      <div class="pstep"><div class="pstep__n">04</div>
-        <div class="pstep__art"><svg viewBox="0 0 120 130" width="92"><g stroke="#C54D2D" fill="rgba(197,77,45,0.05)" stroke-width="1"><rect x="30" y="40" width="52" height="72"/><path d="M30 40 L48 28 L100 28 L82 40"/><path d="M82 40 L100 28 L100 100 L82 112"/></g><g fill="#DB6A3F"><circle cx="44" cy="58" r="3.6"/><circle cx="68" cy="80" r="3.6"/><circle cx="52" cy="98" r="3.6"/></g></svg></div>
-        <h3>Live</h3><p>Every sensor, watched.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ hBIM TWIN ============ -->
-<section class="section" id="twin">
-  <div class="wrap">
-    <div class="shead reveal"><div><div class="eyebrow">The engine · hBIM</div><h2>A BUILDING YOU CAN<br>WATCH BREATHE.</h2></div>
-      <p class="lede">hBIM renders the model holographically and overlays live telemetry. Section any floor, isolate any duct, drop a sensor on a click.</p></div>
-
-    <div class="twin reveal">
-      <div class="twin__viz">
-        <div class="twin__scan"></div>
-        <div class="twin__badge"><span class="live"></span> hBIM · LIVE TWIN</div>
-        <svg viewBox="0 0 560 460" preserveAspectRatio="xMidYMid meet">
-          <defs>
-            <linearGradient id="glass" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="rgba(197,77,45,0.2)"/><stop offset="100%" stop-color="rgba(197,77,45,0.02)"/></linearGradient>
-          </defs>
-          <g stroke="#DB6A3F" fill="none" stroke-width="1.2" opacity="0.9">
-            <path d="M180 90 L230 55 L430 55 L430 360 L380 395" opacity="0.32" stroke-dasharray="3 4"/>
-            <line x1="180" y1="360" x2="230" y2="325" opacity="0.32" stroke-dasharray="3 4"/>
-            <rect x="180" y="90" width="200" height="305" fill="url(#glass)"/>
-            <path d="M180 90 L230 55 L380 55 L330 90Z" fill="rgba(197,77,45,0.1)"/>
-            <path d="M380 90 L430 55 L430 360 L380 395Z" fill="rgba(84,53,42,0.18)"/>
-          </g>
-          <g stroke="rgba(197,77,45,0.4)" stroke-width="0.8">
-            <line x1="180" y1="142" x2="380" y2="142"/><line x1="380" y1="142" x2="430" y2="107"/>
-            <line x1="180" y1="193" x2="380" y2="193"/><line x1="380" y1="193" x2="430" y2="158"/>
-            <line x1="180" y1="244" x2="380" y2="244"/><line x1="380" y1="244" x2="430" y2="209"/>
-            <line x1="180" y1="295" x2="380" y2="295"/><line x1="380" y1="295" x2="430" y2="260"/>
-            <line x1="180" y1="346" x2="380" y2="346"/><line x1="380" y1="346" x2="430" y2="311"/>
-          </g>
-          <g>
-            <rect x="180" y="244" width="200" height="51" fill="rgba(197,77,45,0.15)" stroke="#DB6A3F" stroke-width="1.3"/>
-            <path d="M380 244 L430 209 L430 260 L380 295Z" fill="rgba(197,77,45,0.1)" stroke="#DB6A3F" stroke-width="1"/>
-            <text x="190" y="266" fill="#DB6A3F" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5">FLOOR 03 · SECTIONED</text>
-          </g>
-          <path d="M250 90 L250 395" stroke="#7fa08a" stroke-width="2" opacity="0.5"/>
-          <path d="M310 90 L310 395" stroke="#a5482e" stroke-width="2" opacity="0.45"/>
-          <g><rect x="250" y="60" width="110" height="22" fill="#2a1d14" stroke="#DB6A3F" stroke-width="1"/>
-            <text x="305" y="75" text-anchor="middle" fill="#DB6A3F" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1.5">AHU-1</text></g>
-          <g class="blip" transform="translate(212,168)"><circle class="ring" r="3"/><circle class="core" r="3"/></g>
-          <g class="blip" transform="translate(352,220)"><circle class="ring" r="3"/><circle class="core" r="3"/></g>
-          <g class="blip warn" transform="translate(225,322)"><circle class="ring" r="3"/><circle class="core" r="3"/></g>
-          <g class="blip" transform="translate(345,118)"><circle class="ring" r="3"/><circle class="core" r="3"/></g>
-          <line x1="120" y1="395" x2="460" y2="395" stroke="rgba(197,77,45,0.3)"/>
+    <!-- thermal-signature sticker, right side -->
+    <div class="sticker sticker--ink deco thermsticker" style="--r:5deg;--rin:15deg;top:92px;right:5%;width:262px;text-align:left">
+      <span class="tape tape--tr"></span>
+      <span class="tag" style="color:var(--cream);display:flex;align-items:center;gap:7px"><span class="glowdot"></span> Live thermal · 0% PII</span>
+      <div style="position:relative;margin:11px 0 9px;border-radius:11px;overflow:hidden;background:#120d07;height:160px;outline:1px solid rgba(245,239,225,0.12)">
+        <svg viewBox="0 0 240 160" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="thb" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffd24a" stop-opacity="0.95"/>
+            <stop offset="42%" stop-color="#e0602a" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#c2402a" stop-opacity="0"/></radialGradient></defs>
+          <g stroke="rgba(224,165,46,0.10)" stroke-width="1"><line x1="60" y1="0" x2="60" y2="160"/><line x1="120" y1="0" x2="120" y2="160"/><line x1="180" y1="0" x2="180" y2="160"/><line x1="0" y1="54" x2="240" y2="54"/><line x1="0" y1="108" x2="240" y2="108"/></g>
+          <rect x="16" y="14" width="208" height="128" rx="6" fill="none" stroke="rgba(245,239,225,0.32)" stroke-width="1.5"/>
+          <line x1="120" y1="14" x2="120" y2="142" stroke="rgba(245,239,225,0.16)"/>
+          <circle class="tb" cx="70" cy="74" r="46" fill="url(#thb)"/>
+          <circle class="tb b2" cx="170" cy="58" r="34" fill="url(#thb)"/>
+          <circle class="tb b3" cx="176" cy="106" r="26" fill="url(#thb)"/>
+          <g fill="#faf3e1"><circle cx="70" cy="74" r="3.5"/><circle cx="170" cy="58" r="3.5"/><circle cx="176" cy="106" r="3.5"/></g>
+          <text x="20" y="134" fill="rgba(245,239,225,0.5)" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="1">NO FACE · ONLY HEAT</text>
         </svg>
-        <div class="twin__meta"><span>MODEL · aurora-tower.glb</span><span>42 SENSORS · 1 FAULT</span></div>
       </div>
-      <div class="twin__panel">
-        <div class="eyebrow">Live now</div>
-        <h3>SECTION IT.<br>ISOLATE IT.<br>TUNE IT.</h3>
-        <p>What you see is a simulated feed from the same engine we run on real buildings.</p>
-        <ul class="chips"><li>Per-floor sectioning</li><li>Layer isolation</li><li>Thermal field</li><li>Click-to-place sensors</li></ul>
-        <div class="readout">
-          <div><span class="l">Floor 03 temp</span><span class="v" data-flicker data-base="72.4" data-drift="0.5" data-unit="°F">72.4°F</span></div>
-          <div><span class="l">Supply ΔT</span><span class="v" data-flicker data-base="12.6" data-drift="0.4" data-unit="°F">12.6°F</span></div>
-          <div><span class="l">Zone RH</span><span class="v" data-flicker data-base="47.8" data-drift="0.6" data-unit="%">47.8%</span></div>
-          <div><span class="l">AHU-1 load</span><span class="v" data-flicker data-base="63" data-drift="3" data-decimals="0" data-unit="%">63%</span></div>
+      <span style="display:block;font-family:var(--mono);font-weight:700;font-size:0.57rem;letter-spacing:0.06em;color:rgba(245,239,225,0.6);text-transform:uppercase">one at a desk vs five in a huddle</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE IDEA / MANIFESTO ============ -->
+<section class="scene" id="idea" style="padding-top:clamp(20px,3vw,40px)">
+  <div class="scene__in">
+    <span class="sticker sticker--rust" style="--r:-2deg"><span class="tag">100% anonymous spatial intelligence</span></span>
+    <h2 class="bigline" style="margin:22px 0 18px">We read how a space <span class="g">breathes,</span> not <span class="o">who</span> is in it.</h2>
+    <p class="subline">Surds tracks how people move, work and interact by reading their thermal body signature. You get real density, traffic flow and dwell times. Their identity stays invisible, because it is physically impossible for the sensor to capture anything personally identifiable.</p>
+    <div class="spread" style="margin-top:26px">
+      <span class="sticker sticker--cream" style="--r:-3deg"><span class="tag" style="color:#241b10">Completely wireless</span></span>
+      <span class="sticker sticker--cream" style="--r:3deg"><span class="tag" style="color:#241b10">Battery powered</span></span>
+      <span class="sticker sticker--cream" style="--r:-2deg"><span class="tag" style="color:#241b10">Installed in minutes</span></span>
+      <span class="sticker sticker--grass" style="--r:4deg"><span class="tag" style="color:#16210a">No cameras, ever</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCROLL-SHOW ============ -->
+<section class="scroll-show" id="build">
+  <div class="ss-grid">
+
+    <!-- STICKY DETAILED FLOOR-PLAN STICKER -->
+    <div class="ss-plan">
+      <div class="plan-sticker">
+        <span class="plan-tab">Level 2&nbsp;&nbsp;±0.000</span>
+        <span class="plan-stage">Step 01 · The Drawing</span>
+        <svg class="plan" viewBox="0 0 1000 660" data-stage="0" fill="none" stroke-linejoin="round" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="heatg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#c2402a" stop-opacity="0.6"/>
+              <stop offset="55%" stop-color="#e0a52e" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#e0a52e" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="hotg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#c2402a" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#c2402a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- ===== BASE DRAWING (more detailed) ===== -->
+          <g class="base" stroke="#2a2114">
+            <rect x="44" y="74" width="912" height="512" rx="48" stroke-width="3"/>
+            <rect x="56" y="86" width="888" height="488" rx="38" stroke-width="1" stroke-opacity="0.4"/>
+            <!-- grid reference bubbles -->
+            <g stroke-width="0.8" stroke-opacity="0.55" fill="#f4efe1">
+              <circle cx="200" cy="56" r="11"/><circle cx="430" cy="56" r="11"/><circle cx="660" cy="56" r="11"/><circle cx="858" cy="56" r="11"/>
+            </g>
+            <g fill="#2a2114" stroke="none" font-family="JetBrains Mono,monospace" font-size="10" opacity="0.7" text-anchor="middle">
+              <text x="200" y="60">A</text><text x="430" y="60">B</text><text x="660" y="60">C</text><text x="858" y="60">D</text>
+            </g>
+            <!-- AUDITORIUM (detailed big circle) -->
+            <circle cx="320" cy="338" r="212" stroke-width="2"/>
+            <circle cx="320" cy="338" r="196" stroke-width="1" stroke-opacity="0.5"/>
+            <circle cx="320" cy="338" r="58" stroke-width="1" stroke-opacity="0.45"/>
+            <g stroke-width="1" stroke-opacity="0.7">
+              <path d="M138 384 A186 186 0 0 0 502 384"/>
+              <path d="M152 398 A170 170 0 0 0 488 398"/>
+              <path d="M166 412 A154 154 0 0 0 474 412"/>
+              <path d="M180 426 A138 138 0 0 0 460 426"/>
+              <path d="M194 440 A122 122 0 0 0 446 440"/>
+              <path d="M208 454 A106 106 0 0 0 432 454"/>
+            </g>
+            <!-- seat ticks along outer rows -->
+            <g stroke-width="0.7" stroke-opacity="0.5">
+              <line x1="150" y1="386" x2="150" y2="396"/><line x1="184" y1="372" x2="186" y2="382"/><line x1="222" y1="362" x2="224" y2="372"/><line x1="262" y1="356" x2="263" y2="366"/><line x1="320" y1="352" x2="320" y2="362"/><line x1="378" y1="356" x2="377" y2="366"/><line x1="418" y1="362" x2="416" y2="372"/><line x1="456" y1="372" x2="454" y2="382"/><line x1="490" y1="386" x2="490" y2="396"/>
+            </g>
+            <g stroke-width="1" stroke-opacity="0.55">
+              <line x1="320" y1="338" x2="168" y2="372"/><line x1="320" y1="338" x2="244" y2="446"/><line x1="320" y1="338" x2="320" y2="468"/><line x1="320" y1="338" x2="398" y2="446"/><line x1="320" y1="338" x2="474" y2="372"/>
+            </g>
+            <!-- stage + curtain + pit -->
+            <path d="M236 246 Q320 206 404 246 L404 290 L236 290 Z" stroke-width="1.5"/>
+            <path d="M250 252 Q320 222 392 252" stroke-width="0.8" stroke-opacity="0.6"/>
+            <path d="M252 300 Q320 322 392 300" stroke-width="0.8" stroke-opacity="0.5"/>
+            <!-- stairs -->
+            <circle cx="150" cy="180" r="34" stroke-width="1.4"/>
+            <g stroke-width="1" stroke-opacity="0.7"><line x1="150" y1="180" x2="150" y2="146"/><line x1="150" y1="180" x2="181" y2="192"/><line x1="150" y1="180" x2="166" y2="210"/><line x1="150" y1="180" x2="130" y2="209"/><line x1="150" y1="180" x2="118" y2="186"/></g>
+            <g stroke-width="1"><rect x="112" y="476" width="118" height="74"/><line x1="112" y1="490" x2="230" y2="490"/><line x1="112" y1="504" x2="230" y2="504"/><line x1="112" y1="518" x2="230" y2="518"/><line x1="112" y1="532" x2="230" y2="532"/></g>
+            <!-- foyer + corridors -->
+            <rect x="470" y="112" width="118" height="436" stroke-width="1.2" stroke-opacity="0.75"/>
+            <line x1="600" y1="96" x2="600" y2="558" stroke-width="1.2"/>
+            <line x1="756" y1="96" x2="756" y2="558" stroke-width="1.2" stroke-opacity="0.5"/>
+            <!-- right rooms (subdivided) -->
+            <g stroke-width="1.4">
+              <rect x="612" y="104" width="142" height="92"/>
+              <rect x="612" y="200" width="142" height="92"/>
+              <rect x="612" y="300" width="142" height="92"/>
+              <rect x="612" y="400" width="142" height="84"/>
+              <rect x="768" y="104" width="172" height="118"/>
+              <rect x="768" y="230" width="172" height="104"/>
+              <rect x="768" y="342" width="86" height="94"/>
+              <rect x="858" y="342" width="82" height="94"/>
+              <rect x="768" y="444" width="172" height="90"/>
+            </g>
+            <!-- columns -->
+            <g stroke-width="0.9" fill="#f4efe1"><circle cx="600" cy="200" r="5"/><circle cx="600" cy="320" r="5"/><circle cx="600" cy="440" r="5"/><circle cx="756" cy="230" r="5"/><circle cx="756" cy="342" r="5"/></g>
+            <!-- cores / shafts (hatched) -->
+            <g stroke-width="0.8" stroke-opacity="0.6"><rect x="556" y="474" width="42" height="74"/>
+              <line x1="556" y1="486" x2="598" y2="474"/><line x1="556" y1="506" x2="598" y2="486"/><line x1="556" y1="526" x2="598" y2="506"/><line x1="556" y1="546" x2="598" y2="526"/><line x1="568" y1="546" x2="598" y2="536"/></g>
+            <g stroke-width="0.8" stroke-opacity="0.6"><rect x="556" y="120" width="42" height="60"/><line x1="556" y1="132" x2="598" y2="120"/><line x1="556" y1="152" x2="598" y2="132"/><line x1="556" y1="172" x2="598" y2="152"/></g>
+            <!-- door swings -->
+            <g stroke-width="0.8" stroke-opacity="0.55"><path d="M612 150 a24 24 0 0 1 24 24"/><path d="M612 246 a24 24 0 0 1 24 24"/><path d="M612 346 a24 24 0 0 1 24 24"/><path d="M768 160 a26 26 0 0 1 26 26"/><path d="M768 286 a24 24 0 0 1 24 24"/></g>
+            <!-- north arrow -->
+            <g transform="translate(906 116)" stroke-width="1.2"><circle r="18" stroke-opacity="0.6"/><path d="M0 -14 L6 8 L0 2 L-6 8 Z" fill="#2a2114"/><text x="0" y="-22" text-anchor="middle" fill="#2a2114" stroke="none" font-family="JetBrains Mono,monospace" font-size="10">N</text></g>
+            <!-- scale bar -->
+            <g transform="translate(80 600)" stroke-width="1"><rect x="0" y="0" width="120" height="7" fill="none"/><rect x="0" y="0" width="30" height="7" fill="#2a2114" fill-opacity="0.7" stroke="none"/><rect x="60" y="0" width="30" height="7" fill="#2a2114" fill-opacity="0.7" stroke="none"/><text x="0" y="22" fill="#2a2114" stroke="none" font-family="JetBrains Mono,monospace" font-size="9" opacity="0.6">SCALE 1:200</text></g>
+            <!-- dimension lines -->
+            <g stroke-width="0.8" stroke-opacity="0.45">
+              <line x1="44" y1="616" x2="956" y2="616"/><line x1="44" y1="609" x2="44" y2="623"/><line x1="500" y1="609" x2="500" y2="623"/><line x1="956" y1="609" x2="956" y2="623"/>
+              <line x1="980" y1="74" x2="980" y2="586"/><line x1="973" y1="74" x2="987" y2="74"/><line x1="973" y1="586" x2="987" y2="586"/>
+            </g>
+            <!-- room labels -->
+            <g fill="#2a2114" stroke="none" font-family="JetBrains Mono,monospace" font-size="10.5" opacity="0.5">
+              <text x="264" y="342">AUDITORIUM</text><text x="494" y="134">FOYER</text>
+              <text x="622" y="130">OFFICE</text><text x="622" y="226">OFFICE</text><text x="622" y="326">MEETING</text><text x="622" y="426">PLANT</text>
+              <text x="800" y="184">OPEN DESK</text><text x="800" y="300">LOUNGE</text><text x="784" y="396">WC</text><text x="876" y="396">WC</text><text x="800" y="500">STORE</text>
+            </g>
+          </g>
+
+          <!-- ===== L1 THERMAL (heat, not faces) ===== -->
+          <g class="layer" id="L-thermal">
+            <g class="heat">
+              <circle cx="320" cy="380" r="120" fill="url(#heatg)"/>
+              <circle cx="684" cy="346" r="46" fill="url(#heatg)"/>
+              <circle cx="850" cy="160" r="56" fill="url(#heatg)"/>
+              <circle cx="850" cy="286" r="42" fill="url(#heatg)"/>
+              <circle cx="540" cy="500" r="40" fill="url(#heatg)"/>
+            </g>
+            <text x="392" y="540" fill="#b3361f" stroke="none" font-family="JetBrains Mono,monospace" font-weight="700" font-size="11">THERMAL SIGNATURE · NO PII</text>
+          </g>
+
+          <!-- ===== L2 FURNITURE ===== -->
+          <g class="layer" id="L-furniture" stroke="#c2402a" stroke-width="2">
+            <g><rect x="494" y="152" width="86" height="32" rx="9" fill="rgba(194,64,42,0.08)"/><rect x="494" y="152" width="15" height="32" rx="6"/><rect x="565" y="152" width="15" height="32" rx="6"/></g>
+            <rect x="628" y="118" width="34" height="30" rx="8" fill="rgba(194,64,42,0.08)"/><rect x="694" y="118" width="34" height="30" rx="8" fill="rgba(194,64,42,0.08)"/>
+            <rect x="624" y="216" width="118" height="26" rx="4" fill="rgba(194,64,42,0.08)"/>
+            <rect x="640" y="320" width="84" height="40" rx="6" fill="rgba(194,64,42,0.08)"/>
+            <g><rect x="630" y="326" width="14" height="12" rx="3"/><rect x="720" y="326" width="14" height="12" rx="3"/><rect x="668" y="312" width="28" height="12" rx="3"/><rect x="668" y="356" width="28" height="12" rx="3"/></g>
+            <g stroke-width="1.6"><rect x="790" y="120" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/><rect x="836" y="120" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/><rect x="884" y="120" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/><rect x="790" y="168" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/><rect x="836" y="168" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/><rect x="884" y="168" width="34" height="26" rx="5" fill="rgba(194,64,42,0.08)"/></g>
+            <g><rect x="788" y="252" width="86" height="30" rx="9" fill="rgba(194,64,42,0.08)"/><circle cx="900" cy="300" r="16" fill="rgba(194,64,42,0.08)"/></g>
+          </g>
+
+          <!-- ===== L3 PEOPLE / DENSITY ===== -->
+          <g class="layer" id="L-people">
+            <!-- single at desk -->
+            <g class="ppl"><circle class="ring" cx="684" cy="338" r="11"/><circle class="core" cx="684" cy="338" r="5"/></g>
+            <text class="ct" x="700" y="342" font-family="JetBrains Mono,monospace" font-weight="700" font-size="12" fill="#c2402a" stroke="none">1</text>
+            <!-- huddle of five in open desk -->
+            <g class="ppl"><circle class="ring" cx="824" cy="150" r="9"/><circle class="core" cx="824" cy="150" r="4.5"/></g>
+            <g class="ppl"><circle class="ring" cx="850" cy="140" r="9"/><circle class="core" cx="850" cy="140" r="4.5"/></g>
+            <g class="ppl"><circle class="ring" cx="876" cy="150" r="9"/><circle class="core" cx="876" cy="150" r="4.5"/></g>
+            <g class="ppl"><circle class="ring" cx="836" cy="176" r="9"/><circle class="core" cx="836" cy="176" r="4.5"/></g>
+            <g class="ppl"><circle class="ring" cx="864" cy="176" r="9"/><circle class="core" cx="864" cy="176" r="4.5"/></g>
+            <text class="ct" x="824" y="206" font-family="JetBrains Mono,monospace" font-weight="700" font-size="13" fill="#c2402a" stroke="none">5 · huddle</text>
+            <!-- a few in the auditorium -->
+            <g class="ppl"><circle class="core" cx="280" cy="408" r="4.5"/></g>
+            <g class="ppl"><circle class="core" cx="320" cy="420" r="4.5"/></g>
+            <g class="ppl"><circle class="core" cx="360" cy="408" r="4.5"/></g>
+          </g>
+
+          <!-- ===== L4 FLOW (vectors + moving sensors) ===== -->
+          <g class="layer" id="L-flow">
+            <path id="fp1" d="M540 130 V520" fill="none" stroke="none"/>
+            <path id="fp2" d="M620 320 H940" fill="none" stroke="none"/>
+            <path id="fp3" d="M320 470 Q470 500 600 480 T880 470" fill="none" stroke="none"/>
+            <path class="vec" d="M540 150 V510"/>
+            <path class="vec" d="M620 320 H934"/>
+            <path class="vec" d="M330 472 Q470 500 600 482"/>
+            <g class="flowdot"><circle r="12" fill="#e0a52e" opacity="0.3"/><circle r="6" fill="#e0a52e"/><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#fp1"/></animateMotion></g>
+            <g class="flowdot"><circle r="12" fill="#6f8f3e" opacity="0.3"/><circle r="6" fill="#6f8f3e"/><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#fp2"/></animateMotion></g>
+            <g class="flowdot"><circle r="12" fill="#c2402a" opacity="0.3"/><circle r="6" fill="#c2402a"/><animateMotion dur="7s" repeatCount="indefinite"><mpath href="#fp3"/></animateMotion></g>
+            <text class="flow-lab" x="548" y="300">flow ›</text>
+            <text class="flow-lab" x="606" y="356" fill="#b3361f">bottleneck</text>
+            <circle cx="600" cy="320" r="16" stroke="#c2402a" stroke-width="1.5" fill="none" opacity="0.7"/>
+          </g>
+
+          <!-- ===== L5 ACTIVITY (dwell / hotspots / dead zones) ===== -->
+          <g class="layer" id="L-activity">
+            <circle cx="820" cy="286" r="58" fill="url(#hotg)"/>
+            <text class="hot-lab" x="788" y="290">HOTSPOT</text>
+            <circle cx="320" cy="380" r="70" fill="url(#hotg)"/>
+            <rect class="dead" x="772" y="448" width="164" height="82" rx="6"/>
+            <text x="800" y="494" fill="#8a7a4a" stroke="none" font-family="JetBrains Mono,monospace" font-weight="700" font-size="11">DEAD ZONE</text>
+          </g>
+
+          <!-- ===== L6 HVAC / CARBON ===== -->
+          <g class="layer" id="L-hvac" stroke="#6f8f3e" stroke-width="2.4">
+            <circle cx="150" cy="118" r="20" fill="rgba(111,143,62,0.12)"/><line x1="138" y1="106" x2="162" y2="130" stroke-width="1"/><line x1="162" y1="106" x2="138" y2="130" stroke-width="1"/>
+            <text class="hvac-lab" x="176" y="122" font-size="11">CT-1</text>
+            <rect x="628" y="404" width="100" height="46" rx="4" fill="rgba(111,143,62,0.12)"/><line x1="652" y1="404" x2="652" y2="450" stroke-width="1"/><line x1="704" y1="404" x2="704" y2="450" stroke-width="1"/>
+            <text class="hvac-lab" x="634" y="472" font-size="11">AHU-1</text>
+            <path class="duct flow" d="M628 426 H600 V120 H588 M600 200 H612 M600 320 H612 M600 440 H612" stroke-width="3"/>
+            <path class="duct flow" d="M756 286 H940 M756 160 H940 M756 480 H940" stroke-width="2.6" stroke-opacity="0.85"/>
+            <g fill="#6f8f3e" stroke="none"><rect x="606" y="196" width="11" height="9"/><rect x="606" y="316" width="11" height="9"/><rect x="606" y="436" width="11" height="9"/><rect x="934" y="156" width="11" height="9"/><rect x="934" y="282" width="11" height="9"/><rect x="934" y="476" width="11" height="9"/></g>
+            <text class="hvac-lab" x="640" y="556" font-size="11" fill="#4d6628">UNOCCUPIED ZONES SCALED DOWN</text>
+          </g>
+
+          <!-- ===== L7 ANOMALY ===== -->
+          <g class="layer" id="L-anomaly">
+            <g class="anom" transform="translate(684 338)"><circle class="rng" r="22"/><circle class="rng" r="30" stroke-opacity="0.4"/></g>
+            <text class="bang" x="678" y="300">!</text>
+            <text x="640" y="384" fill="#c2402a" stroke="none" font-family="JetBrains Mono,monospace" font-weight="700" font-size="11">POSTURE ANOMALY</text>
+          </g>
+
+          <!-- ===== L8 EDGE / CLOUD + LIVE ===== -->
+          <g class="layer" id="L-edge">
+            <rect class="node" x="636" y="404" width="84" height="44" rx="6"/>
+            <text class="node-lab" x="648" y="430">EDGE · LOCAL</text>
+            <g transform="translate(872 110)"><path class="node" d="M-34 8 a16 16 0 0 1 4 -31 a20 20 0 0 1 38 4 a14 14 0 0 1 -6 27 Z"/><text class="node-lab" x="-18" y="6">CLOUD AI</text></g>
+            <path d="M678 404 C760 360 800 240 850 130" stroke="#2a2114" stroke-width="1" stroke-dasharray="3 5" opacity="0.6"/>
+            <g transform="translate(320 600) rotate(-3)"><rect x="-80" y="-21" width="160" height="42" rx="21" fill="#6f8f3e"/><text x="0" y="6" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace" font-weight="700" font-size="14" letter-spacing="3">TWIN · LIVE</text></g>
+          </g>
+        </svg>
+        <span class="plan-foot">SURDS · LEVEL 2 · LIVE SPATIAL TWIN</span>
+      </div>
+
+      <!-- fills the left column below the plan -->
+      <div class="plan-extras" style="margin-top:26px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+        <span class="sticker sticker--cream" style="--r:-3deg;--rin:-12deg">
+          <span class="tag" style="color:#241b10;display:block;margin-bottom:10px">What lands on the plan</span>
+          <span style="display:flex;flex-direction:column;gap:7px;font-family:var(--mono);font-weight:700;font-size:0.66rem;color:#241b10;letter-spacing:0.03em">
+            <span style="display:flex;align-items:center;gap:9px"><span style="width:13px;height:13px;border-radius:50%;background:#e0a52e"></span> THERMAL · body heat, no face</span>
+            <span style="display:flex;align-items:center;gap:9px"><span style="width:13px;height:13px;border-radius:4px;background:#c2402a"></span> FURNITURE · sofas, desks, beds</span>
+            <span style="display:flex;align-items:center;gap:9px"><span style="width:13px;height:13px;border-radius:50%;background:#2a2114"></span> PEOPLE · counts, not identities</span>
+            <span style="display:flex;align-items:center;gap:9px"><span style="width:13px;height:13px;border-radius:3px;background:#6f8f3e"></span> HVAC · ducts, scaled to occupancy</span>
+          </span>
+        </span>
+        <div class="stack" style="gap:14px">
+          <span class="sticker sticker--rust" style="--r:5deg;--rin:14deg"><span class="fat" style="font-size:1rem">SPACE → DATA</span></span>
+          <span class="hand hand--cream sticker" style="background:none;border:0;box-shadow:none;outline:0;padding:0;font-size:1.5rem;--r:-3deg;--rin:-10deg">keep scrolling,<br>it builds itself ✦</span>
+          <span class="sticker sticker--amber" style="--r:-4deg;--rin:-14deg"><span class="tag" style="color:#2a1d00">Real CAD · not a mock up</span></span>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ============ SENSOR GRID ============ -->
-<section class="section--tight gridbg">
-  <div class="wrap">
-    <div class="shead reveal"><div><div class="eyebrow">Every sensor we read</div><h2>NOTHING IS ANONYMOUS.</h2></div></div>
-    <div class="sgrid reveal">
-      <div class="scell"><span class="dot"></span><div class="nm">TEMP</div><div class="vl"><span data-flicker data-base="72.4" data-drift="0.4" data-unit="">72.4</span></div><div class="un">°F · zone</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">RH</div><div class="vl"><span data-flicker data-base="47.8" data-drift="0.5" data-unit="">47.8</span></div><div class="un">% · humidity</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">CO₂</div><div class="vl"><span data-flicker data-base="534" data-drift="14" data-decimals="0" data-unit="">534</span></div><div class="un">ppm · air</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">ΔP</div><div class="vl"><span data-flicker data-base="0.41" data-drift="0.03" data-decimals="2" data-unit="">0.41</span></div><div class="un">in wc · filter</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">FLOW</div><div class="vl"><span data-flicker data-base="24.0" data-drift="0.6" data-decimals="1" data-unit="">24.0</span></div><div class="un">k cfm · supply</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">kW</div><div class="vl"><span data-flicker data-base="412" data-drift="9" data-decimals="0" data-unit="">412</span></div><div class="un">power · plant</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">PM2.5</div><div class="vl"><span data-flicker data-base="8.2" data-drift="0.5" data-decimals="1" data-unit="">8.2</span></div><div class="un">µg/m³ · iaq</div></div>
-      <div class="scell"><span class="dot"></span><div class="nm">kW/TON</div><div class="vl"><span data-flicker data-base="0.49" data-drift="0.02" data-decimals="2" data-unit="">0.49</span></div><div class="un">chiller eff.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CTA ============ -->
-<section class="section cta gridbg">
-  <span class="glowline"></span>
-  <div class="wrap">
-    <div class="eyebrow" style="justify-content:center">Get in touch</div>
-    <h2>SHOW US YOUR BUILDING.<br>WE'LL SHOW YOU ITS TWIN.</h2>
-    <a href="contact.html" class="btn btn--solid magnetic" data-magnetic="0.2">Start a conversation</a>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer__grid">
-      <div>
-        <a href="index.html" class="brand" style="margin-bottom:16px"><span class="brand__mark">S</span> Surds</a>
-        <p class="lede" style="font-size:0.92rem;max-width:34ch">HVAC controls &amp; live 3D building twins. IIT Kharagpur, India.</p>
+    <!-- SIDE EXPLANATION STEPS -->
+    <div class="ss-steps">
+      <div class="step active" data-stage="0">
+        <div class="n">01</div><h3>The <span class="o">drawing.</span></h3>
+        <p>We start from your DWG. Walls, rooms, stairs, the auditorium. Every line exactly as it was drawn, lifted onto a clean plan with nothing added yet.</p>
+        <div class="marks"><span class="mk">walls</span><span class="mk">rooms</span><span class="mk">levels</span></div>
       </div>
-      <div><h4>Practice</h4><ul><li><a href="services.html">Services</a></li><li><a href="technologies.html">Technology</a></li><li><a href="equipment.html">Sensors</a></li><li><a href="case-studies.html">Work</a></li></ul></div>
-      <div><h4>Firm</h4><ul><li><a href="news/index.html">Insights</a></li><li><a href="contact.html">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
-      <div><h4>Office</h4><ul><li>STEP-IIT Kharagpur</li><li>West Bengal 721302</li><li>automate@surds.co.in</li></ul></div>
+      <div class="step" data-stage="1">
+        <div class="n">02</div><h3>The <span class="a">thermal</span> layer.</h3>
+        <p>Then the AI layer wakes up. It reads the thermal body signature of everyone in the space, never a face. It is physically impossible for it to capture anything personally identifiable.</p>
+        <div class="marks"><span class="mk"><span class="d amber"></span> body heat</span><span class="mk"><span class="d amber"></span> 100% anonymous</span></div>
+      </div>
+      <div class="step" data-stage="2">
+        <div class="n">03</div><h3>The <span class="o">furniture.</span></h3>
+        <p>From the FURN layer the space gets furnished. Sofas, desks, a bank of workstations, a lounge. Each block sits exactly where the room put it.</p>
+        <div class="marks"><span class="mk"><span class="d rust"></span> sofa</span><span class="mk"><span class="d rust"></span> desks</span><span class="mk"><span class="d rust"></span> lounge</span></div>
+      </div>
+      <div class="step" data-stage="3">
+        <div class="n">04</div><h3>People and <span class="o">density.</span></h3>
+        <p>Now it counts. It tells one person at a desk apart from a team of five in a meeting huddle. Real occupancy, room by room, with no identity attached to it.</p>
+        <div class="marks"><span class="mk">one at a desk</span><span class="mk">five in a huddle</span></div>
+      </div>
+      <div class="step" data-stage="4">
+        <div class="n">05</div><h3>The <span class="a">flow.</span></h3>
+        <p>A sensor moves with the crowd, tracing the exact vectors of movement through the plan. It pinpoints the high traffic bottlenecks before they ever form.</p>
+        <div class="marks"><span class="mk"><span class="d amber"></span> vectors</span><span class="mk"><span class="d rust"></span> bottlenecks</span></div>
+      </div>
+      <div class="step" data-stage="5">
+        <div class="n">06</div><h3>The <span class="o">activity.</span></h3>
+        <p>It clocks dwell times instantly, so you know whether a lounge is a popular hotspot or a dead zone that nobody actually uses.</p>
+        <div class="marks"><span class="mk"><span class="d rust"></span> dwell time</span><span class="mk"><span class="d rust"></span> hotspot</span><span class="mk">dead zone</span></div>
+      </div>
+      <div class="step" data-stage="6">
+        <div class="n">07</div><h3>HVAC and <span class="g">carbon.</span></h3>
+        <p>Empty zones should cost nothing. It scales heating and cooling down in unoccupied areas automatically, and the carbon footprint drops with it.</p>
+        <div class="marks"><span class="mk"><span class="d grass"></span> ahu and ducts</span><span class="mk"><span class="d grass"></span> auto scale down</span></div>
+      </div>
+      <div class="step" data-stage="7">
+        <div class="n">08</div><h3>The <span class="o">anomaly.</span></h3>
+        <p>It notices change. Shifts in a daily routine or a posture anomaly get flagged on the plan, all of it without a single invasive camera.</p>
+        <div class="marks"><span class="mk"><span class="d rust"></span> posture</span><span class="mk"><span class="d rust"></span> routine</span></div>
+      </div>
+      <div class="step" data-stage="8">
+        <div class="n">09</div><h3>Edge, cloud, <span class="g">live.</span></h3>
+        <p>Then it decides. Smart computation runs locally on the edge for speed, or derives deeper AI decisions in the cloud from the same data points. A flat DWG is now a living, thinking twin.</p>
+        <div class="marks"><span class="mk"><span class="d grass"></span> edge</span><span class="mk"><span class="d amber"></span> cloud</span><span class="mk"><span class="d grass"></span> live twin</span></div>
+        <div style="margin-top:24px"><a href="#talk" class="btn btn--rust sticker" style="--r:-2deg;opacity:1;animation:none">Build mine →</a></div>
+      </div>
     </div>
-    <div class="footer__big">SURDS</div>
-    <div class="footer__bottom"><span>© 2026 Surds — all rights reserved</span><span>Privacy · Terms · Accessibility</span></div>
+  </div>
+</section>
+
+<!-- ============ FEATURES (burger-style) ============ -->
+<section class="scene" id="features">
+  <div class="scene__in">
+    <span class="sticker sticker--grass" style="--r:-2deg"><span class="tag">What it does</span></span>
+    <h2 class="bigline" style="margin:20px 0 12px">Eight <span class="o">powers.</span> Zero <span class="g">cameras.</span></h2>
+    <p class="subline" style="margin-bottom:34px">Everyone else makes you choose between privacy and insight. Surds gives you both, by never looking at a face in the first place.</p>
+    <div class="feat-grid">
+      <div class="feat pop" style="--r:-1deg"><span class="k"><span class="glowdot rust"></span> Privacy</span><h4>Anonymous by design</h4><p>It is impossible to capture personally identifiable information. Privacy is baked into the physics, not a setting.</p></div>
+      <div class="feat pop" style="--r:1deg"><span class="k"><span class="glowdot"></span> Density</span><h4>Counts, not identities</h4><p>Tells one person at a desk from a team of five in a huddle, room by room, in real time.</p></div>
+      <div class="feat pop" style="--r:-1deg"><span class="k"><span class="glowdot amber"></span> Flow</span><h4>Movement vectors</h4><p>Tracks the exact vectors of movement to pinpoint high traffic bottlenecks before they form.</p></div>
+      <div class="feat pop" style="--r:1deg"><span class="k"><span class="glowdot rust"></span> Activity</span><h4>Dwell and hotspots</h4><p>Recognises dwell times instantly, so a lounge reads as a hotspot or a dead zone at a glance.</p></div>
+      <div class="feat pop" style="--r:-1deg"><span class="k"><span class="glowdot"></span> Carbon</span><h4>Auto HVAC, less carbon</h4><p>Scales heating and cooling down in unoccupied zones automatically to slash the carbon footprint.</p></div>
+      <div class="feat pop" style="--r:1deg"><span class="k"><span class="glowdot rust"></span> Safety</span><h4>Anomaly detection</h4><p>Detects changes in daily movement routines or posture anomalies, with no invasive cameras involved.</p></div>
+      <div class="feat pop" style="--r:-1deg"><span class="k"><span class="glowdot"></span> Compute</span><h4>Edge or cloud</h4><p>Decisions run locally on the edge, or derive deeper AI in the cloud from the same data points.</p></div>
+      <div class="feat pop" style="--r:1deg"><span class="k"><span class="glowdot amber"></span> Install</span><h4>Wireless in minutes</h4><p>Completely wireless and battery powered, so a room goes live in minutes with no rewiring.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIVACY STATEMENT ============ -->
+<section class="scene" id="privacy" style="padding-top:0">
+  <div class="scene__in">
+    <div class="cluster" style="align-items:flex-start">
+      <span class="sticker sticker--ink" style="--r:-3deg;max-width:20ch"><span class="say">Most safe sensors leave you <span class="o">blind.</span></span></span>
+      <span class="sticker sticker--rust" style="--r:3deg;max-width:20ch"><span class="say" style="color:#fff">Ours leaves you <span style="color:#ffe2a8">all-seeing,</span> and them invisible.</span></span>
+      <span class="sticker sticker--cream" style="--r:-2deg;max-width:22ch"><span class="say" style="color:#241b10">Density, flow and dwell, with nobody’s identity on the line.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TALK ============ -->
+<section class="scene" id="talk">
+  <div class="scene__in" style="text-align:center">
+    <div class="cluster cluster--center" style="flex-direction:column;gap:20px">
+      <span class="sticker sticker--amber" style="--r:-2deg"><span class="tag">Bring us your drawing</span></span>
+      <h2 class="mega" style="font-size:clamp(2.6rem,11vw,7rem)">TALK <span class="g">TO US</span></h2>
+      <div class="spread cluster--center">
+        <a href="mailto:automate@surds.co.in" class="sticker sticker--rust" style="--r:-3deg;--rin:-12deg"><b class="fat" style="font-size:1.05rem">automate@surds.co.in</b></a>
+        <span class="sticker sticker--cream" style="--r:3deg;--rin:12deg"><span class="tag" style="color:#241b10">STEP-IIT Kharagpur · India</span></span>
+      </div>
+      <a href="mailto:automate@surds.co.in" class="btn btn--grass sticker" style="--r:-2deg;--rin:-8deg">Send the DWG →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="big sticker" style="background:none;border:0;box-shadow:none;outline:0;padding:0;--r:0deg;--rin:-4deg">SURDS</div>
+    <div class="mono-row">© Surds · the AI layer for physical spaces · IIT Kharagpur</div>
   </div>
 </footer>
 
-<script type="importmap">
-{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
-</script>
-<script type="module" src="js/hero.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

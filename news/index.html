@@ -2,289 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Insights | Surds</title>
-  <meta name="description" content="Long reads, field notes, and design philosophies from Surds's engineers."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surds — Insights</title>
+  <meta name="description" content="Field notes on running buildings well — twins, psychrometrics, chilled-water plants." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
 
-<nav class="site-nav">
-  <div class="nav-inner">
-    <a href="../index.html" class="brand">
-      <span class="brand-mark">S</span>
-      Surds
-    </a>
-    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
-    <ul class="nav-links">
+<nav class="nav">
+  <div class="nav__in">
+    <a href="../index.html" class="brand"><span class="brand__mark">S</span> Surds</a>
+    <button class="nav__toggle" aria-label="Menu">☰</button>
+    <ul class="nav__links">
+      <li><a href="../index.html">Twin</a></li>
       <li><a href="../services.html">Services</a></li>
-      <li><a href="../equipment.html">Equipment</a></li>
-      <li><a href="../technologies.html">Technologies</a></li>
-      <li><a href="index.html">Insights</a></li>
+      <li><a href="../technologies.html">Technology</a></li>
+      <li><a href="../equipment.html">Sensors</a></li>
+      <li><a href="../case-studies.html">Work</a></li>
+      <li><a href="index.html" class="active">Insights</a></li>
     </ul>
-    <a href="../contact.html" class="nav-cta">Talk to us</a>
+    <a href="../contact.html" class="nav__cta">Scan my building</a>
   </div>
 </nav>
 
-<header class="hero" style="padding: clamp(60px,8vw,100px) 0;">
-  <div class="container">
-    <div class="eyebrow">Insights</div>
-    <h1>Field notes from the practice.</h1>
-    <p class="lede">
-      Long reads on running buildings well. Design philosophies, retrospectives, and a fair
-      number of "we tried this and here's what happened" stories.
-    </p>
-  </div>
-</header>
-
-<!-- Featured article -->
-<section class="section-light">
-  <div class="container">
-    <div class="eyebrow">Featured</div>
-    <a href="an-introduction-to-hbms.html" style="display: block; margin-top: 16px;">
-      <div class="showcase" style="background: var(--paper);">
-        <div class="showcase-art">
-          <svg viewBox="0 0 600 400">
-            <rect width="600" height="400" fill="#0e1a26"/>
-            <rect x="40" y="60" width="520" height="280" fill="none" stroke="rgba(216,207,191,0.2)" stroke-width="1"/>
-            <g stroke="rgba(216,207,191,0.12)" stroke-width="0.6">
-              <line x1="40" y1="120" x2="560" y2="120"/>
-              <line x1="40" y1="180" x2="560" y2="180"/>
-              <line x1="40" y1="240" x2="560" y2="240"/>
-              <line x1="40" y1="300" x2="560" y2="300"/>
-            </g>
-            <rect x="240" y="40" width="120" height="20" fill="#b87333"/>
-            <text x="300" y="54" text-anchor="middle" fill="#f6f2ec" font-size="9" font-family="Inter" letter-spacing="2">AHU</text>
-            <g fill="#d99858">
-              <circle cx="80" cy="90" r="5"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/></circle>
-              <circle cx="520" cy="150" r="5"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.4s" repeatCount="indefinite"/></circle>
-              <circle cx="80" cy="210" r="5"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" repeatCount="indefinite"/></circle>
-              <circle cx="520" cy="270" r="5"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite"/></circle>
-            </g>
-            <rect x="40" y="340" width="520" height="20" fill="#070d14"/>
-            <rect x="100" y="345" width="80" height="12" fill="#1c2a3a" stroke="#b87333"/>
-            <rect x="220" y="345" width="80" height="12" fill="#1c2a3a" stroke="#3a5670"/>
-            <rect x="340" y="345" width="80" height="12" fill="#1c2a3a" stroke="#d99858"/>
-            <rect x="460" y="345" width="80" height="12" fill="#1c2a3a" stroke="#3a5670"/>
-          </svg>
-        </div>
-        <div class="showcase-body">
-          <div class="lbl">Building intelligence · 12 min read</div>
-          <h3>An Introduction to HBMS</h3>
-          <p style="color: var(--muted); margin-bottom: 16px;">
-            Holistic Building Management Systems, what they are, what they aren't, and why the
-            hardware in your mechanical room is only ever half the story. Includes an
-            interactive equipment explorer and a working dashboard mock.
-          </p>
-          <p style="font-family: var(--serif); font-style: italic; color: var(--muted); font-size: 0.95rem;">
-            by Jordan Reyes, P.E., LEED AP · Director of Building Intelligence
-          </p>
-          <span class="btn" style="border-color: var(--ink); color: var(--ink); margin-top: 12px; display: inline-block;">Read the article →</span>
-        </div>
-      </div>
-    </a>
+<section class="phero gridbg">
+  <div class="wrap">
+    <div class="crumbs"><a href="../index.html">Surds</a> / Insights</div>
+    <h1>FIELD NOTES.</h1>
+    <p class="lede">Short reads on running buildings well — the twin, the plant, and the physics underneath both.</p>
   </div>
 </section>
 
-<!-- All articles -->
-<section class="section-warm">
-  <div class="container">
-    <div class="eyebrow">All articles</div>
-    <h2 style="margin-bottom: 40px;">2026</h2>
-
-    <div class="news-grid">
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#2d4a6b"/>
-            <g stroke="#7ab8d6" stroke-width="3" fill="none">
-              <path d="M40 80 Q 80 60, 120 80 T 200 80 T 280 80 T 360 80"/>
-              <path d="M40 130 Q 80 110, 120 130 T 200 130 T 280 130 T 360 130"/>
-            </g>
-            <circle cx="200" cy="100" r="30" fill="none" stroke="#b87333" stroke-width="2"/>
-            <circle cx="200" cy="100" r="14" fill="#b87333" opacity="0.4"/>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">Plant operations</div>
-          <h3>The Chilled-Water Plant, Top to Bottom</h3>
-          <p>Compressors, evaporators, condensers, towers, pumps. How they actually work together, and where the savings hide.</p>
-          <div class="read"><a href="the-chilled-water-plant.html">Read 9 min →</a></div>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#5c4030"/>
-            <path d="M 40 160 Q 120 130 200 80 Q 280 30 360 20" stroke="#d99858" stroke-width="2" fill="none"/>
-            <path d="M 40 165 Q 130 145 220 110 Q 310 70 360 50" stroke="#d99858" stroke-width="1" opacity="0.6" fill="none"/>
-            <rect x="170" y="90" width="60" height="30" fill="rgba(184,115,51,0.3)" stroke="#b87333"/>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">Science</div>
-          <h3>Psychrometrics for HVAC Operators</h3>
-          <p>The chart every operator has seen but few have actually used. A practical walkthrough, with examples from real buildings.</p>
-          <div class="read"><a href="psychrometrics-for-operators.html">Read 11 min →</a></div>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#3a5a3f"/>
-            <g fill="#d99858">
-              <rect x="60" y="120" width="20" height="50"/>
-              <rect x="100" y="100" width="20" height="70"/>
-              <rect x="140" y="80" width="20" height="90"/>
-              <rect x="180" y="70" width="20" height="100"/>
-              <rect x="220" y="90" width="20" height="80"/>
-              <rect x="260" y="110" width="20" height="60"/>
-              <rect x="300" y="125" width="20" height="45"/>
-              <rect x="340" y="140" width="20" height="30"/>
-            </g>
-            <path d="M 40 170 L 360 170" stroke="rgba(246,242,236,0.4)" stroke-width="1"/>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">Energy</div>
-          <h3>The chilled-water reset, revisited</h3>
-          <p>Twenty years after the rule of thumb was first written down, what should it actually be in a 2026 plant?</p>
-          <div class="read"><a href="#">Coming soon →</a></div>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#4a3e5b"/>
-            <g fill="none" stroke="#d99858" stroke-width="1.5">
-              <circle cx="200" cy="100" r="60"/>
-              <circle cx="200" cy="100" r="40"/>
-              <circle cx="200" cy="100" r="20"/>
-            </g>
-            <g fill="#d99858">
-              <circle cx="200" cy="40" r="4"/>
-              <circle cx="260" cy="100" r="4"/>
-              <circle cx="200" cy="160" r="4"/>
-              <circle cx="140" cy="100" r="4"/>
-            </g>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">IAQ</div>
-          <h3>Humidity envelopes for mixed collections</h3>
-          <p>When a gallery holds both textiles and oils, the envelope is a negotiation. Here's how we run that negotiation.</p>
-          <div class="read"><a href="#">Coming soon →</a></div>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#2d4a6b"/>
-            <g stroke="#d99858" stroke-width="1.5" fill="none">
-              <path d="M0 160 L 60 140 L 120 150 L 180 100 L 240 110 L 300 80 L 360 90 L 400 70"/>
-            </g>
-            <g fill="#d99858">
-              <circle cx="60" cy="140" r="3"/><circle cx="120" cy="150" r="3"/>
-              <circle cx="180" cy="100" r="3"/><circle cx="240" cy="110" r="3"/>
-              <circle cx="300" cy="80" r="3"/><circle cx="360" cy="90" r="3"/>
-            </g>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">Operations</div>
-          <h3>What a good MUST/SHOULD point list looks like</h3>
-          <p>A field-tested template for separating operational, diagnostic, and archival points without overspecifying.</p>
-          <div class="read"><a href="#">Coming soon →</a></div>
-        </div>
-      </article>
-
-      <article class="news-card">
-        <div class="news-img">
-          <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="200" fill="#5c4030"/>
-            <rect x="60" y="60" width="280" height="80" fill="#1a1410" stroke="#d99858" stroke-width="1"/>
-            <g stroke="#d99858" stroke-width="1" fill="none">
-              <line x1="80" y1="80" x2="320" y2="80"/>
-              <line x1="80" y1="100" x2="280" y2="100"/>
-              <line x1="80" y1="120" x2="300" y2="120"/>
-            </g>
-          </svg>
-        </div>
-        <div class="news-body">
-          <div class="tag">Cyber</div>
-          <h3>OT cybersecurity for facility owners</h3>
-          <p>The five non-negotiables we put in every controls spec, and why each one keeps somebody up at night.</p>
-          <div class="read"><a href="#">Coming soon →</a></div>
-        </div>
-      </article>
+<section class="section">
+  <div class="wrap">
+    <div class="posts reveal">
+      <a href="an-introduction-to-hbms.html" class="post"><div class="k">Primer · 6 min</div><h3>An introduction to HBMS</h3><p>What a building-management system actually is, and why the model matters more than the box.</p></a>
+      <a href="psychrometrics-for-operators.html" class="post"><div class="k">Physics · 8 min</div><h3>Psychrometrics for operators</h3><p>Dry-bulb, wet-bulb, dew point and enthalpy — the four numbers behind every HVAC decision.</p></a>
+      <a href="the-chilled-water-plant.html" class="post"><div class="k">Plant · 10 min</div><h3>The chilled-water plant, top to bottom</h3><p>Chillers, towers, pumps and ΔT — how the cold actually gets made and moved.</p></a>
     </div>
   </div>
 </section>
 
-<section class="section-dark center">
-  <div class="container">
-    <div class="eyebrow center">Subscribe</div>
-    <h2 style="max-width: 22ch; margin: 0 auto 24px;">A long read in your inbox, roughly monthly.</h2>
-    <p style="max-width: 52ch; margin: 0 auto 32px; color: rgba(246,242,236,0.78);">
-      We don't run a marketing list. Insights goes out about once a month, written by the same
-      engineers who do the work. Unsubscribe with one click.
-    </p>
-    <a href="../contact.html" class="btn btn-primary">Get on the list</a>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div class="footer-grid">
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
       <div>
-        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
-          <span class="brand-mark" style="background: var(--accent);">S</span>
-          Surds
-        </div>
-        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
-          Independent HVAC controls &amp; building intelligence. IIT Kharagpur, India.
-        </p>
+        <a href="../index.html" class="brand" style="margin-bottom:16px"><span class="brand__mark">S</span> Surds</a>
+        <p class="lede" style="font-size:0.92rem;max-width:34ch">HVAC controls &amp; live 3D building twins. IIT Kharagpur, India.</p>
       </div>
-      <div>
-        <h4>Practice</h4>
-        <ul>
-          <li><a href="../services.html">Services</a></li>
-          <li><a href="../equipment.html">Equipment guide</a></li>
-          <li><a href="../technologies.html">Technologies</a></li>
-          <li><a href="index.html">Insights</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Firm</h4>
-        <ul>
-          <li><a href="../index.html#about">About</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="../contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Office</h4>
-        <ul>
-          <li>STEP-IIT Kharagpur</li>
-          <li>Kharagpur, West Bengal 721302</li>
-          <li>automate@surds.co.in</li>
-        </ul>
-      </div>
+      <div><h4>Practice</h4><ul><li><a href="../services.html">Services</a></li><li><a href="../technologies.html">Technology</a></li><li><a href="../equipment.html">Sensors</a></li><li><a href="../case-studies.html">Work</a></li></ul></div>
+      <div><h4>Firm</h4><ul><li><a href="index.html">Insights</a></li><li><a href="../contact.html">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+      <div><h4>Office</h4><ul><li>STEP-IIT Kharagpur</li><li>West Bengal 721302</li><li>automate@surds.co.in</li></ul></div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 Surds. All rights reserved.</span>
-      <span>Privacy · Terms · Accessibility</span>
-    </div>
+    <div class="footer__big">SURDS</div>
+    <div class="footer__bottom"><span>© 2026 Surds — all rights reserved</span><span>Privacy · Terms · Accessibility</span></div>
   </div>
 </footer>
 
-<script src="../js/main.js"></script>
+<script src="../js/app.js"></script>
 </body>
 </html>

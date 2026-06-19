@@ -184,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Live ticker: animate value flicker
-  const tickerVals = document.querySelectorAll('.ticker-item .val[data-flicker]');
+  // Live ticker + any live readouts: animate value flicker
+  const tickerVals = document.querySelectorAll('[data-flicker]');
   tickerVals.forEach(v => {
     const base = parseFloat(v.dataset.base || v.textContent);
     const drift = parseFloat(v.dataset.drift || '0.3');
@@ -214,12 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
     chart.innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
       <defs>
         <linearGradient id="g${chart.dataset.id || ''}" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#b87333" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#b87333" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#b85f6b" stop-opacity="0.38"/>
+          <stop offset="100%" stop-color="#b85f6b" stop-opacity="0"/>
         </linearGradient>
       </defs>
       <path d="${fill}" fill="url(#g${chart.dataset.id || ''})"/>
-      <path d="${path}" fill="none" stroke="#d99858" stroke-width="1.5"/>
+      <path d="${path}" fill="none" stroke="#b85f6b" stroke-width="1.5"/>
     </svg>`;
   });
 });

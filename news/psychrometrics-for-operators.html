@@ -2,368 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>Psychrometrics for HVAC Operators | Surds</title>
-  <meta name="description" content="The chart every HVAC operator has seen but few have actually used. A practical walkthrough with examples from real buildings."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Psychrometrics for operators — Surds</title>
+  <meta name="description" content="Dry-bulb, wet-bulb, dew point and enthalpy — the four numbers behind every HVAC decision." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
 
-<nav class="site-nav">
-  <div class="nav-inner">
-    <a href="../index.html" class="brand">
-      <span class="brand-mark">S</span>
-      Surds
-    </a>
-    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
-    <ul class="nav-links">
+<nav class="nav">
+  <div class="nav__in">
+    <a href="../index.html" class="brand"><span class="brand__mark">S</span> Surds</a>
+    <button class="nav__toggle" aria-label="Menu">☰</button>
+    <ul class="nav__links">
+      <li><a href="../index.html">Twin</a></li>
       <li><a href="../services.html">Services</a></li>
-      <li><a href="../equipment.html">Equipment</a></li>
-      <li><a href="../technologies.html">Technologies</a></li>
-      <li><a href="index.html">Insights</a></li>
+      <li><a href="../technologies.html">Technology</a></li>
+      <li><a href="../equipment.html">Sensors</a></li>
+      <li><a href="../case-studies.html">Work</a></li>
+      <li><a href="index.html" class="active">Insights</a></li>
     </ul>
-    <a href="../contact.html" class="nav-cta">Talk to us</a>
+    <a href="../contact.html" class="nav__cta">Scan my building</a>
   </div>
 </nav>
 
-<header class="article-hero">
-  <div class="narrow">
-    <div class="breadcrumb"><a href="index.html" style="color:var(--accent-2);">Insights</a> · Science</div>
-    <h1>Psychrometrics for HVAC Operators</h1>
-    <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: rgba(246,242,236,0.82); max-width: 52ch;">
-      The chart every HVAC operator has seen on a poster, but few have actually used to make a
-      decision. A practical walkthrough, with examples from buildings we run.
-    </p>
-    <div class="byline">by Alyson Park, P.E. · Founding Principal</div>
-    <div class="meta">11 min read · May 2026</div>
+<section class="phero gridbg">
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Insights</a> / Physics</div>
+    <h1>PSYCHROMETRICS<br>FOR OPERATORS.</h1>
+    <p class="lede">HVAC is just psychrometrics, applied at scale. Get four numbers and you can read any air-side problem.</p>
   </div>
-  <div class="article-hero-img">
-    <svg viewBox="0 0 1240 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">
-      <rect width="1240" height="480" fill="#0e1a26"/>
-      <g stroke="#3d8db3" stroke-width="1.2" fill="none" opacity="0.55">
-        <path d="M 80 440 Q 280 380 480 280 Q 680 160 880 80 Q 1040 40 1160 30"/>
-        <path d="M 80 450 Q 320 410 560 320 Q 800 200 1000 120 Q 1100 80 1160 60"/>
-        <path d="M 80 455 Q 360 430 640 360 Q 920 260 1100 170 Q 1140 130 1160 110"/>
-        <path d="M 80 460 Q 420 445 740 400 Q 1000 320 1140 220"/>
-      </g>
-      <g fill="#d99858">
-        <circle cx="500" cy="280" r="6"/>
-        <circle cx="720" cy="350" r="6"/>
-        <circle cx="320" cy="380" r="6"/>
-      </g>
-      <path d="M 720 350 L 320 380" stroke="#d99858" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
-      <rect x="280" y="340" width="100" height="60" fill="none" stroke="#b87333" stroke-width="1.5" stroke-dasharray="3 2"/>
-      <text x="330" y="330" text-anchor="middle" fill="#b87333" font-family="Cormorant Garamond" font-style="italic" font-size="18">comfort</text>
-    </svg>
-    <div class="caption">A psychrometric chart with a comfort zone overlaid. Every HVAC decision moves a point on this chart.</div>
-  </div>
-</header>
+</section>
 
-<article class="article-body">
-  <div class="narrow">
-
-    <p>
-      Every commercial HVAC training program puts a psychrometric chart on the wall and walks
-      past it. Operators are told it exists, told it's important, and given a quiz where they
-      identify dry-bulb temperature on the bottom axis. Then they're handed a wrench and never
-      asked to look at it again.
-    </p>
-    <p>
-      That's a shame. The psychrometric chart is the single best tool an HVAC operator has for
-      thinking about what their building is actually doing. Used well, it tells you why your
-      cooling coil is producing wet air, why your reheat is fighting your cooling, why your
-      economizer is dumping outdoor air at exactly the wrong moment, and why your dehumidifier
-      can't keep up.
-    </p>
-    <p>
-      This article is the introduction nobody gave you. We'll walk through what the chart shows,
-      how to read a state point, what the four basic HVAC processes look like as lines on the
-      chart, and three examples from real buildings.
-    </p>
-
-    <h2>What the chart shows</h2>
-
-    <p>
-      The psychrometric chart plots the properties of moist air, specifically, dry air mixed
-      with some amount of water vapor, under standard atmospheric pressure. Every point on the
-      chart represents one specific condition of air. Knowing the state point tells you
-      everything thermodynamic you need to know about that air sample.
-    </p>
-
-    <p>
-      Five quantities matter, and they're not independent, pick any two and the rest are
-      determined.
-    </p>
-
-    <ol>
-      <li><strong>Dry-bulb temperature</strong> (DBT), what a regular thermometer reads. The horizontal axis.</li>
-      <li><strong>Humidity ratio</strong> (W), pounds of water vapor per pound of dry air. The vertical axis.</li>
-      <li><strong>Relative humidity</strong> (RH), water vapor present compared to saturation at that temperature, as a percentage. Curved lines sweeping up through the chart.</li>
-      <li><strong>Wet-bulb temperature</strong> (WBT), what a thermometer wrapped in a wet wick reads. Lines sloping down-and-right.</li>
-      <li><strong>Enthalpy</strong> (h), total energy per pound of dry air. Lines nearly parallel to wet-bulb lines, in BTU per pound dry air.</li>
-    </ol>
-
-    <div class="figure">
-      <div class="figure-art">
-        <svg viewBox="0 0 700 480" style="background: var(--paper);">
-          <!-- Axes -->
-          <line x1="60" y1="440" x2="660" y2="440" stroke="#1c2a3a" stroke-width="1.5"/>
-          <line x1="60" y1="20" x2="60" y2="440" stroke="#1c2a3a" stroke-width="1.5"/>
-          <text x="360" y="475" text-anchor="middle" font-family="Inter" font-size="11" fill="#1c2a3a" letter-spacing="2">DRY-BULB TEMPERATURE °F</text>
-          <text x="25" y="230" text-anchor="middle" font-family="Inter" font-size="11" fill="#1c2a3a" letter-spacing="2" transform="rotate(-90 25 230)">HUMIDITY RATIO (W) lb/lb dry air</text>
-
-          <!-- Dry bulb ticks -->
-          <g font-family="Inter" font-size="10" fill="#5a6b7a" text-anchor="middle">
-            <text x="60" y="458">40</text>
-            <text x="160" y="458">55</text>
-            <text x="260" y="458">70</text>
-            <text x="360" y="458">85</text>
-            <text x="460" y="458">100</text>
-            <text x="560" y="458">115</text>
-          </g>
-
-          <!-- Saturation curve (100% RH) -->
-          <path d="M 60 420 Q 160 380 260 320 Q 360 230 460 110 Q 540 40 660 20" stroke="#3d8db3" stroke-width="2.5" fill="none"/>
-          <text x="155" y="370" font-family="Inter" font-size="10" fill="#3d8db3" font-weight="600">100% RH (saturation)</text>
-
-          <!-- 80% RH -->
-          <path d="M 60 428 Q 170 400 280 350 Q 380 270 480 160 Q 560 80 660 50" stroke="#3d8db3" stroke-width="1" fill="none" opacity="0.55"/>
-          <text x="220" y="385" font-family="Inter" font-size="9" fill="#3d8db3" opacity="0.7">80%</text>
-
-          <!-- 60% RH -->
-          <path d="M 60 432 Q 200 415 310 380 Q 410 310 510 210 Q 590 130 660 90" stroke="#3d8db3" stroke-width="1" fill="none" opacity="0.45"/>
-          <text x="280" y="405" font-family="Inter" font-size="9" fill="#3d8db3" opacity="0.6">60%</text>
-
-          <!-- 40% RH -->
-          <path d="M 60 436 Q 240 428 360 410 Q 460 370 540 290" stroke="#3d8db3" stroke-width="1" fill="none" opacity="0.4"/>
-          <text x="380" y="420" font-family="Inter" font-size="9" fill="#3d8db3" opacity="0.55">40%</text>
-
-          <!-- 20% RH -->
-          <path d="M 60 439 Q 280 437 420 430 Q 540 420 660 405" stroke="#3d8db3" stroke-width="1" fill="none" opacity="0.35"/>
-          <text x="480" y="437" font-family="Inter" font-size="9" fill="#3d8db3" opacity="0.5">20%</text>
-
-          <!-- Wet bulb / enthalpy lines (sloping) -->
-          <g stroke="#b87333" stroke-width="0.6" opacity="0.3" stroke-dasharray="3 2">
-            <line x1="60" y1="440" x2="60" y2="420"/>
-            <line x1="120" y1="440" x2="60" y2="400"/>
-            <line x1="200" y1="440" x2="60" y2="370"/>
-            <line x1="290" y1="440" x2="60" y2="330"/>
-            <line x1="400" y1="440" x2="60" y2="270"/>
-            <line x1="520" y1="440" x2="60" y2="190"/>
-            <line x1="660" y1="440" x2="60" y2="80"/>
-          </g>
-          <text x="120" y="435" font-family="Inter" font-size="8" fill="#b87333" opacity="0.6" transform="rotate(-50 120 435)">WBT 50°</text>
-          <text x="290" y="435" font-family="Inter" font-size="8" fill="#b87333" opacity="0.6" transform="rotate(-50 290 435)">WBT 65°</text>
-          <text x="500" y="435" font-family="Inter" font-size="8" fill="#b87333" opacity="0.6" transform="rotate(-50 500 435)">WBT 80°</text>
-
-          <!-- Comfort zone -->
-          <rect x="240" y="345" width="100" height="55" fill="rgba(184,115,51,0.18)" stroke="#b87333" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <text x="290" y="335" text-anchor="middle" font-family="Cormorant Garamond" font-size="14" font-style="italic" fill="#b87333">comfort</text>
-
-          <!-- Example points -->
-          <circle cx="420" cy="230" r="6" fill="#d97070"/>
-          <text x="430" y="226" font-family="Inter" font-size="10" fill="#d97070">A · OA 92°F, 75% RH</text>
-          <circle cx="220" cy="380" r="6" fill="#3d8db3"/>
-          <text x="100" y="376" font-family="Inter" font-size="10" fill="#3d8db3">B · supply 55°F sat</text>
-          <circle cx="290" cy="370" r="6" fill="#5a8070"/>
-          <text x="300" y="396" font-family="Inter" font-size="10" fill="#5a8070">C · zone 73°F, 50% RH</text>
-
-          <!-- Cooling+dehumidification path A → B → C -->
-          <path d="M 420 230 L 220 380" stroke="#b87333" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-          <path d="M 220 380 L 290 370" stroke="#b87333" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-        </svg>
-      </div>
-      <figcaption>
-        A standard psychrometric chart. The blue saturation curve is the upper limit, air at
-        100% RH. The orange comfort zone is the small rectangle inside which most occupants
-        will not complain. Process lines show a typical cooling-and-dehumidification path: A is
-        the hot, humid outdoor air; B is the cool, saturated air leaving a cooling coil; C is
-        the conditioned air in the occupied zone after mixing and reheat.
-      </figcaption>
-    </div>
-
-    <h2>The four basic processes</h2>
-
-    <p>
-      Almost every HVAC process is one of four moves across the chart. Read them like the
-      moves of a chess piece.
-    </p>
-
-    <h3>1. Sensible heating</h3>
-    <p>
-      Pure sensible heating, through a hot-water coil, an electric heater, or a heat-pump
-      condenser, is a horizontal line moving to the right. Dry-bulb temperature increases;
-      humidity ratio is constant. Relative humidity falls as a side-effect, because the same
-      amount of water vapor in warmer air is a smaller fraction of saturation.
-    </p>
-
-    <h3>2. Sensible cooling</h3>
-    <p>
-      The mirror image. A horizontal line moving left. This is what happens when an air sample
-      brushes past a cooling coil whose surface temperature is above the air's dew point,
-      no condensation, just temperature drop. Relative humidity rises.
-    </p>
-
-    <h3>3. Cooling and dehumidification</h3>
-    <p>
-      The most common path. A cooling coil at a surface temperature <em>below</em> the entering
-      dew point. Water condenses out of the air. The process line moves down-and-to-the-left,
-      toward the saturation curve. By the time the air leaves the coil, it's typically at or
-      very near saturation, at some temperature in the low- to mid-fifties.
-    </p>
-
-    <h3>4. Humidification</h3>
-    <p>
-      Adding moisture. Two flavors. <strong>Isothermal humidification</strong> (steam) is a
-      near-vertical line, moisture up, temperature roughly constant.
-      <strong>Adiabatic humidification</strong> (evaporative, wetted media or ultrasonic spray)
-      is a line along a constant wet-bulb temperature, moisture up, dry-bulb down. The second
-      is the basis of evaporative cooling, and of cooling towers.
-    </p>
-
-    <h2>The comfort zone</h2>
-
-    <p>
-      ASHRAE Standard 55 defines a region of the chart that 80% of typical occupants will find
-      acceptable for sedentary indoor work. In practice it's a small rectangle: roughly 68 to
-      78 °F dry-bulb, and 30% to 60% RH. The exact boundaries depend on clothing, activity, and
-      air velocity, but the rectangle is a reasonable approximation for office and institutional
-      buildings.
-    </p>
-    <p>
-      Note what's <em>outside</em> the comfort zone: every condition in which somebody is
-      uncomfortable. Hot and dry. Cold and damp. Warm and humid. Each unhappy zone has a name
-      and a fix.
-    </p>
-
-    <h2>Three examples from real buildings</h2>
-
-    <h3>Example 1: A "cold-and-clammy" complaint</h3>
-    <p>
-      A tenant called: <em>"the conference room is cold but the air feels heavy."</em> When we
-      pulled the data, the zone was 69 °F at 64% RH. Plotted on the chart, that's at the
-      edge of the comfort zone, technically in spec on temperature, well outside on humidity.
-      What we found: the AHU was cooling with a low supply-air temperature setpoint (52 °F) and
-      then dialing the airflow way down to avoid overcooling. Result: small volumes of very
-      cold, very saturated air that condensed back out moisture in the duct and never properly
-      mixed in the room. The fix was to raise the supply-air setpoint to 57 °F, increase
-      airflow, and let the room temperature regulate by volume rather than by temperature. The
-      "heavy" feel disappeared.
-    </p>
-
-    <h3>Example 2: The economizer that wasn't</h3>
-    <p>
-      In a downtown office, the AHU's economizer was supposed to use outdoor air when it was
-      cool enough, the classic "free cooling." The control sequence used dry-bulb temperature:
-      "open economizer when OA &lt; 65 °F." On a humid May morning, the building was
-      bringing in 60 °F outdoor air at 95% RH, which, by enthalpy, was carrying about as much
-      energy as 78 °F dry indoor air. The chiller had to work twice as hard to dehumidify it.
-      The fix is to switch to enthalpy-based control: "open economizer when h(OA) &lt; h(RA)."
-      The chart makes this obvious; the dry-bulb-only sequence does not.
-    </p>
-
-    <h3>Example 3: The museum gallery</h3>
-    <p>
-      The Linden Avenue Museum's textile gallery requires 50% RH ± 3%. In April, the outdoor air
-      is often around 45 °F and 70% RH, at a humidity ratio well below the gallery's target.
-      Bringing in ventilation air and heating it dry-bulb (process 1, sensible heating) drops
-      the relative humidity to about 20%. The gallery needs both heat <em>and</em> moisture
-      addition. The chart shows you can't get there with a heating coil alone, you need
-      steam humidification, sized to the OA flow at that outdoor condition. The chart is also
-      what the original designer used to size the humidifier; using it to verify what's
-      installed is how we catch that the humidifier is undersized for the design day.
-    </p>
-
-    <h2>Things the chart doesn't show, but every operator should know</h2>
-
-    <p>
-      <strong>The chart is for standard atmospheric pressure.</strong> At altitude, all the
-      values shift. Denver requires a different chart from Chicago. Most controls software
-      handles this correctly; some don't. Worth verifying once.
-    </p>
-
-    <p>
-      <strong>The chart assumes the air is well-mixed.</strong> Stratification in a poorly-mixed
-      room, or short-circuiting at a diffuser, means the air the occupant feels is not the air
-      your return-duct sensor reports. The chart doesn't catch this; field measurement does.
-    </p>
-
-    <p>
-      <strong>Latent and sensible loads vary independently.</strong> A conference room with
-      twelve people has a high latent load (breath, perspiration) but a modest sensible load.
-      A south-facing office with no people has the reverse. A control sequence tuned for one is
-      wrong for the other. The chart helps you see which kind of load you have.
-    </p>
-
-    <h2>Get it on the wall, and look at it</h2>
-
-    <p>
-      The chart isn't a quiz item. It's an analytical tool. The next time you have a comfort
-      complaint, a humidity excursion, or a "why is the AHU doing that" question, draw the
-      state points on the chart before you do anything else. The answer is often visible in
-      ten seconds.
-    </p>
-
-    <p>
-      The single best upgrade we recommend for a facility operations office is a large, framed,
-      laminated psychrometric chart on the wall, with a dry-erase marker next to it. The
-      cheapest, most useful tool in the room.
-    </p>
-
-    <div class="divider"></div>
-    <p style="font-family: var(--serif); font-style: italic; color: var(--muted);">
-      Alyson Park is the founding principal of Surds. She is, by her own admission, slightly
-      obsessed with the psychrometric chart, and has been since her first mechanical-design
-      class in 1996.
-    </p>
-  </div>
+<article class="article">
+  <p>Air is a mixture of dry air and water vapour, and almost every HVAC decision is really a question about that mixture. You don't need the whole chart in your head — you need four numbers and how they move.</p>
+  <h2>The four numbers</h2>
+  <p><b>Dry-bulb</b> is the temperature you feel on a thermometer. <b>Wet-bulb</b> is what you'd read with a wet sock over the bulb — it folds in how much the air can still absorb. <b>Dew point</b> is where vapour starts to condense. <b>Enthalpy</b> is the total heat, sensible plus latent, and it's the one that decides whether your economiser should open.</p>
+  <blockquote>Cooling coils don't chase temperature. They chase enthalpy.</blockquote>
+  <h2>Why operators care</h2>
+  <p>A gallery stuck at 53% RH, a coil sweating, an economiser that opens at the wrong time — all of these are points on a psychrometric chart drifting where you don't want them. Plot the state, and the fix is usually obvious.</p>
+  <div class="figure"><svg viewBox="0 0 600 240" style="width:100%"><g stroke="#8a8676" stroke-width="0.6" opacity="0.5"><line x1="40" y1="200" x2="560" y2="200"/><line x1="40" y1="40" x2="40" y2="200"/></g><path d="M40 190 Q300 180 560 60" stroke="#C54D2D" fill="none" stroke-width="1.4"/><g fill="#DB6A3F"><circle cx="220" cy="150" r="5"/></g><text x="232" y="148" fill="#cabfb0" font-family="JetBrains Mono,monospace" font-size="11">state</text><text x="500" y="220" fill="#8a8676" font-family="JetBrains Mono,monospace" font-size="10">dry-bulb →</text></svg><figcaption>One state point. Move it, and you've described the whole problem.</figcaption></div>
+  <p><a href="../equipment.html" style="color:var(--green)">The sensors that read it →</a></p>
 </article>
 
-<footer>
-  <div class="container">
-    <div class="footer-grid">
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
       <div>
-        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
-          <span class="brand-mark" style="background: var(--accent);">S</span>
-          Surds
-        </div>
-        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
-          Independent HVAC controls &amp; building intelligence.
-        </p>
+        <a href="../index.html" class="brand" style="margin-bottom:16px"><span class="brand__mark">S</span> Surds</a>
+        <p class="lede" style="font-size:0.92rem;max-width:34ch">HVAC controls &amp; live 3D building twins. IIT Kharagpur, India.</p>
       </div>
-      <div>
-        <h4>Practice</h4>
-        <ul>
-          <li><a href="../services.html">Services</a></li>
-          <li><a href="../equipment.html">Equipment</a></li>
-          <li><a href="../technologies.html">Technologies</a></li>
-          <li><a href="index.html">Insights</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Firm</h4>
-        <ul>
-          <li><a href="../index.html#about">About</a></li>
-          <li><a href="../contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Office</h4>
-        <ul>
-          <li>STEP-IIT Kharagpur</li>
-          <li>Kharagpur, West Bengal 721302</li>
-        </ul>
-      </div>
+      <div><h4>Practice</h4><ul><li><a href="../services.html">Services</a></li><li><a href="../technologies.html">Technology</a></li><li><a href="../equipment.html">Sensors</a></li><li><a href="../case-studies.html">Work</a></li></ul></div>
+      <div><h4>Firm</h4><ul><li><a href="index.html">Insights</a></li><li><a href="../contact.html">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+      <div><h4>Office</h4><ul><li>STEP-IIT Kharagpur</li><li>West Bengal 721302</li><li>automate@surds.co.in</li></ul></div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 Surds. All rights reserved.</span>
-    </div>
+    <div class="footer__big">SURDS</div>
+    <div class="footer__bottom"><span>© 2026 Surds — all rights reserved</span><span>Privacy · Terms · Accessibility</span></div>
   </div>
 </footer>
 
-<script src="../js/main.js"></script>
+<script src="../js/app.js"></script>
 </body>
 </html>

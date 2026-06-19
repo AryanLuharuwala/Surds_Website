@@ -2,370 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>The Chilled-Water Plant, Top to Bottom | Surds</title>
-  <meta name="description" content="Compressors, evaporators, condensers, towers, pumps. How a commercial chilled-water plant actually works, and where the savings hide."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The chilled-water plant, top to bottom — Surds</title>
+  <meta name="description" content="Chillers, towers, pumps and ΔT — how the cold actually gets made and moved." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
 
-<nav class="site-nav">
-  <div class="nav-inner">
-    <a href="../index.html" class="brand">
-      <span class="brand-mark">S</span>
-      Surds
-    </a>
-    <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
-    <ul class="nav-links">
+<nav class="nav">
+  <div class="nav__in">
+    <a href="../index.html" class="brand"><span class="brand__mark">S</span> Surds</a>
+    <button class="nav__toggle" aria-label="Menu">☰</button>
+    <ul class="nav__links">
+      <li><a href="../index.html">Twin</a></li>
       <li><a href="../services.html">Services</a></li>
-      <li><a href="../equipment.html">Equipment</a></li>
-      <li><a href="../technologies.html">Technologies</a></li>
-      <li><a href="index.html">Insights</a></li>
+      <li><a href="../technologies.html">Technology</a></li>
+      <li><a href="../equipment.html">Sensors</a></li>
+      <li><a href="../case-studies.html">Work</a></li>
+      <li><a href="index.html" class="active">Insights</a></li>
     </ul>
-    <a href="../contact.html" class="nav-cta">Talk to us</a>
+    <a href="../contact.html" class="nav__cta">Scan my building</a>
   </div>
 </nav>
 
-<header class="article-hero">
-  <div class="narrow">
-    <div class="breadcrumb"><a href="index.html" style="color:var(--accent-2);">Insights</a> · Plant operations</div>
-    <h1>The Chilled-Water Plant, Top to Bottom</h1>
-    <p style="font-family: var(--serif); font-size: 1.4rem; font-style: italic; color: rgba(246,242,236,0.82); max-width: 52ch;">
-      Five pieces of equipment, four loops, two pressures. The machine that cools every
-      commercial building you've ever stepped into, and where most of its savings hide.
-    </p>
-    <div class="byline">by Priya Iyer · Operations &amp; Tuning Lead</div>
-    <div class="meta">9 min read · May 2026</div>
+<section class="phero gridbg">
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Insights</a> / Plant</div>
+    <h1>THE CHILLED-WATER<br>PLANT, TOP TO BOTTOM.</h1>
+    <p class="lede">Chillers, towers, pumps and one stubborn number — ΔT. How the cold gets made and moved.</p>
   </div>
-  <div class="article-hero-img">
-    <svg viewBox="0 0 1240 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">
-      <rect width="1240" height="480" fill="#0e1a26"/>
-      <!-- Cooling tower -->
-      <rect x="80" y="60" width="240" height="180" fill="#142231" stroke="#3a5670" stroke-width="2"/>
-      <g stroke="#5a7090" stroke-width="1.3">
-        <line x1="100" y1="60" x2="100" y2="240"/>
-        <line x1="140" y1="60" x2="140" y2="240"/>
-        <line x1="180" y1="60" x2="180" y2="240"/>
-        <line x1="220" y1="60" x2="220" y2="240"/>
-        <line x1="260" y1="60" x2="260" y2="240"/>
-        <line x1="300" y1="60" x2="300" y2="240"/>
-      </g>
-      <circle cx="200" cy="40" r="20" fill="none" stroke="#b87333" stroke-width="2"/>
-      <g stroke="#b87333" stroke-width="1.5" fill="#b87333" opacity="0.5">
-        <path d="M 200 22 L 206 40 L 200 58 L 194 40 Z"/>
-      </g>
-      <!-- Chiller -->
-      <rect x="500" y="100" width="280" height="160" fill="#142231" stroke="#3a5670" stroke-width="2"/>
-      <rect x="520" y="120" width="50" height="120" fill="#0a141f" stroke="#7ab8d6"/>
-      <rect x="710" y="120" width="50" height="120" fill="#0a141f" stroke="#d97070"/>
-      <circle cx="640" cy="180" r="40" fill="none" stroke="#b87333" stroke-width="3"/>
-      <circle cx="640" cy="180" r="28" fill="#b87333" opacity="0.25"/>
-      <!-- Boiler / load building -->
-      <rect x="900" y="80" width="260" height="220" fill="#142231" stroke="#3a5670" stroke-width="2"/>
-      <g stroke="rgba(216,207,191,0.2)" stroke-width="0.5">
-        <line x1="900" y1="140" x2="1160" y2="140"/>
-        <line x1="900" y1="200" x2="1160" y2="200"/>
-        <line x1="900" y1="260" x2="1160" y2="260"/>
-      </g>
-      <!-- Pipes between -->
-      <path d="M 320 130 L 500 130" stroke="#d99858" stroke-width="5"/>
-      <path d="M 320 200 L 500 200" stroke="#7ab8d6" stroke-width="5"/>
-      <path d="M 780 130 L 900 130" stroke="#7ab8d6" stroke-width="5"/>
-      <path d="M 780 200 L 900 200" stroke="#d99858" stroke-width="5"/>
-      <!-- Floor -->
-      <rect y="400" width="1240" height="80" fill="#070d14"/>
-    </svg>
-    <div class="caption">Schematic central plant. Cooling tower (left), chiller (center), building load (right).</div>
-  </div>
-</header>
+</section>
 
-<article class="article-body">
-  <div class="narrow">
-
-    <p>
-      In most commercial buildings, the basement holds a piece of equipment that is, by a wide
-      margin, the single largest electrical load in the property. It is also, by a wide margin,
-      the most poorly understood. The chilled-water plant, the chiller, the cooling tower, the
-      pumps, and the controls that bind them, typically draws between thirty and fifty percent
-      of the building's total electricity. If we tune it well, that figure can fall to
-      twenty-five. If we tune it poorly, it can climb to sixty.
-    </p>
-    <p>
-      This piece is a walkthrough. Not a textbook, there are excellent ones already, and we'll
-      point you at them at the end. The aim here is the working picture an operator or owner
-      needs to make decisions about their own plant: <em>what's in it, what each part is
-      doing, where the dials are, and what we look at when we tune one.</em>
-    </p>
-
-    <h2>The plant in one sentence</h2>
-
-    <p>
-      A chilled-water plant moves heat from inside the building to outside. The chiller is the
-      pump that does the moving; the tower is the place where the heat is finally given to the
-      sky. Everything else, the loops, the pumps, the valves, is plumbing in service of those
-      two facts.
-    </p>
-
-    <blockquote>
-      A chiller does not "make cold." It moves heat. Cold is what's left when the heat has been
-      moved elsewhere.
-    </blockquote>
-
-    <p>
-      That distinction sounds pedantic and isn't. It is the whole reason a chiller is more
-      efficient on a cool day than a hot one, the heat has a shorter trip uphill on the
-      pressure-enthalpy curve. We'll come back to this when we talk about condenser-water reset.
-    </p>
-
-    <h2>Tour the equipment</h2>
-
-    <h3>The chiller</h3>
-    <p>
-      The chiller is a refrigeration cycle, scaled up. Refrigerant evaporates in the evaporator
-      bundle, absorbing heat from the chilled-water side. The compressor, centrifugal,
-      magnetic-bearing, screw, or scroll, raises the refrigerant's pressure and pushes it into
-      the condenser. There the refrigerant gives up its heat to the condenser-water side, drops
-      back to liquid, and passes through an expansion device to start the cycle again.
-    </p>
-    <p>
-      Two efficiency numbers matter. <strong>kW/ton</strong> at the current operating point,
-      what the chiller is doing right now, and <strong>IPLV</strong>, an integrated part-load
-      value weighted across a representative load profile. A modern water-cooled centrifugal
-      sits between 0.35 and 0.45 IPLV. Anything above 0.6 IPLV in a building newer than
-      ten years old is leaving real money on the floor.
-    </p>
-
-    <h3>The cooling tower</h3>
-    <p>
-      The tower is where the heat actually leaves the building. Hot condenser water, typically
-      around 95 °F leaving the chiller, is sprayed over a fill medium while a fan pulls air
-      through it. About 1% of the water evaporates, and the latent heat of that evaporation
-      carries away the rest of the heat. The cooled water collects in the sump and returns to
-      the chiller, usually 7-10 °F cooler than it left.
-    </p>
-    <p>
-      The tower's theoretical limit is the outdoor wet-bulb temperature. The difference between
-      the leaving water and the wet bulb is the <strong>approach temperature</strong>. A good
-      tower runs a 5-8 °F approach at design conditions; a tired or fouled tower can run 15 °F
-      or worse, which the chiller pays for in compressor lift.
-    </p>
-
-    <div class="callout">
-      <h4>Tuning lever · condenser-water reset</h4>
-      <p>
-        Every degree of condenser-water supply temperature you can reduce saves the chiller
-        about 1.5-2% on its compressor work. That's why we run the tower fan harder than a
-        naive operator would, to push the condenser water as cold as the wet bulb will allow.
-        Where the trade-off lives: tower fan kW vs. chiller compressor kW. Modern controls
-        optimize the tradeoff continuously. Old controls used a fixed setpoint and gave up half
-        the savings.
-      </p>
-    </div>
-
-    <h3>The pumps</h3>
-    <p>
-      Two loops, two (or more) pumps. <strong>Chilled-water pumps (CHW)</strong> push cold water
-      through the building's air-handling coils and fan-coils. <strong>Condenser-water pumps
-      (CW)</strong> push warm water from the chiller up to the tower and back.
-    </p>
-    <p>
-      Two principles govern pumping:
-    </p>
-    <ol>
-      <li>
-        <strong>Variable speed, always.</strong> Constant-speed pumping in a modern plant is
-        engineering malpractice. A VFD that lets you drop pump speed to 50% drops the input
-        power to roughly 12.5% (the cube law). The capital cost is repaid in a single cooling
-        season in most climates.
-      </li>
-      <li>
-        <strong>Differential-pressure reset.</strong> Don't hold a fixed loop pressure. Reset
-        the pressure setpoint down as terminal valves close, and back up as they open. The
-        most-open valve in the building is your indicator: when it's at 95% open, the loop has
-        enough pressure; when it's at 60%, the loop has too much.
-      </li>
-    </ol>
-
-    <h3>The piping arrangement</h3>
-    <p>
-      Real plants come in flavors. <strong>Primary-secondary</strong> decouples the chiller's
-      constant or near-constant flow from the building's variable flow with a hydraulic
-      separator. <strong>Variable-primary</strong> runs the entire loop on the chiller's own
-      pump, modulated by a VFD, cheaper to install, slightly more demanding to control.
-      <strong>Series chiller</strong> arrangements stack two chillers in the same flow path to
-      reduce evaporator approach. Each has its place; none is universally right.
-    </p>
-
-    <h2>Where the savings hide</h2>
-
-    <p>
-      Most chilled-water plants are not under-equipped. They are misconfigured. Five
-      misconfigurations account for the bulk of the savings we deliver:
-    </p>
-
-    <h3>1. Low delta-T syndrome</h3>
-    <p>
-      The plant is sized to deliver 44 °F supply and return 58 °F, a 14 °F spread. In service,
-      it returns 50 °F. Now the pumps have to move forty percent more flow to deliver the same
-      cooling, the chillers run inefficiently at part-load with low evaporator approach, and a
-      second chiller comes online when it shouldn't. The fix is rarely the plant, it's almost
-      always at the coils, where three-way valves, oversized control valves, or stuck balancing
-      valves are short-circuiting flow.
-    </p>
-
-    <h3>2. Tower fan locked at full speed</h3>
-    <p>
-      Operators sometimes lock tower fans at 100% because that's "always cold enough." It's
-      cold enough in May. In November, with a 35 °F wet bulb, the fan should be at 20% and the
-      water should be 50 °F. We have walked into plants where the tower fan was burning $40k a
-      year of fan power to save the chiller $4k of compressor work.
-    </p>
-
-    <h3>3. Chiller staging by lead-only logic</h3>
-    <p>
-      "Start CH-2 when CH-1 is at 95%." Sounds reasonable. In practice, you end up running both
-      chillers at 50% on a mild afternoon, when one chiller at 80% would have been more
-      efficient. Modern staging uses an efficiency map, sometimes literally measured kW/ton,
-      sometimes derived from a manufacturer curve, to pick the combination that costs the
-      least at the current load. Two chillers at 80% are sometimes better than one at 95%. The
-      right answer is load-dependent.
-    </p>
-
-    <h3>4. Coil-valve override</h3>
-    <p>
-      Someone, at some point, got a complaint about a warm zone, and they cranked the
-      AHU's cooling-coil valve open and walked away. Two years later, the chilled-water loop is
-      hydraulically unbalanced and the plant works harder than it should. We find one or two of
-      these in almost every plant we audit. The fix is annual sequence review, and a culture
-      that requires every override to be logged with an expiration date.
-    </p>
-
-    <h3>5. Approach drift</h3>
-    <p>
-      Evaporator and condenser approach temperatures slowly creep upward as the heat-exchanger
-      tubes foul. A new chiller might run a 1.5 °F evaporator approach; a year later it's
-      2.2; five years later it's 4. Every degree of additional approach is roughly 2% more
-      compressor work. Approach is one of the most useful early indicators of needed
-      maintenance, and one that almost nobody trends.
-    </p>
-
-    <h2>How a tuned plant runs</h2>
-
-    <p>
-      What does a well-tuned 800-ton plant look like on an average mild afternoon? Roughly this:
-    </p>
-
-    <ul>
-      <li><strong>Load:</strong> 450 tons (56% of plant capacity)</li>
-      <li><strong>Chiller online:</strong> one (CH-1), at 56% load, 0.48 kW/ton</li>
-      <li><strong>CHW supply / return:</strong> 44.0 °F / 56.8 °F (12.8 °F ΔT, good)</li>
-      <li><strong>CHW pump:</strong> 64% speed, 18.4 kW</li>
-      <li><strong>Condenser-water supply / return:</strong> 78 °F / 87 °F (reset from a setpoint of 85, allowed by a 65 °F wet bulb)</li>
-      <li><strong>Tower fan:</strong> 52% speed, 6.1 kW</li>
-      <li><strong>CW pump:</strong> 71% speed, 11.8 kW</li>
-      <li><strong>Total plant input:</strong> 252 kW = 0.56 kW/ton on the plant</li>
-    </ul>
-
-    <p>
-      An untuned plant of the same size, at the same load, will typically run between 0.85 and
-      1.10 kW/ton. That's the savings on a single afternoon. Compound it over four thousand
-      annual cooling hours and a $0.12/kWh tariff, and you're looking at $130,000 to $180,000 a
-      year, for the same building, doing the same job, with the same equipment.
-    </p>
-
-    <h2>Where the practice is heading</h2>
-
-    <p>
-      Three things are changing the chilled-water plant fast in 2026.
-    </p>
-    <p>
-      <strong>Refrigerant transition.</strong> R-134a and R-410A are being phased down under
-      the AIM Act; replacements (R-1234ze, R-454B, R-513A, R-32 in smaller equipment) have
-      slightly different P-h curves and different lubricant requirements. Plants designed in
-      2018 will retrofit to new refrigerants by 2030.
-    </p>
-    <p>
-      <strong>Heat-recovery integration.</strong> The basement is no longer purely a sink, it's
-      becoming a source. Chillers with hot-gas heat recovery, dedicated heat-recovery chillers,
-      and heat-pump chillers can serve hydronic heating loads from the same machine that serves
-      cooling. The thermodynamics are excellent, and the controls challenge is real.
-    </p>
-    <p>
-      <strong>Grid-interactive operation.</strong> As utilities introduce demand-response and
-      time-of-use pricing, chilled-water plants, especially those with thermal storage,
-      become legitimate load-shifters. Pre-cool the building from 4 to 8 a.m. (cheap, clean
-      power), coast through the afternoon. The grid wants buildings that can do this. The
-      plants that can will be rewarded.
-    </p>
-
-    <h2>Closing</h2>
-
-    <p>
-      The chilled-water plant is the single best-rewarded place to spend engineering attention
-      in most commercial buildings. The capital is already sunk; the equipment is, by and large,
-      capable; the savings are mostly software. The work is finding the misconfigurations,
-      writing the right sequences, and instrumenting carefully enough to know whether the
-      sequences are doing what they were supposed to.
-    </p>
-    <p>
-      None of which, of course, is news in 2026. We're just stubborn about it.
-    </p>
-
-    <div class="divider"></div>
-    <p style="font-family: var(--serif); font-style: italic; color: var(--muted);">
-      Priya Iyer leads Operations &amp; Tuning at Surds. Further reading: ASHRAE's Guideline
-      36 (high-performance sequences), the EVO M&amp;V Protocol, and, for a textbook,
-      Trane's <em>Engineers Newsletter</em> archive going back to the 1970s, which is
-      genuinely one of the best free resources in the industry.
-    </p>
-  </div>
+<article class="article">
+  <p>Most large buildings make cold in one place and spend it everywhere else. The chilled-water plant is that one place: a few big machines and a lot of pumps, tied together by water that leaves cold and comes back warm.</p>
+  <h2>Make the cold</h2>
+  <p>The chiller is the engine. It pulls heat out of the chilled-water loop and dumps it into the condenser-water loop. Efficiency lives in two resets: lift the chilled-water supply temperature when you can, and drop the condenser-water temperature when the towers allow.</p>
+  <h2>Reject the heat</h2>
+  <p>Cooling towers throw that condenser heat to the sky by evaporating a little water. Variable-speed fans chase a setpoint; the closer the tower gets to wet-bulb, the less work the chiller does downstream.</p>
+  <blockquote>Low ΔT syndrome is the quiet tax on half the plants we walk into.</blockquote>
+  <h2>Move it well</h2>
+  <p>Pumps push the water around. The number that tells you whether the loop is healthy is <b>ΔT</b> — the gap between supply and return. Design it for 12&nbsp;°F, run it at 6, and you're pumping twice the water for the same cooling. Recover ΔT and pumping energy falls off a cliff.</p>
+  <div class="figure"><svg viewBox="0 0 600 220" style="width:100%"><g stroke="#7fa08a" stroke-width="2" fill="none"><path d="M60 60 H540"/></g><g stroke="#a5482e" stroke-width="2" fill="none"><path d="M60 160 H540"/></g><g fill="#cabfb0" font-family="JetBrains Mono,monospace" font-size="11"><text x="60" y="48">SUPPLY 44°F</text><text x="60" y="184">RETURN 56°F</text></g><text x="470" y="115" fill="#DB6A3F" font-family="Anton,Impact" font-size="22">ΔT 12°</text></svg><figcaption>Supply out, return back — the whole plant lives in that gap.</figcaption></div>
+  <p><a href="../case-studies.html" style="color:var(--green)">See a plant we retuned →</a></p>
 </article>
 
-<footer>
-  <div class="container">
-    <div class="footer-grid">
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
       <div>
-        <div class="brand" style="color: var(--paper); margin-bottom: 16px;">
-          <span class="brand-mark" style="background: var(--accent);">S</span>
-          Surds
-        </div>
-        <p style="color: rgba(246,242,236,0.6); font-size: 0.92rem; max-width: 36ch;">
-          Independent HVAC controls &amp; building intelligence.
-        </p>
+        <a href="../index.html" class="brand" style="margin-bottom:16px"><span class="brand__mark">S</span> Surds</a>
+        <p class="lede" style="font-size:0.92rem;max-width:34ch">HVAC controls &amp; live 3D building twins. IIT Kharagpur, India.</p>
       </div>
-      <div>
-        <h4>Practice</h4>
-        <ul>
-          <li><a href="../services.html">Services</a></li>
-          <li><a href="../equipment.html">Equipment</a></li>
-          <li><a href="../technologies.html">Technologies</a></li>
-          <li><a href="index.html">Insights</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Firm</h4>
-        <ul>
-          <li><a href="../index.html#about">About</a></li>
-          <li><a href="../contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Office</h4>
-        <ul>
-          <li>STEP-IIT Kharagpur</li>
-          <li>Kharagpur, West Bengal 721302</li>
-        </ul>
-      </div>
+      <div><h4>Practice</h4><ul><li><a href="../services.html">Services</a></li><li><a href="../technologies.html">Technology</a></li><li><a href="../equipment.html">Sensors</a></li><li><a href="../case-studies.html">Work</a></li></ul></div>
+      <div><h4>Firm</h4><ul><li><a href="index.html">Insights</a></li><li><a href="../contact.html">Contact</a></li><li><a href="#">Careers</a></li></ul></div>
+      <div><h4>Office</h4><ul><li>STEP-IIT Kharagpur</li><li>West Bengal 721302</li><li>automate@surds.co.in</li></ul></div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 Surds. All rights reserved.</span>
-    </div>
+    <div class="footer__big">SURDS</div>
+    <div class="footer__bottom"><span>© 2026 Surds — all rights reserved</span><span>Privacy · Terms · Accessibility</span></div>
   </div>
 </footer>
 
-<script src="../js/main.js"></script>
+<script src="../js/app.js"></script>
 </body>
 </html>

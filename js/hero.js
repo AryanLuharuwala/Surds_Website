@@ -99,6 +99,10 @@ if (renderer) {
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
+  // theme awareness — orange glass/aura blow out on the light field, so dial them down
+  let lightMode = document.documentElement.getAttribute('data-theme') === 'light';
+  window.addEventListener('themechange', (e) => { lightMode = (e.detail && e.detail.theme) === 'light'; });
+
   // pointer parallax
   let px = 0, py = 0, tx = 0, ty = 0;
   window.addEventListener('pointermove', (e) => {
@@ -129,7 +133,8 @@ if (renderer) {
     solidMat.opacity = solidO;
     solid.visible = solidO > 0.02;
     wireMat.opacity = meshIn; floorMat.opacity = meshIn * 0.75;
-    glassMat.opacity = meshIn * 0.13; auraMat.opacity = meshIn * 0.1;
+    glassMat.opacity = meshIn * (lightMode ? 0.04 : 0.12);
+    auraMat.opacity = meshIn * (lightMode ? 0.0 : 0.1);
 
     // scan sweep
     const sp = smooth(0.18, 0.4, p);

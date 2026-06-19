@@ -16,6 +16,8 @@
   };
   let theme = 'dark';
   try { theme = localStorage.getItem('surds-theme') || 'dark'; } catch (e) {}
+  const q = (location.search.match(/theme=(light|dark)/) || [])[1] || (location.hash === '#light' ? 'light' : '');
+  if (q) theme = q;
   root.setAttribute('data-theme', theme);
 
   onReady(() => {

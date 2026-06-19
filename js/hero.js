@@ -27,7 +27,7 @@ if (renderer) {
   const key = new THREE.DirectionalLight(0xe8d8c2, 1.4); key.position.set(4, 6, 5); scene.add(key);
   const rim = new THREE.DirectionalLight(0xc54d2d, 0.7); rim.position.set(-5, 2, -4); scene.add(rim);
 
-  const G = 0xc54d2d, G2 = 0xdb6a3f, AM = 0xe3b24a;
+  const G = 0xc54d2d, G2 = 0xdb6a3f, AM = 0xe3b24a, GRASS = 0x86ad40;
   const W = 2.2, H = 3.6, D = 1.8;
   const building = new THREE.Group();
   scene.add(building);
@@ -68,8 +68,8 @@ if (renderer) {
   const glowTex = (() => {
     const c = document.createElement('canvas'); c.width = c.height = 64;
     const x = c.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
-    g.addColorStop(0, 'rgba(255,240,225,1)'); g.addColorStop(0.25, 'rgba(219,106,63,0.9)');
-    g.addColorStop(1, 'rgba(197,77,45,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+    g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.3, 'rgba(255,255,255,0.5)');
+    g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     return new THREE.CanvasTexture(c);
   })();
 
@@ -82,7 +82,7 @@ if (renderer) {
   ];
   const sensors = sensorDefs.map(([x, y, z, warn]) => {
     const grp = new THREE.Group(); grp.position.set(x, y, z);
-    const col = warn ? AM : G2;
+    const col = warn ? AM : GRASS;
     const dot = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), new THREE.MeshBasicMaterial({ color: col }));
     const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: col, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false }));
     spr.scale.set(0.32, 0.32, 0.32);

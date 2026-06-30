@@ -201,97 +201,103 @@
       <line x1="400" y1="0" x2="400" y2="520" stroke="rgba(42,29,0,0.07)" stroke-width="1.2" stroke-dasharray="5 7"/>
       <line x1="780" y1="0" x2="780" y2="520" stroke="rgba(42,29,0,0.07)" stroke-width="1.2" stroke-dasharray="5 7"/>
 
-      <!-- ── human thermal signatures ──
-           IMPORTANT: positions are ABSOLUTE (cx/cy) not relative to group transform.
-           The .csworker CSS animation only adds a small ±7px drift from the natural
-           origin — it must NOT conflict with SVG transform positioning. ── -->
+      <!-- ── human thermal signatures · animateMotion paths ──
+           All element coords are RELATIVE to (0,0) = body centre.
+           animateMotion places each group at absolute SVG coords; rotate="0" keeps
+           figures upright regardless of travel direction. ── -->
 
-      <!-- F1 · Zone A · x=140, base_y=258 -->
-      <g class="csworker">
-        <ellipse cx="140" cy="278" rx="108" ry="84" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F1 · full-aisle patrol · 24 s -->
+      <g>
+        <animateMotion path="M 120,258 L 1080,258 L 120,258" dur="24s" begin="0s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="20" rx="108" ry="84" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="140" cy="262" rx="40" ry="60" fill="url(#rg-cyan)"/>
-          <circle  cx="144" cy="194" r="28"          fill="url(#rg-cyan)"/>
+          <ellipse cx="0" cy="4"   rx="40" ry="60" fill="url(#rg-cyan)"/>
+          <circle  cx="4" cy="-64" r="28"          fill="url(#rg-cyan)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="144" cy="264" rx="29" ry="52" fill="url(#rg-body)" transform="rotate(6,144,264)"/>
-          <ellipse cx="107" cy="254" rx="13" ry="35" fill="url(#rg-arm)"  transform="rotate(-18,107,254)"/>
-          <circle  cx="144" cy="194" r="21"          fill="url(#rg-head)"/>
+          <ellipse cx="4"   cy="6"  rx="29" ry="52" fill="url(#rg-body)" transform="rotate(6,4,6)"/>
+          <ellipse cx="-33" cy="-4" rx="13" ry="35" fill="url(#rg-arm)"  transform="rotate(-18,-33,-4)"/>
+          <circle  cx="4"   cy="-64" r="21"         fill="url(#rg-head)"/>
         </g>
       </g>
 
-      <!-- F2 · Zone A/B border · x=340, base_y=252 · arm raised -->
-      <g class="csworker">
-        <ellipse cx="340" cy="272" rx="100" ry="80" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F2 · Zone A patrol · 11 s · arm raised -->
+      <g>
+        <animateMotion path="M 160,252 L 440,252 L 160,252" dur="11s" begin="-2s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="18" rx="100" ry="80" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="340" cy="256" rx="37" ry="57" fill="url(#rg-cyan)"/>
-          <circle  cx="340" cy="188" r="26"          fill="url(#rg-cyan)"/>
-          <ellipse cx="372" cy="200" rx="13" ry="32" fill="url(#rg-cyan)" transform="rotate(-50,372,200)"/>
+          <ellipse cx="0"  cy="4"   rx="37" ry="57" fill="url(#rg-cyan)"/>
+          <circle  cx="0"  cy="-62" r="26"          fill="url(#rg-cyan)"/>
+          <ellipse cx="32" cy="-52" rx="13" ry="32" fill="url(#rg-cyan)" transform="rotate(-50,32,-52)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="340" cy="256" rx="27" ry="49" fill="url(#rg-body)"/>
-          <ellipse cx="372" cy="200" rx="12" ry="32" fill="url(#rg-arm)"  transform="rotate(-50,372,200)"/>
-          <ellipse cx="310" cy="252" rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(14,310,252)"/>
-          <circle  cx="340" cy="188" r="20"          fill="url(#rg-head)"/>
+          <ellipse cx="0"  cy="4"   rx="27" ry="49" fill="url(#rg-body)"/>
+          <ellipse cx="32" cy="-52" rx="12" ry="32" fill="url(#rg-arm)"  transform="rotate(-50,32,-52)"/>
+          <ellipse cx="-30" cy="0"  rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(14,-30,0)"/>
+          <circle  cx="0"  cy="-62" r="20"          fill="url(#rg-head)"/>
         </g>
       </g>
 
-      <!-- F3 · Zone B · x=545, base_y=262 · forward lean -->
-      <g class="csworker">
-        <ellipse cx="545" cy="282" rx="112" ry="88" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F3 · Zone B patrol · 15 s · both arms active -->
+      <g>
+        <animateMotion path="M 430,262 L 780,262 L 430,262" dur="15s" begin="-7s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="22" rx="112" ry="88" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="541" cy="270" rx="41" ry="62" fill="url(#rg-cyan)" transform="rotate(-10,541,270)"/>
-          <circle  cx="537" cy="198" r="28"          fill="url(#rg-cyan)"/>
+          <ellipse cx="-4" cy="8"   rx="41" ry="62" fill="url(#rg-cyan)" transform="rotate(-10,-4,8)"/>
+          <circle  cx="-8" cy="-58" r="28"          fill="url(#rg-cyan)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="541" cy="272" rx="31" ry="54" fill="url(#rg-body)" transform="rotate(-12,541,272)"/>
-          <ellipse cx="509" cy="278" rx="13" ry="37" fill="url(#rg-arm)"  transform="rotate(20,509,278)"/>
-          <ellipse cx="573" cy="260" rx="13" ry="36" fill="url(#rg-arm)"  transform="rotate(-8,573,260)"/>
-          <circle  cx="537" cy="198" r="23"          fill="url(#rg-head)"/>
+          <ellipse cx="-4"  cy="10"  rx="31" ry="54" fill="url(#rg-body)" transform="rotate(-12,-4,10)"/>
+          <ellipse cx="-36" cy="10"  rx="13" ry="37" fill="url(#rg-arm)"  transform="rotate(20,-36,10)"/>
+          <ellipse cx="28"  cy="-2"  rx="13" ry="36" fill="url(#rg-arm)"  transform="rotate(-8,28,-2)"/>
+          <circle  cx="-8"  cy="-60" r="23"          fill="url(#rg-head)"/>
         </g>
       </g>
 
-      <!-- F4 · Zone B/C · x=740, base_y=255 · slight lean -->
-      <g class="csworker">
-        <ellipse cx="740" cy="275" rx="103" ry="82" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F4 · Zone B→C sweep · 17 s -->
+      <g>
+        <animateMotion path="M 580,255 L 960,255 L 580,255" dur="17s" begin="-5s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="18" rx="103" ry="82" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="743" cy="259" rx="38" ry="59" fill="url(#rg-cyan)" transform="rotate(8,743,259)"/>
-          <circle  cx="746" cy="191" r="27"          fill="url(#rg-cyan)"/>
+          <ellipse cx="3"  cy="5"   rx="38" ry="59" fill="url(#rg-cyan)" transform="rotate(8,3,5)"/>
+          <circle  cx="6"  cy="-63" r="27"          fill="url(#rg-cyan)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="743" cy="260" rx="28" ry="51" fill="url(#rg-body)" transform="rotate(8,743,260)"/>
-          <ellipse cx="774" cy="256" rx="12" ry="34" fill="url(#rg-arm)"  transform="rotate(-16,774,256)"/>
-          <circle  cx="746" cy="191" r="21"          fill="url(#rg-head)"/>
+          <ellipse cx="3"  cy="6"   rx="28" ry="51" fill="url(#rg-body)" transform="rotate(8,3,6)"/>
+          <ellipse cx="34" cy="2"   rx="12" ry="34" fill="url(#rg-arm)"  transform="rotate(-16,34,2)"/>
+          <circle  cx="6"  cy="-63" r="21"          fill="url(#rg-head)"/>
         </g>
       </g>
 
-      <!-- F5 · Receiving · x=920, base_y=255 · reaching up to shelf -->
-      <g class="csworker">
-        <ellipse cx="920" cy="275" rx="110" ry="86" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F5 · Receiving patrol · 10 s · arm up reaching -->
+      <g>
+        <animateMotion path="M 820,255 L 1110,255 L 820,255" dur="10s" begin="-1s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="20" rx="110" ry="86" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="920" cy="259" rx="40" ry="61" fill="url(#rg-cyan)"/>
-          <circle  cx="920" cy="191" r="28"          fill="url(#rg-cyan)"/>
-          <ellipse cx="882" cy="222" rx="13" ry="35" fill="url(#rg-cyan)" transform="rotate(30,882,222)"/>
+          <ellipse cx="0"   cy="5"   rx="40" ry="61" fill="url(#rg-cyan)"/>
+          <circle  cx="0"   cy="-65" r="28"          fill="url(#rg-cyan)"/>
+          <ellipse cx="-38" cy="-30" rx="13" ry="35" fill="url(#rg-cyan)" transform="rotate(30,-38,-30)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="920" cy="260" rx="30" ry="53" fill="url(#rg-body)"/>
-          <ellipse cx="882" cy="222" rx="12" ry="35" fill="url(#rg-arm)"  transform="rotate(30,882,222)"/>
-          <ellipse cx="950" cy="260" rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(-12,950,260)"/>
-          <circle  cx="920" cy="191" r="22"          fill="url(#rg-head)"/>
+          <ellipse cx="0"   cy="6"   rx="30" ry="53" fill="url(#rg-body)"/>
+          <ellipse cx="-38" cy="-30" rx="12" ry="35" fill="url(#rg-arm)"  transform="rotate(30,-38,-30)"/>
+          <ellipse cx="30"  cy="5"   rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(-12,30,5)"/>
+          <circle  cx="0"   cy="-65" r="22"          fill="url(#rg-head)"/>
         </g>
       </g>
 
-      <!-- F6 · Receiving · x=1090, base_y=260 -->
-      <g class="csworker">
-        <ellipse cx="1090" cy="280" rx="98"  ry="78" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+      <!-- F6 · dock end · 7 s · short shuttle -->
+      <g>
+        <animateMotion path="M 980,260 L 1140,260 L 980,260" dur="7s" begin="-4s" repeatCount="indefinite" rotate="0" calcMode="paced"/>
+        <ellipse cx="0" cy="20" rx="98" ry="78" fill="url(#rg-amb)" filter="url(#f-amb)"/>
         <g filter="url(#f-cyan)">
-          <ellipse cx="1087" cy="264" rx="37" ry="57" fill="url(#rg-cyan)" transform="rotate(-5,1087,264)"/>
-          <circle  cx="1087" cy="196" r="26"          fill="url(#rg-cyan)"/>
+          <ellipse cx="-3" cy="4"   rx="37" ry="57" fill="url(#rg-cyan)" transform="rotate(-5,-3,4)"/>
+          <circle  cx="-3" cy="-62" r="26"          fill="url(#rg-cyan)"/>
         </g>
         <g filter="url(#f-bloom)">
-          <ellipse cx="1087" cy="265" rx="27" ry="50" fill="url(#rg-body)" transform="rotate(-5,1087,265)"/>
-          <ellipse cx="1060" cy="268" rx="12" ry="31" fill="url(#rg-arm)"  transform="rotate(15,1060,268)"/>
-          <circle  cx="1087" cy="196" r="20"          fill="url(#rg-head)"/>
+          <ellipse cx="-3"  cy="5"   rx="27" ry="50" fill="url(#rg-body)" transform="rotate(-5,-3,5)"/>
+          <ellipse cx="-30" cy="8"   rx="12" ry="31" fill="url(#rg-arm)"  transform="rotate(15,-30,8)"/>
+          <circle  cx="-3"  cy="-62" r="20"          fill="url(#rg-head)"/>
         </g>
       </g>
 

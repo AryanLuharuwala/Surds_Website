@@ -54,6 +54,195 @@
   </div>
 </section>
 
+<!-- ============ COLD STORAGE THERMAL BAND ============ -->
+<section class="scene coldband" style="padding:0;overflow:hidden">
+  <div class="coldband__inner">
+
+    <!-- floating callout stickers -->
+    <span class="sticker sticker--ink deco" style="--r:-2deg;--rin:-12deg;top:18px;left:22px;z-index:10">
+      <span class="tag"><span class="glowdot"></span>&nbsp; Live thermal &middot; 6 workers &middot; 0% PII</span>
+    </span>
+    <span class="sticker sticker--grass deco" style="--r:-3deg;--rin:-15deg;top:18px;right:22px;z-index:10">
+      <span class="tag">&minus;18&deg;C deep freeze &middot; sensor compensated</span>
+    </span>
+    <span class="sticker sticker--amber deco" style="--r:3deg;--rin:14deg;bottom:46px;right:22px;z-index:10">
+      <span class="tag">HVAC auto-scaled &middot; 2 unoccupied zones</span>
+    </span>
+
+    <!-- cold storage thermal plan SVG -->
+    <svg class="coldplan" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- human body heat gradient (amber → rust → transparent, same as hero) -->
+        <radialGradient id="csthb" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#ffd24a" stop-opacity="0.96"/>
+          <stop offset="40%"  stop-color="#e0602a" stop-opacity="0.72"/>
+          <stop offset="100%" stop-color="#c2402a" stop-opacity="0"/>
+        </radialGradient>
+        <!-- cool ambient glow for deep-freeze zone -->
+        <radialGradient id="zonea-cool" cx="50%" cy="50%" r="60%">
+          <stop offset="0%"   stop-color="#2a6ea8" stop-opacity="0.10"/>
+          <stop offset="100%" stop-color="#0d2040" stop-opacity="0"/>
+        </radialGradient>
+        <!-- forklift path: receiving → chilled → deep freeze, then loop -->
+        <path id="fp-fork" d="M 1060 310 H 855 V 196 H 660 V 152 H 310 V 278 H 310 V 152 H 660 V 196 H 855 V 310 H 1060"/>
+      </defs>
+
+      <!-- ── background ── -->
+      <rect width="1200" height="460" fill="#070c12"/>
+
+      <!-- subtle cold-facility grid -->
+      <g stroke="rgba(90,150,210,0.045)" stroke-width="1">
+        <line x1="0" y1="92"  x2="1200" y2="92"/><line x1="0" y1="184" x2="1200" y2="184"/>
+        <line x1="0" y1="276" x2="1200" y2="276"/><line x1="0" y1="368" x2="1200" y2="368"/>
+        <line x1="200"  y1="0" x2="200"  y2="460"/><line x1="400"  y1="0" x2="400"  y2="460"/>
+        <line x1="600"  y1="0" x2="600"  y2="460"/><line x1="800"  y1="0" x2="800"  y2="460"/>
+        <line x1="1000" y1="0" x2="1000" y2="460"/>
+      </g>
+
+      <!-- ── zone fills ── -->
+      <!-- Zone A · Deep Freeze -->
+      <rect x="10" y="10" width="390" height="440" rx="2" fill="#0e2640" fill-opacity="0.55"/>
+      <circle cx="200" cy="230" r="210" fill="url(#zonea-cool)"/>
+      <!-- Zone B · Chilled -->
+      <rect x="400" y="10" width="380" height="440" rx="2" fill="#0c2228" fill-opacity="0.40"/>
+      <!-- Zone C · Receiving (ambient) -->
+      <rect x="780" y="10" width="410" height="440" rx="2" fill="#18120a" fill-opacity="0.25"/>
+
+      <!-- ── outer walls ── -->
+      <rect x="10" y="10" width="1180" height="440" rx="3" fill="none" stroke="rgba(245,239,225,0.22)" stroke-width="1.8"/>
+      <rect x="16" y="16" width="1168" height="428" rx="2" fill="none" stroke="rgba(245,239,225,0.06)" stroke-width="1"/>
+
+      <!-- ── zone dividers ── -->
+      <line x1="400" y1="10" x2="400" y2="450" stroke="rgba(245,239,225,0.14)" stroke-width="1.5" stroke-dasharray="4 6"/>
+      <line x1="780" y1="10" x2="780" y2="450" stroke="rgba(245,239,225,0.14)" stroke-width="1.5" stroke-dasharray="4 6"/>
+
+      <!-- ── Zone A: racking (deep freeze) ── -->
+      <g stroke="rgba(70,140,215,0.17)" stroke-width="6" stroke-linecap="round">
+        <line x1="36" y1="116" x2="374" y2="116"/><line x1="36" y1="160" x2="374" y2="160"/>
+        <line x1="36" y1="204" x2="374" y2="204"/><line x1="36" y1="248" x2="374" y2="248"/>
+        <line x1="36" y1="292" x2="374" y2="292"/><line x1="36" y1="336" x2="374" y2="336"/>
+        <line x1="36" y1="380" x2="374" y2="380"/><line x1="36" y1="424" x2="374" y2="424"/>
+      </g>
+      <g stroke="rgba(70,140,215,0.08)" stroke-width="1.8">
+        <line x1="36"  y1="108" x2="36"  y2="436"/>
+        <line x1="118" y1="108" x2="118" y2="436"/>
+        <line x1="200" y1="108" x2="200" y2="436"/>
+        <line x1="282" y1="108" x2="282" y2="436"/>
+        <line x1="374" y1="108" x2="374" y2="436"/>
+      </g>
+
+      <!-- ── Zone B: racking (chilled) ── -->
+      <g stroke="rgba(50,130,155,0.14)" stroke-width="6" stroke-linecap="round">
+        <line x1="420" y1="116" x2="764" y2="116"/><line x1="420" y1="160" x2="764" y2="160"/>
+        <line x1="420" y1="204" x2="764" y2="204"/><line x1="420" y1="248" x2="764" y2="248"/>
+        <line x1="420" y1="292" x2="764" y2="292"/><line x1="420" y1="336" x2="764" y2="336"/>
+        <line x1="420" y1="380" x2="764" y2="380"/><line x1="420" y1="424" x2="764" y2="424"/>
+      </g>
+      <g stroke="rgba(50,130,155,0.07)" stroke-width="1.8">
+        <line x1="420" y1="108" x2="420" y2="436"/>
+        <line x1="516" y1="108" x2="516" y2="436"/>
+        <line x1="612" y1="108" x2="612" y2="436"/>
+        <line x1="708" y1="108" x2="708" y2="436"/>
+        <line x1="764" y1="108" x2="764" y2="436"/>
+      </g>
+
+      <!-- ── Zone C: pallet staging positions ── -->
+      <g stroke="rgba(224,165,46,0.16)" stroke-width="1.2" fill="rgba(224,165,46,0.04)">
+        <rect x="808" y="78" width="62" height="50" rx="2"/>
+        <rect x="884" y="78" width="62" height="50" rx="2"/>
+        <rect x="960" y="78" width="62" height="50" rx="2"/>
+        <rect x="808" y="352" width="62" height="50" rx="2"/>
+        <rect x="884" y="352" width="62" height="50" rx="2"/>
+        <rect x="960" y="352" width="62" height="50" rx="2"/>
+      </g>
+      <!-- pallet board lines -->
+      <g stroke="rgba(224,165,46,0.09)" stroke-width="1">
+        <line x1="808" y1="91"  x2="870" y2="91"/>  <line x1="808" y1="104" x2="870" y2="104"/>
+        <line x1="884" y1="91"  x2="946" y2="91"/>  <line x1="884" y1="104" x2="946" y2="104"/>
+        <line x1="960" y1="91"  x2="1022" y2="91"/> <line x1="960" y1="104" x2="1022" y2="104"/>
+        <line x1="808" y1="365" x2="870" y2="365"/> <line x1="808" y1="378" x2="870" y2="378"/>
+        <line x1="884" y1="365" x2="946" y2="365"/> <line x1="884" y1="378" x2="946" y2="378"/>
+        <line x1="960" y1="365" x2="1022" y2="365"/><line x1="960" y1="378" x2="1022" y2="378"/>
+      </g>
+
+      <!-- ── dock doors (right wall, Zone C) ── -->
+      <g fill="rgba(245,239,225,0.04)" stroke="rgba(245,239,225,0.26)" stroke-width="1.8">
+        <rect x="1150" y="80"  width="32" height="74" rx="2"/>
+        <rect x="1150" y="194" width="32" height="74" rx="2"/>
+        <rect x="1150" y="308" width="32" height="74" rx="2"/>
+      </g>
+      <g stroke="rgba(245,239,225,0.09)" stroke-width="1">
+        <line x1="1150" y1="93"  x2="1182" y2="154"/><line x1="1150" y1="113" x2="1182" y2="154"/><line x1="1150" y1="133" x2="1182" y2="154"/>
+        <line x1="1150" y1="207" x2="1182" y2="268"/><line x1="1150" y1="227" x2="1182" y2="268"/><line x1="1150" y1="247" x2="1182" y2="268"/>
+        <line x1="1150" y1="321" x2="1182" y2="382"/><line x1="1150" y1="341" x2="1182" y2="382"/><line x1="1150" y1="361" x2="1182" y2="382"/>
+      </g>
+
+      <!-- ── AHU units (top header strip) ── -->
+      <!-- AHU-A · low load (zone unoccupied) -->
+      <circle cx="200" cy="46" r="15" fill="rgba(111,143,62,0.08)" stroke="#4d6628" stroke-width="1.4"/>
+      <line x1="191" y1="46" x2="209" y2="46" stroke="#4d6628" stroke-width="1.4"/>
+      <line x1="200" y1="37" x2="200" y2="55" stroke="#4d6628" stroke-width="1.4"/>
+      <text x="222" y="50" fill="#4d6628" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-A</text>
+      <path d="M200 61 V76 H392" fill="none" stroke="#4d6628" stroke-width="1.7" class="duct"/>
+
+      <!-- AHU-B · low load (zone 1 worker) -->
+      <circle cx="585" cy="46" r="15" fill="rgba(111,143,62,0.08)" stroke="#4d6628" stroke-width="1.4"/>
+      <line x1="576" y1="46" x2="594" y2="46" stroke="#4d6628" stroke-width="1.4"/>
+      <line x1="585" y1="37" x2="585" y2="55" stroke="#4d6628" stroke-width="1.4"/>
+      <text x="607" y="50" fill="#4d6628" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-B</text>
+      <path d="M585 61 V76 H772" fill="none" stroke="#4d6628" stroke-width="1.7" class="duct"/>
+
+      <!-- AHU-C · active (receiving, 4 workers) -->
+      <circle cx="985" cy="46" r="15" fill="rgba(147,178,87,0.15)" stroke="#6f8f3e" stroke-width="2"/>
+      <line x1="976" y1="46" x2="994" y2="46" stroke="#6f8f3e" stroke-width="2"/>
+      <line x1="985" y1="37" x2="985" y2="55" stroke="#6f8f3e" stroke-width="2"/>
+      <text x="1007" y="50" fill="#6f8f3e" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-C</text>
+      <path d="M985 61 V76 H1144" fill="none" stroke="#6f8f3e" stroke-width="2.2" class="duct"/>
+
+      <!-- ── zone temperature + HVAC labels ── -->
+      <g font-family="Space Mono,monospace" font-weight="700" letter-spacing="0.07em">
+        <text x="30" y="80"  font-size="10" fill="rgba(90,170,235,0.50)">ZONE A &middot; &minus;18&deg;C</text>
+        <text x="30" y="96"  font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
+        <text x="420" y="80" font-size="10" fill="rgba(60,195,200,0.50)">ZONE B &middot; +4&deg;C</text>
+        <text x="420" y="96" font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
+        <text x="800" y="80" font-size="10" fill="rgba(224,165,46,0.68)">RECEIVING &middot; +18&deg;C</text>
+        <text x="800" y="96" font-size="9"  fill="#6f8f3e">HVAC 78% &middot; 4 WORKERS DETECTED</text>
+      </g>
+
+      <!-- ── human thermal signatures ── -->
+      <!-- W1 · Zone A · lone worker by racking -->
+      <g class="csworker"><circle cx="160" cy="282" r="56" fill="url(#csthb)" class="tb"/><circle cx="160" cy="282" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- W2 · Zone B · upper aisle -->
+      <g class="csworker"><circle cx="510" cy="198" r="56" fill="url(#csthb)" class="tb b2"/><circle cx="510" cy="198" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- W3 · Zone B · lower aisle -->
+      <g class="csworker"><circle cx="662" cy="344" r="56" fill="url(#csthb)" class="tb b3"/><circle cx="662" cy="344" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- W4 · Receiving · near pallets -->
+      <g class="csworker"><circle cx="872" cy="210" r="56" fill="url(#csthb)" class="tb"/><circle cx="872" cy="210" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- W5 · Receiving · near dock -->
+      <g class="csworker"><circle cx="992" cy="318" r="56" fill="url(#csthb)" class="tb b2"/><circle cx="992" cy="318" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- W6 · Receiving · near dock (clustered) -->
+      <g class="csworker"><circle cx="1068" cy="238" r="56" fill="url(#csthb)" class="tb b4"/><circle cx="1068" cy="238" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+
+      <!-- ── forklift (animates receiving → chilled → deep freeze → return) ── -->
+      <!-- faint path trace -->
+      <path d="M 1060 310 H 855 V 196 H 660 V 152 H 310 V 278" fill="none" stroke="rgba(245,239,225,0.065)" stroke-width="2" stroke-dasharray="3 10"/>
+      <g filter="drop-shadow(0 0 5px rgba(245,239,225,0.5))">
+        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="rgba(245,239,225,0.72)"/>
+        <!-- fork prongs -->
+        <line x1="-9" y1="-2" x2="-16" y2="-2" stroke="rgba(245,239,225,0.72)" stroke-width="1.5"/>
+        <line x1="-9" y1=" 2" x2="-16" y2=" 2" stroke="rgba(245,239,225,0.72)" stroke-width="1.5"/>
+        <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
+          <mpath href="#fp-fork"/>
+        </animateMotion>
+      </g>
+
+      <!-- ── bottom watermark ── -->
+      <text x="600" y="453" fill="rgba(245,239,225,0.13)" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.13em" text-anchor="middle">NO FACE &middot; ONLY HEAT &middot; SURDS THERMAL LAYER</text>
+    </svg>
+  </div>
+  <span class="coldband__foot">SURDS &middot; COLD STORAGE &middot; LIVE SPATIAL TWIN</span>
+</section>
+
 <!-- ============ THE IDEA / MANIFESTO ============ -->
 <section class="scene" id="idea" style="padding-top:clamp(20px,3vw,40px)">
   <div class="scene__in">

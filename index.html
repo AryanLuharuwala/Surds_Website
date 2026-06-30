@@ -69,175 +69,255 @@
       <span class="tag">HVAC auto-scaled &middot; 2 unoccupied zones</span>
     </span>
 
-    <!-- cold storage thermal plan SVG -->
-    <svg class="coldplan" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <!-- cold storage thermal plan SVG — light background, proper thermal camera palette -->
+    <svg class="coldplan" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <!-- human body heat gradient (amber → rust → transparent, same as hero) -->
-        <radialGradient id="csthb" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stop-color="#ffd24a" stop-opacity="0.96"/>
-          <stop offset="40%"  stop-color="#e0602a" stop-opacity="0.72"/>
-          <stop offset="100%" stop-color="#c2402a" stop-opacity="0"/>
+        <!-- ── thermal gradients ── -->
+        <!-- large ambient heat cloud: bright yellow-gold → orange → transparent -->
+        <radialGradient id="rg-amb" cx="50%" cy="55%" r="50%">
+          <stop offset="0%"   stop-color="#ffe000" stop-opacity="0.85"/>
+          <stop offset="38%"  stop-color="#ff9800" stop-opacity="0.60"/>
+          <stop offset="72%"  stop-color="#ff5500" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="#ff3300" stop-opacity="0"/>
         </radialGradient>
-        <!-- cool ambient glow for deep-freeze zone -->
-        <radialGradient id="zonea-cool" cx="50%" cy="50%" r="60%">
-          <stop offset="0%"   stop-color="#2a6ea8" stop-opacity="0.10"/>
-          <stop offset="100%" stop-color="#0d2040" stop-opacity="0"/>
+        <!-- body core: deep red → orange-red, hot at top (head/shoulders) -->
+        <radialGradient id="rg-body" cx="50%" cy="30%" r="62%">
+          <stop offset="0%"   stop-color="#bb0000" stop-opacity="1"/>
+          <stop offset="28%"  stop-color="#ee2200" stop-opacity="0.97"/>
+          <stop offset="55%"  stop-color="#ff6600" stop-opacity="0.93"/>
+          <stop offset="82%"  stop-color="#ffaa00" stop-opacity="0.88"/>
+          <stop offset="100%" stop-color="#ffe000" stop-opacity="0.78"/>
         </radialGradient>
-        <!-- forklift path: receiving → chilled → deep freeze, then loop -->
-        <path id="fp-fork" d="M 1060 310 H 855 V 196 H 660 V 152 H 310 V 278 H 310 V 152 H 660 V 196 H 855 V 310 H 1060"/>
+        <!-- head: very hot (darkest red core) -->
+        <radialGradient id="rg-head" cx="50%" cy="44%" r="52%">
+          <stop offset="0%"   stop-color="#990000" stop-opacity="1"/>
+          <stop offset="42%"  stop-color="#cc1100" stop-opacity="0.98"/>
+          <stop offset="100%" stop-color="#ff4400" stop-opacity="0.90"/>
+        </radialGradient>
+        <!-- arms / extremities: cooler orange -->
+        <radialGradient id="rg-arm" cx="50%" cy="45%" r="50%">
+          <stop offset="0%"   stop-color="#ee3300" stop-opacity="0.95"/>
+          <stop offset="55%"  stop-color="#ff7700" stop-opacity="0.88"/>
+          <stop offset="100%" stop-color="#ffcc00" stop-opacity="0.72"/>
+        </radialGradient>
+        <!-- cyan outer ring: the cold edge artifact of thermal cameras -->
+        <radialGradient id="rg-cyan" cx="50%" cy="50%" r="50%">
+          <stop offset="55%"  stop-color="#00ccdd" stop-opacity="0"/>
+          <stop offset="82%"  stop-color="#00ccdd" stop-opacity="0.38"/>
+          <stop offset="100%" stop-color="#00ccdd" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- ── filters ── -->
+        <!-- heavy blur for ambient heat cloud -->
+        <filter id="f-amb" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="16"/>
+        </filter>
+        <!-- bloom: blur + merge with original — the thermal glow look -->
+        <filter id="f-bloom" x="-35%" y="-35%" width="170%" height="170%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <!-- slight blur for cyan ring -->
+        <filter id="f-cyan" x="-25%" y="-25%" width="150%" height="150%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+        </filter>
+        <!-- shelf drop shadow -->
+        <filter id="f-shelf" x="-5%" y="-10%" width="115%" height="130%">
+          <feDropShadow dx="5" dy="6" stdDeviation="5" flood-color="rgba(80,55,20,0.13)"/>
+        </filter>
+
+        <!-- ── forklift animation path ── -->
+        <path id="fp-fork" d="M 1080 390 H 820 V 280 H 620 V 150 H 160 V 280 H 620 V 390 H 820 V 390"/>
       </defs>
 
-      <!-- ── background ── -->
-      <rect width="1200" height="460" fill="#070c12"/>
+      <!-- ── background: warm cream, like a lit cold store floor ── -->
+      <rect width="1200" height="520" fill="#f5f0e8"/>
 
-      <!-- subtle cold-facility grid -->
-      <g stroke="rgba(90,150,210,0.045)" stroke-width="1">
-        <line x1="0" y1="92"  x2="1200" y2="92"/><line x1="0" y1="184" x2="1200" y2="184"/>
-        <line x1="0" y1="276" x2="1200" y2="276"/><line x1="0" y1="368" x2="1200" y2="368"/>
-        <line x1="200"  y1="0" x2="200"  y2="460"/><line x1="400"  y1="0" x2="400"  y2="460"/>
-        <line x1="600"  y1="0" x2="600"  y2="460"/><line x1="800"  y1="0" x2="800"  y2="460"/>
-        <line x1="1000" y1="0" x2="1000" y2="460"/>
+      <!-- very subtle zone temperature tint (floor wash) -->
+      <rect x="0"   y="0" width="400" height="520" fill="#ddeeff" fill-opacity="0.12"/>
+      <rect x="400" y="0" width="380" height="520" fill="#ddf5f0" fill-opacity="0.09"/>
+
+      <!-- ── isometric cold-storage racking — two long rows ── -->
+      <!-- Each rack: top face (parallelogram, white), front face (light gray), right-side cap -->
+
+      <!-- ROW 1 — upper shelf rail (y≈90) -->
+      <g filter="url(#f-shelf)">
+        <polygon points="55,90  1145,90  1160,76  70,76"   fill="#ffffff"/>
+        <polygon points="55,90  1145,90  1145,108  55,108" fill="#ece8e0"/>
+        <polygon points="1145,90  1160,76  1160,94  1145,108" fill="#e0dbd2"/>
+      </g>
+      <!-- ROW 1 — lower shelf rail (y≈144) -->
+      <g filter="url(#f-shelf)">
+        <polygon points="55,144  1145,144  1160,130  70,130"   fill="#ffffff"/>
+        <polygon points="55,144  1145,144  1145,162  55,162"   fill="#ece8e0"/>
+        <polygon points="1145,144  1160,130  1160,148  1145,162" fill="#e0dbd2"/>
+      </g>
+      <!-- uprights between rails Row 1 -->
+      <g fill="#ddd8ce">
+        <rect x="55"  y="90" width="6" height="72"/><rect x="255" y="90" width="6" height="72"/>
+        <rect x="455" y="90" width="6" height="72"/><rect x="655" y="90" width="6" height="72"/>
+        <rect x="855" y="90" width="6" height="72"/><rect x="1055" y="90" width="6" height="72"/>
+        <rect x="1145" y="90" width="6" height="72"/>
+      </g>
+      <!-- shelf back wall (very subtle depth) -->
+      <rect x="55" y="76" width="1106" height="14" rx="2" fill="#f8f6f2" stroke="#e5e0d8" stroke-width="1"/>
+
+      <!-- ROW 2 — upper shelf rail (y≈358) -->
+      <g filter="url(#f-shelf)">
+        <polygon points="55,358  1145,358  1160,344  70,344"   fill="#ffffff"/>
+        <polygon points="55,358  1145,358  1145,376  55,376"   fill="#ece8e0"/>
+        <polygon points="1145,358  1160,344  1160,360  1145,376" fill="#e0dbd2"/>
+      </g>
+      <!-- ROW 2 — lower shelf rail (y≈412) -->
+      <g filter="url(#f-shelf)">
+        <polygon points="55,412  1145,412  1160,398  70,398"   fill="#ffffff"/>
+        <polygon points="55,412  1145,412  1145,430  55,430"   fill="#ece8e0"/>
+        <polygon points="1145,412  1160,398  1160,414  1145,430" fill="#e0dbd2"/>
+      </g>
+      <!-- uprights Row 2 -->
+      <g fill="#ddd8ce">
+        <rect x="55"  y="358" width="6" height="72"/><rect x="255" y="358" width="6" height="72"/>
+        <rect x="455" y="358" width="6" height="72"/><rect x="655" y="358" width="6" height="72"/>
+        <rect x="855" y="358" width="6" height="72"/><rect x="1055" y="358" width="6" height="72"/>
+        <rect x="1145" y="358" width="6" height="72"/>
+      </g>
+      <rect x="55" y="344" width="1106" height="14" rx="2" fill="#f8f6f2" stroke="#e5e0d8" stroke-width="1"/>
+
+      <!-- Pallet stacks on shelves (white rectangles representing product) -->
+      <g fill="white" stroke="#e5e0d5" stroke-width="1">
+        <rect x="80"  y="62" width="68" height="14" rx="1"/><rect x="162" y="62" width="68" height="14" rx="1"/>
+        <rect x="290" y="62" width="68" height="14" rx="1"/><rect x="372" y="62" width="68" height="14" rx="1"/>
+        <rect x="500" y="62" width="68" height="14" rx="1"/><rect x="582" y="62" width="68" height="14" rx="1"/>
+        <rect x="710" y="62" width="68" height="14" rx="1"/><rect x="792" y="62" width="68" height="14" rx="1"/>
+        <rect x="920" y="62" width="68" height="14" rx="1"/><rect x="1002" y="62" width="68" height="14" rx="1"/>
+        <!-- Row 2 pallets -->
+        <rect x="80"  y="330" width="68" height="14" rx="1"/><rect x="162" y="330" width="68" height="14" rx="1"/>
+        <rect x="290" y="330" width="68" height="14" rx="1"/><rect x="500" y="330" width="68" height="14" rx="1"/>
+        <rect x="710" y="330" width="68" height="14" rx="1"/><rect x="920" y="330" width="68" height="14" rx="1"/>
+        <rect x="1002" y="330" width="68" height="14" rx="1"/>
       </g>
 
-      <!-- ── zone fills ── -->
-      <!-- Zone A · Deep Freeze -->
-      <rect x="10" y="10" width="390" height="440" rx="2" fill="#0e2640" fill-opacity="0.55"/>
-      <circle cx="200" cy="230" r="210" fill="url(#zonea-cool)"/>
-      <!-- Zone B · Chilled -->
-      <rect x="400" y="10" width="380" height="440" rx="2" fill="#0c2228" fill-opacity="0.40"/>
-      <!-- Zone C · Receiving (ambient) -->
-      <rect x="780" y="10" width="410" height="440" rx="2" fill="#18120a" fill-opacity="0.25"/>
+      <!-- ── zone dividers (very subtle on light bg) ── -->
+      <line x1="400" y1="0" x2="400" y2="520" stroke="rgba(42,29,0,0.07)" stroke-width="1.2" stroke-dasharray="5 7"/>
+      <line x1="780" y1="0" x2="780" y2="520" stroke="rgba(42,29,0,0.07)" stroke-width="1.2" stroke-dasharray="5 7"/>
 
-      <!-- ── outer walls ── -->
-      <rect x="10" y="10" width="1180" height="440" rx="3" fill="none" stroke="rgba(245,239,225,0.22)" stroke-width="1.8"/>
-      <rect x="16" y="16" width="1168" height="428" rx="2" fill="none" stroke="rgba(245,239,225,0.06)" stroke-width="1"/>
+      <!-- ── human thermal signatures ──
+           IMPORTANT: positions are ABSOLUTE (cx/cy) not relative to group transform.
+           The .csworker CSS animation only adds a small ±7px drift from the natural
+           origin — it must NOT conflict with SVG transform positioning. ── -->
 
-      <!-- ── zone dividers ── -->
-      <line x1="400" y1="10" x2="400" y2="450" stroke="rgba(245,239,225,0.14)" stroke-width="1.5" stroke-dasharray="4 6"/>
-      <line x1="780" y1="10" x2="780" y2="450" stroke="rgba(245,239,225,0.14)" stroke-width="1.5" stroke-dasharray="4 6"/>
-
-      <!-- ── Zone A: racking (deep freeze) ── -->
-      <g stroke="rgba(70,140,215,0.17)" stroke-width="6" stroke-linecap="round">
-        <line x1="36" y1="116" x2="374" y2="116"/><line x1="36" y1="160" x2="374" y2="160"/>
-        <line x1="36" y1="204" x2="374" y2="204"/><line x1="36" y1="248" x2="374" y2="248"/>
-        <line x1="36" y1="292" x2="374" y2="292"/><line x1="36" y1="336" x2="374" y2="336"/>
-        <line x1="36" y1="380" x2="374" y2="380"/><line x1="36" y1="424" x2="374" y2="424"/>
-      </g>
-      <g stroke="rgba(70,140,215,0.08)" stroke-width="1.8">
-        <line x1="36"  y1="108" x2="36"  y2="436"/>
-        <line x1="118" y1="108" x2="118" y2="436"/>
-        <line x1="200" y1="108" x2="200" y2="436"/>
-        <line x1="282" y1="108" x2="282" y2="436"/>
-        <line x1="374" y1="108" x2="374" y2="436"/>
+      <!-- F1 · Zone A · x=140, base_y=258 -->
+      <g class="csworker">
+        <ellipse cx="140" cy="278" rx="108" ry="84" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="140" cy="262" rx="40" ry="60" fill="url(#rg-cyan)"/>
+          <circle  cx="144" cy="194" r="28"          fill="url(#rg-cyan)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="144" cy="264" rx="29" ry="52" fill="url(#rg-body)" transform="rotate(6,144,264)"/>
+          <ellipse cx="107" cy="254" rx="13" ry="35" fill="url(#rg-arm)"  transform="rotate(-18,107,254)"/>
+          <circle  cx="144" cy="194" r="21"          fill="url(#rg-head)"/>
+        </g>
       </g>
 
-      <!-- ── Zone B: racking (chilled) ── -->
-      <g stroke="rgba(50,130,155,0.14)" stroke-width="6" stroke-linecap="round">
-        <line x1="420" y1="116" x2="764" y2="116"/><line x1="420" y1="160" x2="764" y2="160"/>
-        <line x1="420" y1="204" x2="764" y2="204"/><line x1="420" y1="248" x2="764" y2="248"/>
-        <line x1="420" y1="292" x2="764" y2="292"/><line x1="420" y1="336" x2="764" y2="336"/>
-        <line x1="420" y1="380" x2="764" y2="380"/><line x1="420" y1="424" x2="764" y2="424"/>
-      </g>
-      <g stroke="rgba(50,130,155,0.07)" stroke-width="1.8">
-        <line x1="420" y1="108" x2="420" y2="436"/>
-        <line x1="516" y1="108" x2="516" y2="436"/>
-        <line x1="612" y1="108" x2="612" y2="436"/>
-        <line x1="708" y1="108" x2="708" y2="436"/>
-        <line x1="764" y1="108" x2="764" y2="436"/>
-      </g>
-
-      <!-- ── Zone C: pallet staging positions ── -->
-      <g stroke="rgba(224,165,46,0.16)" stroke-width="1.2" fill="rgba(224,165,46,0.04)">
-        <rect x="808" y="78" width="62" height="50" rx="2"/>
-        <rect x="884" y="78" width="62" height="50" rx="2"/>
-        <rect x="960" y="78" width="62" height="50" rx="2"/>
-        <rect x="808" y="352" width="62" height="50" rx="2"/>
-        <rect x="884" y="352" width="62" height="50" rx="2"/>
-        <rect x="960" y="352" width="62" height="50" rx="2"/>
-      </g>
-      <!-- pallet board lines -->
-      <g stroke="rgba(224,165,46,0.09)" stroke-width="1">
-        <line x1="808" y1="91"  x2="870" y2="91"/>  <line x1="808" y1="104" x2="870" y2="104"/>
-        <line x1="884" y1="91"  x2="946" y2="91"/>  <line x1="884" y1="104" x2="946" y2="104"/>
-        <line x1="960" y1="91"  x2="1022" y2="91"/> <line x1="960" y1="104" x2="1022" y2="104"/>
-        <line x1="808" y1="365" x2="870" y2="365"/> <line x1="808" y1="378" x2="870" y2="378"/>
-        <line x1="884" y1="365" x2="946" y2="365"/> <line x1="884" y1="378" x2="946" y2="378"/>
-        <line x1="960" y1="365" x2="1022" y2="365"/><line x1="960" y1="378" x2="1022" y2="378"/>
+      <!-- F2 · Zone A/B border · x=340, base_y=252 · arm raised -->
+      <g class="csworker">
+        <ellipse cx="340" cy="272" rx="100" ry="80" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="340" cy="256" rx="37" ry="57" fill="url(#rg-cyan)"/>
+          <circle  cx="340" cy="188" r="26"          fill="url(#rg-cyan)"/>
+          <ellipse cx="372" cy="200" rx="13" ry="32" fill="url(#rg-cyan)" transform="rotate(-50,372,200)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="340" cy="256" rx="27" ry="49" fill="url(#rg-body)"/>
+          <ellipse cx="372" cy="200" rx="12" ry="32" fill="url(#rg-arm)"  transform="rotate(-50,372,200)"/>
+          <ellipse cx="310" cy="252" rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(14,310,252)"/>
+          <circle  cx="340" cy="188" r="20"          fill="url(#rg-head)"/>
+        </g>
       </g>
 
-      <!-- ── dock doors (right wall, Zone C) ── -->
-      <g fill="rgba(245,239,225,0.04)" stroke="rgba(245,239,225,0.26)" stroke-width="1.8">
-        <rect x="1150" y="80"  width="32" height="74" rx="2"/>
-        <rect x="1150" y="194" width="32" height="74" rx="2"/>
-        <rect x="1150" y="308" width="32" height="74" rx="2"/>
-      </g>
-      <g stroke="rgba(245,239,225,0.09)" stroke-width="1">
-        <line x1="1150" y1="93"  x2="1182" y2="154"/><line x1="1150" y1="113" x2="1182" y2="154"/><line x1="1150" y1="133" x2="1182" y2="154"/>
-        <line x1="1150" y1="207" x2="1182" y2="268"/><line x1="1150" y1="227" x2="1182" y2="268"/><line x1="1150" y1="247" x2="1182" y2="268"/>
-        <line x1="1150" y1="321" x2="1182" y2="382"/><line x1="1150" y1="341" x2="1182" y2="382"/><line x1="1150" y1="361" x2="1182" y2="382"/>
-      </g>
-
-      <!-- ── AHU units (top header strip) ── -->
-      <!-- AHU-A · low load (zone unoccupied) -->
-      <circle cx="200" cy="46" r="15" fill="rgba(111,143,62,0.08)" stroke="#4d6628" stroke-width="1.4"/>
-      <line x1="191" y1="46" x2="209" y2="46" stroke="#4d6628" stroke-width="1.4"/>
-      <line x1="200" y1="37" x2="200" y2="55" stroke="#4d6628" stroke-width="1.4"/>
-      <text x="222" y="50" fill="#4d6628" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-A</text>
-      <path d="M200 61 V76 H392" fill="none" stroke="#4d6628" stroke-width="1.7" class="duct"/>
-
-      <!-- AHU-B · low load (zone 1 worker) -->
-      <circle cx="585" cy="46" r="15" fill="rgba(111,143,62,0.08)" stroke="#4d6628" stroke-width="1.4"/>
-      <line x1="576" y1="46" x2="594" y2="46" stroke="#4d6628" stroke-width="1.4"/>
-      <line x1="585" y1="37" x2="585" y2="55" stroke="#4d6628" stroke-width="1.4"/>
-      <text x="607" y="50" fill="#4d6628" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-B</text>
-      <path d="M585 61 V76 H772" fill="none" stroke="#4d6628" stroke-width="1.7" class="duct"/>
-
-      <!-- AHU-C · active (receiving, 4 workers) -->
-      <circle cx="985" cy="46" r="15" fill="rgba(147,178,87,0.15)" stroke="#6f8f3e" stroke-width="2"/>
-      <line x1="976" y1="46" x2="994" y2="46" stroke="#6f8f3e" stroke-width="2"/>
-      <line x1="985" y1="37" x2="985" y2="55" stroke="#6f8f3e" stroke-width="2"/>
-      <text x="1007" y="50" fill="#6f8f3e" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.05em">AHU-C</text>
-      <path d="M985 61 V76 H1144" fill="none" stroke="#6f8f3e" stroke-width="2.2" class="duct"/>
-
-      <!-- ── zone temperature + HVAC labels ── -->
-      <g font-family="Space Mono,monospace" font-weight="700" letter-spacing="0.07em">
-        <text x="30" y="80"  font-size="10" fill="rgba(90,170,235,0.50)">ZONE A &middot; &minus;18&deg;C</text>
-        <text x="30" y="96"  font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
-        <text x="420" y="80" font-size="10" fill="rgba(60,195,200,0.50)">ZONE B &middot; +4&deg;C</text>
-        <text x="420" y="96" font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
-        <text x="800" y="80" font-size="10" fill="rgba(224,165,46,0.68)">RECEIVING &middot; +18&deg;C</text>
-        <text x="800" y="96" font-size="9"  fill="#6f8f3e">HVAC 78% &middot; 4 WORKERS DETECTED</text>
+      <!-- F3 · Zone B · x=545, base_y=262 · forward lean -->
+      <g class="csworker">
+        <ellipse cx="545" cy="282" rx="112" ry="88" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="541" cy="270" rx="41" ry="62" fill="url(#rg-cyan)" transform="rotate(-10,541,270)"/>
+          <circle  cx="537" cy="198" r="28"          fill="url(#rg-cyan)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="541" cy="272" rx="31" ry="54" fill="url(#rg-body)" transform="rotate(-12,541,272)"/>
+          <ellipse cx="509" cy="278" rx="13" ry="37" fill="url(#rg-arm)"  transform="rotate(20,509,278)"/>
+          <ellipse cx="573" cy="260" rx="13" ry="36" fill="url(#rg-arm)"  transform="rotate(-8,573,260)"/>
+          <circle  cx="537" cy="198" r="23"          fill="url(#rg-head)"/>
+        </g>
       </g>
 
-      <!-- ── human thermal signatures ── -->
-      <!-- W1 · Zone A · lone worker by racking -->
-      <g class="csworker"><circle cx="160" cy="282" r="56" fill="url(#csthb)" class="tb"/><circle cx="160" cy="282" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
-      <!-- W2 · Zone B · upper aisle -->
-      <g class="csworker"><circle cx="510" cy="198" r="56" fill="url(#csthb)" class="tb b2"/><circle cx="510" cy="198" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
-      <!-- W3 · Zone B · lower aisle -->
-      <g class="csworker"><circle cx="662" cy="344" r="56" fill="url(#csthb)" class="tb b3"/><circle cx="662" cy="344" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
-      <!-- W4 · Receiving · near pallets -->
-      <g class="csworker"><circle cx="872" cy="210" r="56" fill="url(#csthb)" class="tb"/><circle cx="872" cy="210" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
-      <!-- W5 · Receiving · near dock -->
-      <g class="csworker"><circle cx="992" cy="318" r="56" fill="url(#csthb)" class="tb b2"/><circle cx="992" cy="318" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
-      <!-- W6 · Receiving · near dock (clustered) -->
-      <g class="csworker"><circle cx="1068" cy="238" r="56" fill="url(#csthb)" class="tb b4"/><circle cx="1068" cy="238" r="3.5" fill="#faf3e1" fill-opacity="0.88"/></g>
+      <!-- F4 · Zone B/C · x=740, base_y=255 · slight lean -->
+      <g class="csworker">
+        <ellipse cx="740" cy="275" rx="103" ry="82" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="743" cy="259" rx="38" ry="59" fill="url(#rg-cyan)" transform="rotate(8,743,259)"/>
+          <circle  cx="746" cy="191" r="27"          fill="url(#rg-cyan)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="743" cy="260" rx="28" ry="51" fill="url(#rg-body)" transform="rotate(8,743,260)"/>
+          <ellipse cx="774" cy="256" rx="12" ry="34" fill="url(#rg-arm)"  transform="rotate(-16,774,256)"/>
+          <circle  cx="746" cy="191" r="21"          fill="url(#rg-head)"/>
+        </g>
+      </g>
 
-      <!-- ── forklift (animates receiving → chilled → deep freeze → return) ── -->
-      <!-- faint path trace -->
-      <path d="M 1060 310 H 855 V 196 H 660 V 152 H 310 V 278" fill="none" stroke="rgba(245,239,225,0.065)" stroke-width="2" stroke-dasharray="3 10"/>
-      <g filter="drop-shadow(0 0 5px rgba(245,239,225,0.5))">
-        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="rgba(245,239,225,0.72)"/>
-        <!-- fork prongs -->
-        <line x1="-9" y1="-2" x2="-16" y2="-2" stroke="rgba(245,239,225,0.72)" stroke-width="1.5"/>
-        <line x1="-9" y1=" 2" x2="-16" y2=" 2" stroke="rgba(245,239,225,0.72)" stroke-width="1.5"/>
+      <!-- F5 · Receiving · x=920, base_y=255 · reaching up to shelf -->
+      <g class="csworker">
+        <ellipse cx="920" cy="275" rx="110" ry="86" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="920" cy="259" rx="40" ry="61" fill="url(#rg-cyan)"/>
+          <circle  cx="920" cy="191" r="28"          fill="url(#rg-cyan)"/>
+          <ellipse cx="882" cy="222" rx="13" ry="35" fill="url(#rg-cyan)" transform="rotate(30,882,222)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="920" cy="260" rx="30" ry="53" fill="url(#rg-body)"/>
+          <ellipse cx="882" cy="222" rx="12" ry="35" fill="url(#rg-arm)"  transform="rotate(30,882,222)"/>
+          <ellipse cx="950" cy="260" rx="12" ry="33" fill="url(#rg-arm)"  transform="rotate(-12,950,260)"/>
+          <circle  cx="920" cy="191" r="22"          fill="url(#rg-head)"/>
+        </g>
+      </g>
+
+      <!-- F6 · Receiving · x=1090, base_y=260 -->
+      <g class="csworker">
+        <ellipse cx="1090" cy="280" rx="98"  ry="78" fill="url(#rg-amb)" filter="url(#f-amb)"/>
+        <g filter="url(#f-cyan)">
+          <ellipse cx="1087" cy="264" rx="37" ry="57" fill="url(#rg-cyan)" transform="rotate(-5,1087,264)"/>
+          <circle  cx="1087" cy="196" r="26"          fill="url(#rg-cyan)"/>
+        </g>
+        <g filter="url(#f-bloom)">
+          <ellipse cx="1087" cy="265" rx="27" ry="50" fill="url(#rg-body)" transform="rotate(-5,1087,265)"/>
+          <ellipse cx="1060" cy="268" rx="12" ry="31" fill="url(#rg-arm)"  transform="rotate(15,1060,268)"/>
+          <circle  cx="1087" cy="196" r="20"          fill="url(#rg-head)"/>
+        </g>
+      </g>
+
+      <!-- ── forklift (pale ghost against light bg) ── -->
+      <path d="M 1080 390 H 820 V 280 H 620 V 150 H 160 V 280" fill="none" stroke="rgba(42,29,0,0.06)" stroke-width="2" stroke-dasharray="4 10"/>
+      <g filter="drop-shadow(0 2px 4px rgba(80,55,20,0.3))">
+        <rect x="-9" y="-5" width="18" height="10" rx="2" fill="rgba(80,55,20,0.55)"/>
+        <line x1="-9" y1="-2" x2="-16" y2="-2" stroke="rgba(80,55,20,0.55)" stroke-width="1.5"/>
+        <line x1="-9" y1=" 2" x2="-16" y2=" 2" stroke="rgba(80,55,20,0.55)" stroke-width="1.5"/>
         <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
           <mpath href="#fp-fork"/>
         </animateMotion>
       </g>
 
+      <!-- ── zone + HVAC labels (dark text on light bg) ── -->
+      <g font-family="Space Mono,monospace" font-weight="700" letter-spacing="0.07em" fill="#2a1d00">
+        <text x="30" y="36"  font-size="10">ZONE A &middot; &minus;18&deg;C</text>
+        <text x="30" y="51"  font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
+        <text x="418" y="36" font-size="10">ZONE B &middot; +4&deg;C</text>
+        <text x="418" y="51" font-size="9"  fill="#4d6628">HVAC SCALED 20%</text>
+        <text x="798" y="36" font-size="10">RECEIVING &middot; +18&deg;C</text>
+        <text x="798" y="51" font-size="9"  fill="#4d6628">HVAC 78% &middot; 4 WORKERS</text>
+      </g>
+
       <!-- ── bottom watermark ── -->
-      <text x="600" y="453" fill="rgba(245,239,225,0.13)" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.13em" text-anchor="middle">NO FACE &middot; ONLY HEAT &middot; SURDS THERMAL LAYER</text>
+      <text x="600" y="514" fill="rgba(42,29,0,0.18)" font-family="Space Mono,monospace" font-weight="700" font-size="9" letter-spacing="0.13em" text-anchor="middle">NO FACE &middot; ONLY HEAT &middot; SURDS THERMAL LAYER</text>
     </svg>
   </div>
   <span class="coldband__foot">SURDS &middot; COLD STORAGE &middot; LIVE SPATIAL TWIN</span>

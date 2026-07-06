@@ -27,7 +27,7 @@
 #card-view .btn--grass{background:var(--grass);color:#16210a}
 #card-view .card-scroll-progress{position:fixed;top:0;left:0;height:4px;background:var(--rust);z-index:300;width:0;box-shadow:0 0 8px var(--rust)}
 #card-view .scroll-show{padding:clamp(24px,4vw,50px) 0 clamp(36px,6vw,70px)}
-#card-view .ss-grid{display:grid;grid-template-columns:.25fr 1fr;gap:clamp(16px,3vw,40px);align-items:start;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+#card-view .ss-grid{display:grid;grid-template-columns:minmax(360px,680px) 1fr;gap:clamp(16px,3vw,40px);align-items:start;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
 #card-view .ss-plan{position:sticky;top:76px;overflow:visible}
 #card-view .plan-sticker{position:relative;background:#f4efe1;border:2px solid var(--die);border-radius:10px;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:6px 4px 4px}
 #card-view .plan-tab{display:none}

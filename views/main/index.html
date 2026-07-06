@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURDS Tech Solutions — Industrial HVAC Intelligence</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{colors:{brand:'#FF006E','brand-hover':'#E60063','brand-purple':'#6B2D8F',dark:{900:'#0A0A0A',800:'#050505'}},fontFamily:{inter:['Inter','sans-serif'],mono:['Space Mono','monospace']}}}}
+</script>
+<link rel="stylesheet" href="/shared/tokens.css">
+<link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div id="iso-bg"><svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
+
+<div id="legend">
+  <div class="legend-chip" data-legend="0"><span class="legend-dot" style="background:#f97316"></span>Climate</div>
+  <div class="legend-chip" data-legend="1"><span class="legend-dot" style="background:#3b82f6"></span>Utility</div>
+  <div class="legend-chip" data-legend="2"><span class="legend-dot" style="background:#a855f7"></span>Predictive</div>
+  <div class="legend-chip" data-legend="3"><span class="legend-dot" style="background:#ef4444"></span>Safety</div>
+  <div class="legend-chip" data-legend="4"><span class="legend-dot" style="background:#22c55e"></span>ESG</div>
+</div>
+
+<div class="edit-hint" id="editHint">Click to place · Right-click to erase · Number keys to switch · Esc to exit</div>
+<div id="edit-panel"><div class="inner" id="palette-inner"></div></div>
+<button id="mode-toggle" onclick="toggleMode()">
+  <span class="mt-label">Dark</span>
+  <span class="mt-track"><span class="mt-thumb"></span></span>
+</button>
+<button id="edit-btn"><i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit Layout</button>
+
+<div class="layout-tabs" id="layout-tabs">
+  <button class="layout-tab active" data-theme="retail" onclick="switchLayout('retail')"><i data-lucide="store" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Retail Facility</button>
+  <button class="layout-tab" data-theme="industrial" onclick="switchLayout('industrial')"><i data-lucide="factory" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Steel Factory</button>
+  <button class="layout-tab" data-theme="chemical" onclick="switchLayout('chemical')"><i data-lucide="flask-conical" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Chemical Plant</button>
+  <a href="/enterprise" class="layout-tab" data-theme="enterprise"><i data-lucide="building-2" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Enterprise</a>
+</div>
+
+<div id="content">
+
+<section data-section="0" class="min-h-screen relative flex items-center">
+  <div class="hero-backdrop"></div>
+  <div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-xl pt-20">
+    <div class="reveal">
+      <div class="badge mb-6"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>Live Facility Intelligence</div>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.08] tracking-tight mb-5"><span class="gradient-text">Smarter Climate.</span><br><span class="gradient-text-brand">Sharper Control.</span></h1>
+      <p class="text-base font-light text-gray-400 leading-relaxed mb-8 max-w-md">SURDS deploys real-time sensor networks across your facility. Watch the coverage unfold as you scroll.</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#sec-contact" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-white font-medium rounded-full px-7 py-3 transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(255,0,110,0.5)] text-sm">Get a Quote <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+        <a href="/card-tour" class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium rounded-full px-7 py-3 transition-all text-sm"><i data-lucide="layout-grid" class="w-4 h-4"></i> Product Tour</a>
+      </div>
+    </div>
+    <div class="mt-12 flex items-center gap-4 reveal" style="transition-delay:200ms">
+      <div class="flex -space-x-2"><img src="https://picsum.photos/seed/e1/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"><img src="https://picsum.photos/seed/e2/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"><img src="https://picsum.photos/seed/e3/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"></div>
+      <div><div class="flex gap-0.5"><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i></div><p class="text-[10px] text-gray-600 mt-0.5">Trusted by industrial manufacturers</p></div>
+    </div>
+  </div>
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce"><span class="text-[9px] text-gray-600 uppercase tracking-[.2em]">Scroll</span><i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-600"></i></div>
+</section>
+
+<section data-section="1" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(249,115,22,.2);color:rgba(249,115,22,.8)"><span class="w-2 h-2 rounded-full bg-orange-500"></span>01 — Climate</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Climate Optimization for<br>Formulation & Storage</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Temperature or humidity fluctuations can affect viscosity, stability, and product quality. SURDS deploys thermal and humidity sensing to dynamically optimize HVAC.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Thermal & humidity sensing across formulation bays and storage</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Dynamic HVAC optimization based on live occupancy and heat load</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Reduced cooling waste while maintaining process-critical stability</div></div></div></div></section>
+
+<section data-section="2" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(59,130,246,.2);color:rgba(59,130,246,.8)"><span class="w-2 h-2 rounded-full bg-blue-500"></span>02 — Utility</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Utility Intelligence for<br>High-Energy Infrastructure</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Chillers, compressors, ventilation systems, and pumps run continuously. SURDS layers real-time current sensing to identify idle-load and peak-demand spikes.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Real-time current sensing across all utility equipment</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Identify idle-load consumption and inefficient runtime cycles</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Peak-demand spike detection and plant-wide optimization</div></div></div></div></section>
+
+<section data-section="3" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(168,85,247,.2);color:rgba(168,85,247,.8)"><span class="w-2 h-2 rounded-full bg-purple-500"></span>03 — Predictive</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Predictive Monitoring for<br>Critical Rotating Equipment</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Failure of agitators, compressors, or circulation pumps can interrupt batch schedules. SURDS monitors vibration signatures and thermal behavior to detect early wear.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Continuous vibration signature analysis</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Thermal behavior and machine-load pattern tracking</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Early intervention before breakdowns impact production</div></div></div></div></section>
+
+<section data-section="4" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(239,68,68,.2);color:rgba(239,68,68,.8)"><span class="w-2 h-2 rounded-full bg-red-500"></span>04 — Safety</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Safety & Hazard Detection<br>in Chemical Operations</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Localized overheating, solvent vapor accumulation, and ventilation inefficiencies pose real risks around mixing, packaging, and storage zones.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Real-time thermal hotspot identification</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Air-quality monitoring for vapor and gas detection</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Strengthened compliance readiness and worker safety</div></div></div></div></section>
+
+<section data-section="5" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(34,197,94,.2);color:rgba(34,197,94,.8)"><span class="w-2 h-2 rounded-full bg-green-500"></span>05 — ESG</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">ESG & Carbon Visibility<br>Across Operations</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Live dashboards with zone-wise energy usage, HVAC efficiency, and carbon savings — enabling stronger ESG reporting and carbon-credit opportunities.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Live zone-wise energy and emissions dashboard</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Decarbonization planning with measurable data</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Unlock carbon-credit opportunities through verified data</div></div></div></div></section>
+
+<section data-section="6" class="min-h-screen relative flex items-center"><div class="full-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-xl mx-auto text-center"><div class="reveal"><div class="badge mb-6 mx-auto w-fit"><i data-lucide="building-2" class="w-3 h-3 text-brand"></i>About SURDS</div><h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-5"><span class="gradient-text">We Make Industrial Climate Systems Smarter</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Our team combines deep expertise in HVAC engineering, IoT systems, and industrial process monitoring across chemical manufacturing, pharmaceutical production, and data centers.</p><div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-lg mx-auto"><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text-brand">40%</p><p class="text-[10px] text-gray-500 mt-1">Energy Reduction</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text">500+</p><p class="text-[10px] text-gray-500 mt-1">Sensors</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text-brand">99.7%</p><p class="text-[10px] text-gray-500 mt-1">Uptime</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text">24/7</p><p class="text-[10px] text-gray-500 mt-1">Monitoring</p></div></div></div></div></section>
+
+<section data-section="7" class="relative py-24 md:py-32 min-h-screen flex items-center" id="sec-contact"><div class="full-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-md mx-auto w-full"><div class="reveal"><div class="text-center mb-8"><div class="badge mb-5 mx-auto w-fit"><i data-lucide="mail" class="w-3 h-3 text-brand"></i>Contact</div><h2 class="text-2xl md:text-3xl font-semibold tracking-tight gradient-text mb-3">Ready to Optimize Your Facility?</h2><p class="text-sm text-gray-500 font-light">Schedule a free site assessment.</p></div><form id="contact-form" class="space-y-4" onsubmit="handleSubmit(event)"><div class="grid grid-cols-2 gap-3"><input type="text" required placeholder="Name" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"><input type="text" required placeholder="Company" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"></div><input type="email" required placeholder="Email" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"><select required class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-400 focus:outline-none focus:border-brand/50 transition-all appearance-none"><option value="" disabled selected>Industry</option><option>Chemical</option><option>Pharmaceutical</option><option>Semiconductor</option><option>Automotive</option><option>Food & Beverage</option><option>Data Center</option></select><textarea rows="3" required placeholder="Tell us about your facility..." class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all resize-none"></textarea><button type="submit" id="submit-btn" class="w-full bg-brand hover:bg-brand-hover text-white font-medium rounded-xl py-3.5 transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(255,0,110,0.5)] flex items-center justify-center gap-2 text-sm"><span>Request Free Assessment</span><i data-lucide="send" class="w-4 h-4"></i></button></form><p class="text-[10px] text-gray-600 text-center mt-4">info@surdstech.com · India — Pan-India Operations</p></div></div></section>
+
+<footer class="relative z-10 border-t border-white/5 py-8 text-center"><p class="text-xs text-gray-600">© 2025 SURDS Tech Solutions. All rights reserved.</p></footer>
+</div>
+
+<script>
+lucide.createIcons();
+</script>
+<script src="/shared/iso-engine.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

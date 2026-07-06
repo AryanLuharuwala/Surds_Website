@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SURDS · Scene Builder</title>
+<style>
+  :root{
+    --paper:#f4ead0; --cream:#faf3e1; --ink:#241b10;
+    --rust:#c2402a; --rust2:#db5e3d; --teal:#3a9990;
+    --mono:"Space Mono", ui-monospace, "Cascadia Code", Menlo, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--mono);
+    display:flex;flex-direction:column;overflow:hidden}
+
+  /* top bar */
+  header{display:flex;align-items:center;gap:14px;padding:10px 16px;
+    background:#1b140b;border-bottom:2px solid #000;flex:0 0 auto;z-index:5}
+  header .brand{font-weight:700;color:var(--rust);letter-spacing:.05em;font-size:.9rem}
+  header .brand b{color:var(--paper)}
+  header .sub{font-size:.6rem;opacity:.5;letter-spacing:.14em;text-transform:uppercase}
+  header .spacer{flex:1}
+  .btn{font-family:var(--mono);font-weight:700;font-size:.62rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink);background:var(--paper);border:2px solid #000;
+    border-radius:20px;padding:7px 13px;cursor:pointer;transition:.13s;box-shadow:2px 3px 0 rgba(0,0,0,.5)}
+  .btn:hover{background:var(--rust);color:#fff;transform:translate(-1px,-1px);box-shadow:3px 4px 0 rgba(0,0,0,.5)}
+  .btn:active{transform:translate(1px,2px);box-shadow:1px 1px 0 rgba(0,0,0,.5)}
+  .btn.ghost{background:transparent;color:var(--paper);border-color:#4a3d2c;box-shadow:none}
+  .btn.ghost:hover{background:var(--rust);color:#fff;border-color:var(--rust)}
+
+  /* layout */
+  main{flex:1;display:flex;min-height:0}
+  .palette{flex:0 0 168px;background:#20180d;border-right:2px solid #000;
+    overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:7px}
+  .palette h4{margin:6px 4px 2px;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;opacity:.4}
+  .tool{display:flex;align-items:center;gap:9px;padding:6px 8px;border:2px solid transparent;
+    border-radius:12px;cursor:pointer;transition:.12s;background:#2b2113}
+  .tool:hover{background:#372b18}
+  .tool.active{border-color:var(--rust);background:#3a2418}
+  .tool svg{flex:0 0 40px;width:40px;height:34px;display:block}
+  .tool .nm{font-size:.66rem;font-weight:700;letter-spacing:.03em}
+  .tool .hk{margin-left:auto;font-size:.55rem;opacity:.4;border:1px solid #4a3d2c;border-radius:5px;padding:1px 5px}
+
+  .stage{flex:1;position:relative;min-width:0;background:
+    radial-gradient(120% 120% at 50% 0%, #2c2114 0%, #171009 80%)}
+  #canvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+  #canvas.select-mode{cursor:pointer}
+
+  .hint{position:absolute;left:14px;bottom:12px;font-size:.6rem;opacity:.55;
+    letter-spacing:.05em;pointer-events:none;line-height:1.7}
+  .hint b{color:var(--rust2)}
+  .count{position:absolute;right:14px;bottom:12px;font-size:.6rem;opacity:.55}
+
+  /* modal */
+  .modal{position:absolute;inset:0;background:rgba(10,7,3,.82);display:none;
+    align-items:center;justify-content:center;z-index:20;padding:24px}
+  .modal.open{display:flex}
+  .card{background:var(--cream);color:var(--ink);border:2px solid #000;border-radius:14px;
+    box-shadow:6px 8px 0 rgba(0,0,0,.6);width:min(720px,100%);max-height:88%;
+    display:flex;flex-direction:column;overflow:hidden}
+  .card .top{display:flex;align-items:center;padding:12px 16px;border-bottom:2px solid var(--ink)}
+  .card .top h3{margin:0;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+  .card .top .spacer{flex:1}
+  .card textarea{flex:1;min-height:280px;margin:0;border:0;border-bottom:2px solid var(--ink);
+    padding:12px 16px;font-family:var(--mono);font-size:.62rem;line-height:1.5;resize:none;
+    background:#fffdf6;color:var(--ink)}
+  .card .foot{display:flex;gap:10px;padding:12px 16px;justify-content:flex-end}
+  .x{cursor:pointer;font-weight:700;font-size:1rem;border:0;background:none;color:var(--ink)}
+
+  /* selection floating controls */
+  #selbar{position:absolute;display:none;gap:6px;transform:translate(-50%,-140%);z-index:8}
+  #selbar.on{display:flex}
+  #selbar .btn{padding:5px 9px;font-size:.55rem}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand"><b>SURDS</b> · Scene Builder</span>
+  <span class="sub">isometric</span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="btnGrid">Grid: on</button>
+  <button class="btn ghost" id="btnClear">Clear</button>
+  <button class="btn ghost" id="btnLoad">Load</button>
+  <button class="btn ghost" id="btnSave">Save .json</button>
+  <button class="btn" id="btnExport">Export SVG</button>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+</header>
+
+<main>
+  <aside class="palette" id="palette"></aside>
+  <section class="stage">
+    <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="selbar">
+      <button class="btn" data-act="rotate">Rotate ⟳</button>
+      <button class="btn" data-act="delete">Delete ✕</button>
+    </div>
+    <div class="hint">
+      <b>Click</b> a tile to place · <b>R</b> rotate · <b>Del</b> remove · <b>Right-click</b> erase<br>
+      Pick <b>Select</b> then click a piece to move/rotate it
+    </div>
+    <div class="count" id="count">0 pieces</div>
+  </section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="card">
+    <div class="top"><h3 id="modalTitle">Export SVG</h3><span class="spacer"></span>
+      <button class="x" id="modalX">✕</button></div>
+    <textarea id="modalText" spellcheck="false"></textarea>
+    <div class="foot">
+      <button class="btn ghost" id="modalCopy" style="color:var(--ink);border-color:var(--ink)">Copy</button>
+      <button class="btn" id="modalDownload">Download</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ISOMETRIC SCENE BUILDER
+   Coordinate system (matches the site's supermarket SVG):
+     isoX(gx,gy)    = OX + gx*S - gy*S
+     isoY(gx,gy,gz) = OY + gx*S/2 + gy*S/2 - gz*S
+   Grid footprint COLS x ROWS. Every piece occupies one 1x1 cell.
+   Painter's order: sort by (gx+gy) ascending, ties by gz.
+============================================================ */
+const S = 34, COLS = 12, ROWS = 9;
+const OX = ROWS*S + 46, OY = 66;
+const isoX = (gx,gy)      => OX + gx*S - gy*S;
+const isoY = (gx,gy,gz=0) => OY + gx*S/2 + gy*S/2 - gz*S;
+
+// viewBox that fits the whole grid plus vertical headroom for tall pieces
+const VB = (()=> {
+  const xs=[isoX(0,0),isoX(COLS,0),isoX(COLS,ROWS),isoX(0,ROWS)];
+  const minX=Math.min(...xs)-30, maxX=Math.max(...xs)+30;
+  const minY=isoY(0,0,3.4)-24, maxY=isoY(COLS,ROWS,0)+30;
+  return {x:minX,y:minY,w:maxX-minX,h:maxY-minY};
+})();
+
+/* ---------- geometry helpers ---------- */
+const P = (x,y)=>`${(+x).toFixed(1)},${(+y).toFixed(1)}`;
+function poly(pts,fill,extra=''){return `<polygon points="${pts.map(p=>P(p[0],p[1])).join(' ')}" fill="${fill}" ${extra}/>`;}
+function line(a,b,stroke,w=1,extra=''){return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`;}
+// bilinear point on a quad [A,B,C,D] (A=origin, t along A->B, u along A->D)
+function bil(q,t,u){const A=q[0],B=q[1],D=q[3];return [A[0]+(B[0]-A[0])*t+(D[0]-A[0])*u, A[1]+(B[1]-A[1])*t+(D[1]-A[1])*u];}
+
+// the two visible vertical faces + top for a unit box at cell (a,b) height h.
+// rot (0..3) rotates which footprint edge is the "front" (affects asymmetric details only).
+function boxFaces(a,b,h){
+  const B0=[isoX(a,b),isoY(a,b,0)],   B1=[isoX(a+1,b),isoY(a+1,b,0)];
+  const B2=[isoX(a+1,b+1),isoY(a+1,b+1,0)],B3=[isoX(a,b+1),isoY(a,b+1,0)];
+  const T0=[isoX(a,b),isoY(a,b,h)],   T1=[isoX(a+1,b),isoY(a+1,b,h)];
+  const T2=[isoX(a+1,b+1),isoY(a+1,b+1,h)],T3=[isoX(a,b+1),isoY(a,b+1,h)];
+  // four vertical walls, each quad = [baseA, baseB, topB, topA]
+  return {
+    top:[T0,T1,T2,T3],
+    xp:[B1,B2,T2,T1],  // gx=a+1  front-right (visible)
+    yp:[B3,B2,T2,T3],  // gy=b+1  front-left  (visible)
+    xm:[B0,B3,T3,T0],  // gx=a    back-left   (hidden)
+    ym:[B0,B1,T1,T0],  // gy=b    back-right  (hidden)
+    right:[B1,B2,T2,T1], left:[B0,B3,T3,T0],  // legacy aliases (counter/bin/wall/glass)
+    B0,B1,B2,B3,T0,T1,T2,T3
+  };
+}
+
+// A full 4-walled box. door goes on side rot%4 (0=front-left,1=front-right,2/3=back).
+// Back walls are drawn first (they sit behind the front walls, so a door on a back
+// side is occluded and the unit reads as closed). Visible closed front walls get closedFn.
+function box4(a,b,h,pal,rot,doorFn,closedFn){
+  const f=boxFaces(a,b,h);
+  const side={0:'yp',1:'xp',2:'xm',3:'ym'}[((rot%4)+4)%4];
+  const isFront=(k)=>k==='xp'||k==='yp';
+  const draw=(k)=>{
+    const face=f[k];
+    if(k===side) return doorFn(face);
+    let o=poly(face, isFront(k)?pal.front:pal.side, `stroke="${pal.stroke}" stroke-width="0.5"`);
+    if(isFront(k) && closedFn) o+=closedFn(face);
+    return o;
+  };
+  return draw('xm')+draw('ym')
+    +poly(f.top,pal.top,`stroke="${pal.stroke}" stroke-width="0.5"`)
+    +draw('xp')+draw('yp');
+}
+
+/* palette of colour products */
+const PROD = [["#e8544e","#f0a030","#4a90d9","#54b06a"],
+              ["#5a8fd8","#e8c14a","#d94f6c","#4ab0a0"],
+              ["#e07a3a","#6ab04a","#4a70d0","#e8b840"],
+              ["#d84f8a","#4ab0c0","#e8a030","#7050c8"]];
+
+// fill a face quad with rows*cols of product blocks
+function stockFace(q,rows,cols,pal,opacity=0.92){
+  let s='';
+  for(let r=0;r<rows;r++){
+    const u0=0.08+r*(0.84/rows), u1=u0+(0.84/rows)*0.72;
+    for(let c=0;c<cols;c++){
+      const t0=0.06+c*(0.88/cols), t1=t0+(0.88/cols)*0.8;
+      const p=[bil(q,t0,u0),bil(q,t1,u0),bil(q,t1,u1),bil(q,t0,u1)];
+      s+=poly(p,pal[(c+r)%pal.length],`opacity="${opacity}"`);
+    }
+    // ledge
+    s+=line(bil(q,0.04,u1+0.02),bil(q,0.96,u1+0.02),'#00000030',1.4);
+  }
+  return s;
+}
+
+/* ============================================================
+   PIECE GENERATORS  — each returns an SVG string for cell (a,b), rot
+============================================================ */
+const PIECES = {
+  fridge:{ name:'Fridge', h:3, tall:true, rots:4, gen(a,b,rot){
+    // door on any of the 4 sides (rot 0=front-left, 1=front-right, 2/3=back -> reads closed)
+    const door=(face)=>{
+      const g=[bil(face,0.12,0.06),bil(face,0.88,0.06),bil(face,0.88,0.94),bil(face,0.12,0.94)];
+      return poly(g,'#16303f')+stockFace(g,4,4,PROD[(a+b)%PROD.length])
+        +poly(g,'#cfeaf5','opacity="0.15" stroke="#8fb8cc" stroke-width="1"')
+        +line(bil(face,0.2,0.1),bil(face,0.55,0.9),'#ffffff',2,'opacity="0.18"')
+        +line(face[2],face[3],'#00d4ff',2.2,'opacity="0.65"');
+    };
+    const closed=(face)=>
+      line(bil(face,0.5,0.06),bil(face,0.5,0.94),'#8f9aa4',1,'opacity="0.55"')
+      +line(bil(face,0.68,0.2),bil(face,0.68,0.8),'#5f6a74',2.4,'opacity="0.85" stroke-linecap="round"');
+    return box4(a,b,3,{front:'#a4aeb8',side:'#9aa4ae',top:'#b8c2cc',stroke:'#8d97a1'},rot,door,closed);
+  }},
+
+  shelf:{ name:'Aisle shelf', h:2.2, tall:true, rots:4, gen(a,b,rot){
+    const open=(fc)=>{
+      const g=[bil(fc,0.06,0.04),bil(fc,0.94,0.04),bil(fc,0.94,0.98),bil(fc,0.06,0.98)];
+      return poly(g,'#7a4e20')+stockFace(g,3,4,PROD[(a+b+1)%PROD.length],0.95);
+    };
+    return box4(a,b,2.2,{front:'#c8944a',side:'#b07a36',top:'#d4a050',stroke:'#b88438'},rot,open,null);
+  }},
+
+  produce:{ name:'Produce table', h:0.55, gen(a,b,rot){
+    const f=boxFaces(a,b,0.55);
+    const cols=[['#74b030','#88c840','#609020'],['#d4b430','#e8c840','#c0a020'],['#d44830','#e86040','#c03020']];
+    const c=cols[(a+b)%3];
+    let s='';
+    s+=poly(f.right,c[0],`stroke="${c[2]}" stroke-width="0.5"`);
+    s+=poly(f.left, c[2],`stroke="${c[2]}" stroke-width="0.5"`);
+    s+=poly(f.top,  c[1],`stroke="${c[0]}" stroke-width="0.5"`);
+    // produce blobs on the table top
+    const blob=['#c82020','#e05010','#f0a018','#48c048','#e0b0c0'];
+    for(let i=0;i<5;i++){
+      const t=0.22+(i%3)*0.28, u=0.28+Math.floor(i/3)*0.34;
+      const p=bil(f.top,t,u);
+      s+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.4" fill="${blob[(i+a)%blob.length]}" opacity="0.95"/>`;
+    }
+    return s;
+  }},
+
+  counter:{ name:'Checkout', h:1.15, gen(a,b,rot){
+    const f=boxFaces(a,b,1.15);
+    let s='';
+    s+=poly(f.left, '#3a9990','stroke="#2a8980" stroke-width="0.5"');
+    s+=poly(f.right,'#4aada3','stroke="#3a9d93" stroke-width="0.5"');
+    s+=poly(f.top,  '#5bbfb5','stroke="#4bafa5" stroke-width="0.5"');
+    // conveyor belt inset
+    const belt=[bil(f.top,0.16,0.18),bil(f.top,0.86,0.18),bil(f.top,0.86,0.6),bil(f.top,0.16,0.6)];
+    s+=poly(belt,'#2f6f68','opacity="0.9"');
+    // POS screen standing on the top, one corner
+    const base=bil(f.top,0.16,0.8);
+    s+=poly([[base[0]-1,base[1]-3],[base[0]+10,base[1]+2.5],[base[0]+10,base[1]-10.5],[base[0]-1,base[1]-16]],'#1a2a3a');
+    s+=poly([[base[0]+0.6,base[1]-4.6],[base[0]+8.6,base[1]-0.7],[base[0]+8.6,base[1]-9.3],[base[0]+0.6,base[1]-13.2]],'#2f62c8');
+    return s;
+  }},
+
+  deli:{ name:'Deli case', h:1.4, rots:4, gen(a,b,rot){
+    const glassed=(fc)=>{
+      const g=[bil(fc,0.1,0.28),bil(fc,0.9,0.28),bil(fc,0.9,0.86),bil(fc,0.1,0.86)];
+      return poly(g,'#cfe0e8','opacity="0.5"')+stockFace(g,2,3,['#e05a5a','#e8c14a','#48b06a','#d98f5a'],0.9);
+    };
+    return box4(a,b,1.4,{front:'#d08a3a',side:'#a86828',top:'#e0a24a',stroke:'#b8792e'},rot,glassed,null);
+  }},
+
+  bin:{ name:'Freezer bin', h:0.8, gen(a,b,rot){
+    const f=boxFaces(a,b,0.8);
+    let s='';
+    s+=poly(f.right,'#b8ccdc','stroke="#a8bccc" stroke-width="0.5"');
+    s+=poly(f.left, '#8aaec4','stroke="#7a9eb4" stroke-width="0.5"');
+    s+=poly(f.top,  '#c8dce8','stroke="#b8ccd8" stroke-width="0.5"');
+    const inner=[bil(f.top,0.12,0.12),bil(f.top,0.88,0.12),bil(f.top,0.88,0.88),bil(f.top,0.12,0.88)];
+    s+=poly(inner,'#d8ecf8','opacity="0.6"');
+    // frozen items
+    const cols=['#e84040','#4080e0','#20a040','#e0a020'];
+    for(let i=0;i<3;i++){const p=bil(f.top,0.28+i*0.22,0.4);
+      s+=`<rect x="${(p[0]-6).toFixed(1)}" y="${(p[1]-4).toFixed(1)}" width="12" height="8" rx="1.5" fill="${cols[(i+a)%4]}" opacity="0.85"/>`;}
+    return s;
+  }},
+
+  wall:{ name:'Wall panel', h:3, tall:true, gen(a,b,rot){
+    const f=boxFaces(a,b,3);
+    const face = rot%2 ? f.right : f.left;
+    const other= rot%2 ? f.left : f.right;
+    let s='';
+    s+=poly(other,'#bab0a4','stroke="#aaa094" stroke-width="0.4"');
+    s+=poly(face, '#c8beb2','stroke="#b8ae9e" stroke-width="0.4"');
+    s+=poly(f.top,'#d8d0c0','stroke="#c8c0b0" stroke-width="0.4"');
+    return s;
+  }},
+
+  glass:{ name:'Glass door', h:2.6, tall:true, rots:4, gen(a,b,rot){
+    // a single glass panel that can stand on any of the 4 cell edges
+    const f=boxFaces(a,b,2.6);
+    const face = {0:f.yp,1:f.xp,2:f.xm,3:f.ym}[((rot%4)+4)%4];
+    let s='';
+    s+=poly(face,'#c8eef8','opacity="0.5" stroke="#90c8dc" stroke-width="0.8"');
+    s+=line(face[0],face[3],'#70a8c0',2,'opacity="0.85"');
+    s+=line(face[1],face[2],'#70a8c0',2,'opacity="0.85"');
+    s+=line(bil(face,0.15,0.05),bil(face,0.15,0.95),'#ffffff',2,'opacity="0.25"');
+    return s;
+  }},
+
+  shopper:{ name:'Shopper', h:0, noBox:true, gen(a,b,rot){
+    const c=[isoX(a+0.5,b+0.5),isoY(a+0.5,b+0.5,0)];
+    const bodies=[['#3a5898','#2a4880','#401808','#f0c090'],
+                  ['#983838','#782020','#602010','#e8b078'],
+                  ['#2f7d4f','#1f5d37','#241008','#f0c090'],
+                  ['#c99a2e','#9a7420','#3a2410','#e8b078']];
+    const col=bodies[((a*3+b+rot)%bodies.length)];
+    const x=c[0], y=c[1]-2;
+    return `<g>
+      <ellipse cx="${x.toFixed(1)}" cy="${(y+15).toFixed(1)}" rx="7.5" ry="2.8" fill="#000" opacity="0.16"/>
+      <ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="5.5" ry="8.5" fill="${col[0]}"/>
+      <circle cx="${x.toFixed(1)}" cy="${(y-12).toFixed(1)}" r="4.5" fill="${col[3]}"/>
+      <ellipse cx="${x.toFixed(1)}" cy="${(y-15).toFixed(1)}" rx="3.5" ry="2" fill="${col[2]}"/>
+      <line x1="${(x-5.5).toFixed(1)}" y1="${(y-2).toFixed(1)}" x2="${(x-9).toFixed(1)}" y2="${(y+3).toFixed(1)}" stroke="${col[1]}" stroke-width="2.5"/>
+      <line x1="${(x+5.5).toFixed(1)}" y1="${(y-2).toFixed(1)}" x2="${(x+9).toFixed(1)}" y2="${(y+3).toFixed(1)}" stroke="${col[1]}" stroke-width="2.5"/>
+      <line x1="${(x-2.5).toFixed(1)}" y1="${(y+7).toFixed(1)}" x2="${(x-3).toFixed(1)}" y2="${(y+15).toFixed(1)}" stroke="${col[1]}" stroke-width="2.5"/>
+      <line x1="${(x+2.5).toFixed(1)}" y1="${(y+7).toFixed(1)}" x2="${(x+3).toFixed(1)}" y2="${(y+15).toFixed(1)}" stroke="${col[1]}" stroke-width="2.5"/>
+    </g>`;
+  }},
+
+  sign:{ name:'Sign', h:0, noBox:true, needsText:true, gen(a,b,rot,text){
+    const c=[isoX(a+0.5,b+0.5),isoY(a+0.5,b+0.5,2.6)];
+    const t=(text||'AISLE').toUpperCase();
+    const w=Math.max(46, t.length*7.4+18);
+    return `<g transform="translate(${c[0].toFixed(1)},${c[1].toFixed(1)})">
+      <line x1="0" y1="-2" x2="0" y2="10" stroke="#909090" stroke-width="1" opacity="0.5"/>
+      <rect x="${(-w/2).toFixed(1)}" y="-13" width="${w.toFixed(1)}" height="22" rx="4" fill="#0e3a5e" opacity="0.94"/>
+      <text x="0" y="2.5" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#90e4ff" letter-spacing="0.5">${t}</text>
+    </g>`;
+  }},
+};
+const ORDER=['fridge','shelf','produce','counter','deli','bin','glass','wall','shopper','sign'];
+const HOTKEY={'1':'select','2':'fridge','3':'shelf','4':'produce','5':'counter','6':'deli','7':'bin','8':'glass','9':'wall','0':'shopper'};
+
+/* ============================================================
+   STATE
+============================================================ */
+let pieces=[];           // {id,type,gx,gy,rot,text}
+let tool='fridge';
+let selId=null;
+let hover=null;          // {gx,gy}
+let showGrid=true;
+let uid=1;
+const cellKey=(gx,gy)=>gx+','+gy;
+const pieceAt=(gx,gy)=>pieces.find(p=>p.gx===gx&&p.gy===gy);
+
+const canvas=document.getElementById('canvas');
+canvas.setAttribute('viewBox',`${VB.x} ${VB.y} ${VB.w} ${VB.h}`);
+
+/* ---------- floor + grid ---------- */
+function floorSVG(){
+  let s='';
+  // ground diamond
+  s+=poly([[isoX(0,0),isoY(0,0)],[isoX(COLS,0),isoY(COLS,0)],
+           [isoX(COLS,ROWS),isoY(COLS,ROWS)],[isoX(0,ROWS),isoY(0,ROWS)]],'#f5f0e8');
+  if(showGrid){
+    for(let gx=0;gx<=COLS;gx++) s+=line([isoX(gx,0),isoY(gx,0)],[isoX(gx,ROWS),isoY(gx,ROWS)],'#d8d1c0',0.6);
+    for(let gy=0;gy<=ROWS;gy++) s+=line([isoX(0,gy),isoY(0,gy)],[isoX(COLS,gy),isoY(COLS,gy)],'#d8d1c0',0.6);
+  }
+  return s;
+}
+function hoverSVG(){
+  if(!hover||tool==='select') return '';
+  const {gx,gy}=hover;
+  if(gx<0||gy<0||gx>=COLS||gy>=ROWS) return '';
+  const q=[[isoX(gx,gy),isoY(gx,gy)],[isoX(gx+1,gy),isoY(gx+1,gy)],
+           [isoX(gx+1,gy+1),isoY(gx+1,gy+1)],[isoX(gx,gy+1),isoY(gx,gy+1)]];
+  const ok = tool==='eraser' ? true : !pieceAt(gx,gy);
+  return poly(q, ok?'#c2402a':'#00000000', `opacity="0.28" stroke="#c2402a" stroke-width="1.5"`);
+}
+function selSVG(){
+  if(selId==null) return '';
+  const p=pieces.find(x=>x.id===selId); if(!p) return '';
+  const q=[[isoX(p.gx,p.gy),isoY(p.gx,p.gy)],[isoX(p.gx+1,p.gy),isoY(p.gx+1,p.gy)],
+           [isoX(p.gx+1,p.gy+1),isoY(p.gx+1,p.gy+1)],[isoX(p.gx,p.gy+1),isoY(p.gx,p.gy+1)]];
+  return poly(q,'#00000000',`stroke="#db5e3d" stroke-width="2" stroke-dasharray="4 3"`);
+}
+function piecesSVG(){
+  const sorted=[...pieces].sort((A,B)=>(A.gx+A.gy)-(B.gx+B.gy)|| (A.type==='sign'?1:-1));
+  return sorted.map(p=>`<g data-id="${p.id}">${PIECES[p.type].gen(p.gx,p.gy,p.rot,p.text)}</g>`).join('');
+}
+function render(){
+  canvas.innerHTML = floorSVG()+selSVG()+piecesSVG()+hoverSVG();
+  document.getElementById('count').textContent = pieces.length+' piece'+(pieces.length===1?'':'s');
+  // position selection floating toolbar
+  const bar=document.getElementById('selbar');
+  const p=pieces.find(x=>x.id===selId);
+  if(p && tool==='select'){
+    const sx=isoX(p.gx+0.5,p.gy+0.5), sy=isoY(p.gx+0.5,p.gy+0.5,(PIECES[p.type].h||0));
+    const pt=svgToClient(sx,sy);
+    bar.style.left=pt.x+'px'; bar.style.top=pt.y+'px'; bar.classList.add('on');
+  } else bar.classList.remove('on');
+}
+
+/* ---------- coordinate mapping ---------- */
+function clientToSvg(clientX,clientY){
+  const r=canvas.getBoundingClientRect();
+  const x=VB.x+(clientX-r.left)/r.width*VB.w;
+  const y=VB.y+(clientY-r.top)/r.height*VB.h;
+  return {x,y};
+}
+function svgToClient(sx,sy){
+  const r=canvas.getBoundingClientRect();
+  return { x:r.left+(sx-VB.x)/VB.w*r.width - canvas.closest('.stage').getBoundingClientRect().left,
+           y:r.top +(sy-VB.y)/VB.h*r.height - canvas.closest('.stage').getBoundingClientRect().top };
+}
+function svgToCell(sx,sy){
+  const dx=(sx-OX)/S, dy=(sy-OY)/(S/2);
+  const gx=Math.floor((dx+dy)/2), gy=Math.floor((dy-dx)/2);
+  return {gx,gy};
+}
+
+/* ---------- interaction ---------- */
+canvas.addEventListener('pointermove',e=>{
+  const {x,y}=clientToSvg(e.clientX,e.clientY);
+  const c=svgToCell(x,y);
+  if(!hover||hover.gx!==c.gx||hover.gy!==c.gy){hover=c;render();}
+});
+canvas.addEventListener('pointerleave',()=>{hover=null;render();});
+
+canvas.addEventListener('pointerdown',e=>{
+  if(e.button===2) return; // handled by contextmenu
+  const {x,y}=clientToSvg(e.clientX,e.clientY);
+  const {gx,gy}=svgToCell(x,y);
+  if(gx<0||gy<0||gx>=COLS||gy>=ROWS) return;
+  if(tool==='select'){
+    const p=pieceAt(gx,gy); selId=p?p.id:null; render(); return;
+  }
+  if(tool==='eraser'){ const p=pieceAt(gx,gy); if(p) pieces=pieces.filter(x=>x!==p); render(); return; }
+  // place
+  const existing=pieceAt(gx,gy);
+  if(existing) pieces=pieces.filter(x=>x!==existing);
+  let text;
+  if(PIECES[tool].needsText){ text=prompt('Sign text:', 'AISLE 1'); if(text===null) return; }
+  pieces.push({id:uid++,type:tool,gx,gy,rot:0,text});
+  render();
+});
+canvas.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  const {x,y}=clientToSvg(e.clientX,e.clientY);
+  const {gx,gy}=svgToCell(x,y);
+  const p=pieceAt(gx,gy); if(p){pieces=pieces.filter(x=>x!==p); if(selId===p.id)selId=null; render();}
+});
+
+document.getElementById('selbar').addEventListener('click',e=>{
+  const act=e.target.dataset.act; if(!act) return;
+  const p=pieces.find(x=>x.id===selId); if(!p) return;
+  if(act==='rotate') p.rot=(p.rot+1)%(PIECES[p.type].rots||4);
+  if(act==='delete'){pieces=pieces.filter(x=>x!==p); selId=null;}
+  render();
+});
+
+window.addEventListener('keydown',e=>{
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') return;
+  const k=e.key.toLowerCase();
+  if(k==='r' && selId!=null){const p=pieces.find(x=>x.id===selId); if(p){p.rot=(p.rot+1)%(PIECES[p.type].rots||4); render();} return;}
+  if((k==='delete'||k==='backspace') && selId!=null){pieces=pieces.filter(x=>x.id!==selId); selId=null; render(); e.preventDefault(); return;}
+  if(k==='escape'){selId=null; render(); return;}
+  if(HOTKEY[e.key]){ setTool(HOTKEY[e.key]); }
+});
+
+/* ---------- palette UI ---------- */
+function iconSVG(type){
+  // render the piece on a tiny 1x1 grid for the palette thumbnail
+  const g=PIECES[type];
+  const a=0,b=0;
+  const body = g.gen(a,b,0,type==='sign'?'A1':undefined);
+  // compute a tight viewBox around cell 0,0
+  const minx=isoX(0,1)-6, maxx=isoX(1,0)+6, miny=isoY(0,0,(g.h||0)+ (g.noBox?0.4:0))-6, maxy=isoY(1,1,0)+8;
+  return `<svg viewBox="${minx} ${miny} ${maxx-minx} ${maxy-miny}" preserveAspectRatio="xMidYMid meet">
+    <polygon points="${P(isoX(0,0),isoY(0,0))} ${P(isoX(1,0),isoY(1,0))} ${P(isoX(1,1),isoY(1,1))} ${P(isoX(0,1),isoY(0,1))}" fill="#efe7d3"/>
+    ${body}</svg>`;
+}
+function buildPalette(){
+  const pal=document.getElementById('palette');
+  let html='<h4>Tools</h4>';
+  html+=toolRow('select','Select / Move','1');
+  html+=toolRow('eraser','Eraser','⌫');
+  html+='<h4>Pieces</h4>';
+  ORDER.forEach((t,i)=>{ html+=toolRow(t,PIECES[t].name, Object.keys(HOTKEY).find(k=>HOTKEY[k]===t)||''); });
+  pal.innerHTML=html;
+  pal.querySelectorAll('.tool').forEach(el=>el.addEventListener('click',()=>setTool(el.dataset.tool)));
+}
+function toolRow(t,name,hk){
+  const icon = (t==='select')?selectIcon():(t==='eraser')?eraserIcon():iconSVG(t);
+  return `<div class="tool${t===tool?' active':''}" data-tool="${t}">
+    ${icon}<span class="nm">${name}</span>${hk?`<span class="hk">${hk}</span>`:''}</div>`;
+}
+const selectIcon=()=>`<svg viewBox="0 0 40 34"><path d="M12 8 L28 16 L20 18 L18 27 Z" fill="none" stroke="#f4ead0" stroke-width="2" stroke-linejoin="round"/></svg>`;
+const eraserIcon=()=>`<svg viewBox="0 0 40 34"><rect x="11" y="12" width="18" height="11" rx="2" transform="rotate(-18 20 17)" fill="#db5e3d"/></svg>`;
+
+function setTool(t){ tool=t; if(t!=='select')selId=null; buildPalette(); render(); }
+
+/* ---------- export / save / load ---------- */
+function composeSVG(){
+  const body = floorSVG()+piecesSVG();
+  return `<svg class="plan" viewBox="${VB.x.toFixed(1)} ${VB.y.toFixed(1)} ${VB.w.toFixed(1)} ${VB.h.toFixed(1)}" xmlns="http://www.w3.org/2000/svg">
+  <rect x="${VB.x.toFixed(1)}" y="${VB.y.toFixed(1)}" width="${VB.w.toFixed(1)}" height="${VB.h.toFixed(1)}" fill="#f0ecde"/>
+${body}
+</svg>`;
+}
+const modal=document.getElementById('modal');
+let downloadPayload={name:'scene.svg',data:''};
+function openModal(title,text,fname){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalText').value=text;
+  downloadPayload={name:fname,data:text};
+  modal.classList.add('open');
+}
+document.getElementById('btnExport').onclick=()=>openModal('Export SVG — paste into the build2 panel',composeSVG(),'scene.svg');
+document.getElementById('btnSave').onclick=()=>{
+  const data=JSON.stringify({v:1,cols:COLS,rows:ROWS,pieces},null,0);
+  triggerDownload('scene.json',data,'application/json');
+};
+document.getElementById('modalDownload').onclick=()=>{
+  const mime = downloadPayload.name.endsWith('.svg')?'image/svg+xml':'application/json';
+  triggerDownload(downloadPayload.name,downloadPayload.data,mime);
+};
+document.getElementById('modalCopy').onclick=()=>{
+  const ta=document.getElementById('modalText'); ta.select(); document.execCommand('copy');
+  const b=document.getElementById('modalCopy'); const o=b.textContent; b.textContent='Copied!'; setTimeout(()=>b.textContent=o,1200);
+};
+document.getElementById('modalX').onclick=()=>modal.classList.remove('open');
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});
+
+document.getElementById('btnLoad').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{
+    const d=JSON.parse(rd.result);
+    if(d.pieces){ pieces=d.pieces.map(p=>({...p,id:uid++})); selId=null; render(); }
+  }catch(err){ alert('Could not read that file.'); } };
+  rd.readAsText(f); e.target.value='';
+});
+
+function triggerDownload(name,data,mime){
+  const blob=new Blob([data],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+document.getElementById('btnClear').onclick=()=>{ if(pieces.length && confirm('Clear the whole scene?')){pieces=[];selId=null;render();} };
+document.getElementById('btnGrid').onclick=()=>{ showGrid=!showGrid; document.getElementById('btnGrid').textContent='Grid: '+(showGrid?'on':'off'); render(); };
+
+/* ---------- boot: a tiny starter layout so it isn't empty ---------- */
+function seed(){
+  for(let gx=3;gx<COLS-1;gx++){pieces.push({id:uid++,type:'fridge',gx,gy:ROWS-1,rot:0});}
+  for(let gx=3;gx<=7;gx++){pieces.push({id:uid++,type:'shelf',gx,gy:4,rot:0});}
+  pieces.push({id:uid++,type:'sign',gx:4,gy:3,rot:0,text:'AISLE 1'});
+  pieces.push({id:uid++,type:'counter',gx:0,gy:1,rot:0});
+  pieces.push({id:uid++,type:'counter',gx:0,gy:3,rot:0});
+  pieces.push({id:uid++,type:'shopper',gx:6,gy:5,rot:1});
+}
+buildPalette(); seed(); render();
+</script>
+</body>
+</html>

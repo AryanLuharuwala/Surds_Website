@@ -1,5 +1,7 @@
 {
   "routes": [
-    { "src": "/(.*)", "dest": "/website.html" }
+    { "src": "/", "dest": "/views/main/index.html" },
+    { "src": "/enterprise", "dest": "/views/enterprise/index.html" },
+    { "src": "/card-tour", "dest": "/views/card-tour/index.html" }
   ]
 }

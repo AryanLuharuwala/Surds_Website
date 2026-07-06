@@ -255,6 +255,7 @@
           <li>Dynamic HVAC optimization based on live occupancy and heat load</li>
           <li>Reduced cooling waste while maintaining process-critical stability</li>
         </ul>
+        <button type="button" class="ent-fc-more" data-dialog-target="ent-dialog-chemical">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       </div>
       <div class="ent-feature-card">
         <p class="ent-fc-sub">Pharmaceutical</p>
@@ -265,6 +266,7 @@
           <li>Thermal behavior and machine-load pattern tracking</li>
           <li>Full audit trail and electronic signature support for regulatory compliance</li>
         </ul>
+        <button type="button" class="ent-fc-more" data-dialog-target="ent-dialog-pharma">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       </div>
       <div class="ent-feature-card">
         <p class="ent-fc-sub">Infrastructure</p>
@@ -275,6 +277,7 @@
           <li>Peak-demand spike detection and plant-wide optimization</li>
           <li>PUE monitoring and cooling efficiency analytics</li>
         </ul>
+        <button type="button" class="ent-fc-more" data-dialog-target="ent-dialog-datacenter">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       </div>
     </div>
   </div>
@@ -409,5 +412,69 @@
 
 
 </div>
+
+<!-- INDUSTRY SOLUTIONS DIALOGS -->
+<dialog id="ent-dialog-chemical" class="ent-dialog">
+  <button type="button" class="ent-dialog-close" aria-label="Close">&times;</button>
+  <p class="ent-fc-sub">Manufacturing</p>
+  <h3>Chemical & Process Plants</h3>
+  <div class="ent-dialog-media">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+    <span>Video / SVG coming soon</span>
+  </div>
+  <ul>
+    <li>Centralize formulation data, test results, and process conditions in one searchable platform</li>
+    <li>Real-time thermal and humidity sensing across formulation bays and storage</li>
+    <li>Dynamic HVAC optimization based on live occupancy and heat load</li>
+    <li>Reduced cooling waste while maintaining process-critical stability</li>
+  </ul>
+</dialog>
+
+<dialog id="ent-dialog-pharma" class="ent-dialog">
+  <button type="button" class="ent-dialog-close" aria-label="Close">&times;</button>
+  <p class="ent-fc-sub">Pharmaceutical</p>
+  <h3>Pharma & Life Sciences</h3>
+  <div class="ent-dialog-media">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+    <span>Video / SVG coming soon</span>
+  </div>
+  <ul>
+    <li>GMP-compliant environmental monitoring with automated deviation alerts</li>
+    <li>Continuous vibration signature analysis for critical rotating equipment</li>
+    <li>Thermal behavior and machine-load pattern tracking</li>
+    <li>Full audit trail and electronic signature support for regulatory compliance</li>
+  </ul>
+</dialog>
+
+<dialog id="ent-dialog-datacenter" class="ent-dialog">
+  <button type="button" class="ent-dialog-close" aria-label="Close">&times;</button>
+  <p class="ent-fc-sub">Infrastructure</p>
+  <h3>Data Centers & IT Facilities</h3>
+  <div class="ent-dialog-media">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+    <span>Video / SVG coming soon</span>
+  </div>
+  <ul>
+    <li>Real-time current sensing across all utility and cooling equipment</li>
+    <li>Identify idle-load consumption and inefficient runtime cycles</li>
+    <li>Peak-demand spike detection and plant-wide optimization</li>
+    <li>PUE monitoring and cooling efficiency analytics</li>
+  </ul>
+</dialog>
+
+<script>
+document.querySelectorAll('[data-dialog-target]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.getElementById(btn.getAttribute('data-dialog-target')).showModal();
+  });
+});
+document.querySelectorAll('.ent-dialog').forEach(function(dlg){
+  dlg.querySelector('.ent-dialog-close').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('click', function(e){
+    if (e.target === dlg) dlg.close();
+  });
+});
+</script>
+
 </body>
 </html>

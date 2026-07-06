@@ -3,11 +3,11 @@
   --m-bg:#0A0A0A;--m-bg2:#111;--m-text:#fff;--m-text2:rgba(255,255,255,.55);--m-text3:rgba(255,255,255,.4);
   --m-border:rgba(255,255,255,.08);--m-glass:rgba(255,255,255,.04);--m-glass2:rgba(255,255,255,.06);
   --m-glass3:rgba(0,0,0,.6);--m-shadow:rgba(0,0,0,.7);--m-shadow2:rgba(0,0,0,.4);
-  --m-backdrop-a:rgba(10,10,10,.45);--m-backdrop-b:rgba(10,10,10,.10);
+  --m-backdrop-a:rgba(10,10,10,.78);--m-backdrop-b:rgba(10,10,10,.35);
   --m-scrollbar:#0A0A0A;--m-grad1:#fff;--m-grad2:#a1a1aa;
   --m-hero-a:rgba(10,10,10,.42);--m-hero-b:rgba(10,10,10,.08);
   --m-toast-bg:rgba(0,0,0,.8);--m-toast-text:#fff;
-  --m-full-a:rgba(10,10,10,.20);--m-full-b:rgba(10,10,10,.42);
+  --m-full-a:rgba(10,10,10,.80);--m-full-b:rgba(10,10,10,.45);
   --m-edit-bg:#20180d;--m-edit-text:#f4ead0;--m-edit-border:#000;
   --m-tool-bg:#2b2113;--m-tool-hover:#372b18;--m-tool-active:#3a2418;
   --m-hint-bg:rgba(27,20,11,.9);--m-hint-border:#4a3d2c;
@@ -21,11 +21,11 @@
   --m-bg:#f8f7f4;--m-bg2:#eeece8;--m-text:#1a1a1a;--m-text2:rgba(26,26,26,.6);--m-text3:rgba(26,26,26,.42);
   --m-border:rgba(0,0,0,.1);--m-glass:rgba(0,0,0,.03);--m-glass2:rgba(0,0,0,.05);
   --m-glass3:rgba(255,255,255,.88);--m-shadow:rgba(0,0,0,.08);--m-shadow2:rgba(0,0,0,.04);
-  --m-backdrop-a:rgba(220,218,212,.45);--m-backdrop-b:rgba(248,247,244,.01);
+  --m-backdrop-a:rgba(220,218,212,.82);--m-backdrop-b:rgba(248,247,244,.30);
   --m-scrollbar:#f8f7f4;--m-grad1:#1a1a1a;--m-grad2:#555;
   --m-hero-a:rgba(220,218,212,.42);--m-hero-b:rgba(248,247,244,.08);
   --m-toast-bg:rgba(26,26,26,.88);--m-toast-text:#fff;
-  --m-full-a:rgba(220,218,212,.18);--m-full-b:rgba(220,218,212,.45);
+  --m-full-a:rgba(220,218,212,.85);--m-full-b:rgba(248,247,244,.35);
   --m-edit-bg:#f0ece3;--m-edit-text:#2a2114;--m-edit-border:#ccc5b8;
   --m-tool-bg:#e8e2d6;--m-tool-hover:#ddd6c8;--m-tool-active:#fceade;
   --m-hint-bg:rgba(240,236,227,.95);--m-hint-border:#d5cfc3;
@@ -43,9 +43,9 @@
 #canvas{width:100%;height:100%;display:block;preserveAspectRatio:xMaxYMid meet}
 #content{position:relative;z-index:10;transition:filter .35s ease;text-shadow:var(--m-txt-shadow)}
 #content.dimmed{pointer-events:none;filter:var(--m-dim)}
-.sec-backdrop{position:absolute;inset:0;background:linear-gradient(105deg,var(--m-backdrop-a) 0%,var(--m-backdrop-a) 28%,rgba(128,128,128,.15) 48%,var(--m-backdrop-b) 68%,transparent 88%,transparent 100%);pointer-events:none}
+.sec-backdrop{position:absolute;inset:0;background:linear-gradient(105deg,var(--m-backdrop-a) 0%,var(--m-backdrop-a) 45%,rgba(128,128,128,.25) 60%,var(--m-backdrop-b) 78%,transparent 96%,transparent 100%);pointer-events:none}
 .hero-backdrop{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,var(--m-hero-a) 0%,rgba(128,128,128,.15) 35%,var(--m-hero-b) 65%,transparent 100%);pointer-events:none}
-.full-backdrop{position:absolute;inset:0;background:linear-gradient(to bottom,var(--m-full-a) 0%,rgba(128,128,128,.18) 40%,var(--m-full-b) 100%);pointer-events:none}
+.full-backdrop{position:absolute;inset:0;background:radial-gradient(ellipse 65% 70% at 50% 50%,var(--m-full-a) 0%,var(--m-full-a) 50%,var(--m-full-b) 75%,transparent 100%);pointer-events:none}
 .gradient-text{background:linear-gradient(to right,var(--m-grad1),var(--m-grad2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .gradient-text-brand{background:linear-gradient(135deg,#FF006E,#FF4D8F);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:translateY(0)}

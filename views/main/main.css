@@ -1,0 +1,33 @@
+/* Tailwind color overrides for light mode */
+[data-mode="light"] .text-gray-400{color:rgba(26,26,26,.55)!important}
+[data-mode="light"] .text-gray-600{color:rgba(26,26,26,.4)!important}
+[data-mode="light"] .text-white{color:var(--m-text)!important}
+[data-mode="light"] .border-dark-900{border-color:rgba(0,0,0,.15)!important}
+[data-mode="light"] .bg-white\/5{background:var(--m-glass)!important}
+[data-mode="light"] .bg-white\/10{background:var(--m-glass2)!important}
+[data-mode="light"] .border-white\/10{border-color:var(--m-border)!important}
+[data-mode="light"] .border-white\/12{border-color:var(--m-border)!important}
+[data-mode="light"] .hover\:bg-white\/10:hover{background:var(--m-glass2)!important}
+[data-mode="light"] .hover\:bg-white\/5:hover{background:var(--m-glass)!important}
+/* Star icon fill stays yellow in both modes */
+/* Hero section text shadow reduction */
+[data-mode="light"] #content{text-shadow:var(--m-txt-shadow)}
+/* Form inputs in light mode */
+[data-mode="light"] input,[data-mode="light"] textarea,[data-mode="light"] select{background:var(--m-bg2)!important;color:var(--m-text)!important;border-color:var(--m-border)!important}
+[data-mode="light"] input::placeholder,[data-mode="light"] textarea::placeholder{color:var(--m-text3)!important}
+/* Logo/brand text in light mode */
+[data-mode="light"] .text-white\/80{color:rgba(26,26,26,.8)!important}
+[data-mode="light"] .text-white\/70{color:rgba(26,26,26,.7)!important}
+[data-mode="light"] .text-white\/60{color:rgba(26,26,26,.6)!important}
+[data-mode="light"] .text-white\/50{color:rgba(26,26,26,.5)!important}
+[data-mode="light"] .text-gray-500{color:rgba(26,26,26,.42)!important}
+/* Arbitrary value Tailwind overrides */
+[data-mode="light"] [class*="bg-white\\/"]{background:var(--m-glass)!important}
+[data-mode="light"] [class*="border-white\\/"]{border-color:var(--m-border)!important}
+/* Stat cards */
+[data-mode="light"] .bg-white\/\[\.03\]{background:var(--m-glass)!important}
+[data-mode="light"] .border-white\/\[\.06\]{border-color:var(--m-border)!important}
+/* Scroll indicator */
+[data-mode="light"] .text-gray-600{color:rgba(26,26,26,.35)!important}
+/* Button default state */
+[data-mode="light"] .bg-brand{color:#fff!important}

@@ -87,7 +87,25 @@ function buildPalette(){
 function setEditTool(t){editTool=t;buildPalette()}
 
 /* ===== FORM ===== */
-function handleSubmit(e){e.preventDefault();var b=document.getElementById('submit-btn');b.innerHTML='<svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Sending...';b.disabled=true;setTimeout(function(){b.innerHTML='<span>Request Free Assessment</span><i data-lucide="send" class="w-4 h-4"></i>';b.disabled=false;lucide.createIcons();e.target.reset();showToast('Assessment request sent!')},1500)}
+function handleSubmit(e){
+  e.preventDefault();
+  var form=e.target,b=document.getElementById('submit-btn');
+  b.innerHTML='<svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Sending...';
+  b.disabled=true;
+  fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Accept':'application/json'},body:new FormData(form)})
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(!data.success)throw new Error(data.message||'Submission failed');
+      form.reset();
+      showToast('Assessment request sent!')
+    })
+    .catch(function(){showToast("Couldn't send — please email info@surdstech.com directly")})
+    .finally(function(){
+      b.innerHTML='<span>Request Free Assessment</span><i data-lucide="send" class="w-4 h-4"></i>';
+      b.disabled=false;
+      lucide.createIcons()
+    })
+}
 function showToast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);requestAnimationFrame(function(){t.classList.add('show')});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove()},400)},3500)}
 var revObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.15,rootMargin:'0px 0px -40px 0px'});
 var revEls=document.querySelectorAll('.reveal');for(var ri=0;ri<revEls.length;ri++)revObs.observe(revEls[ri]);

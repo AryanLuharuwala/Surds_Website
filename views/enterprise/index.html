@@ -20,7 +20,7 @@
       <h1>Enterprise-Grade Facility<br>Intelligence Platform</h1>
       <p>SURDS Enterprise delivers centralized monitoring, predictive analytics, and compliance automation across multi-site industrial operations — all in one unified platform.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="#ent-contact" class="ent-btn">Request Demo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <button type="button" class="ent-btn" data-dialog-target="ent-dialog-demo">Request Demo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
         <a href="#ent-features" class="ent-btn-outline">Explore Features</a>
       </div>
       <div style="margin-top:28px;display:flex;align-items:center;gap:12px">
@@ -370,7 +370,7 @@
 <div class="ent-cta" id="ent-contact">
   <h2>See How SURDS Transforms<br>Facility Intelligence</h2>
   <p>Schedule a personalized demo to see the platform in action for your industry.</p>
-  <a href="mailto:info@surdstech.com" class="ent-btn" style="font-size:16px;padding:16px 40px">Request Demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  <button type="button" class="ent-btn" style="font-size:16px;padding:16px 40px" data-dialog-target="ent-dialog-demo">Request Demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
 </div>
 
 <!-- FOOTER -->
@@ -466,6 +466,23 @@
   </ul>
 </dialog>
 
+<!-- REQUEST DEMO DIALOG -->
+<dialog id="ent-dialog-demo" class="ent-dialog">
+  <button type="button" class="ent-dialog-close" aria-label="Close">&times;</button>
+  <p class="ent-fc-sub">Enterprise Platform</p>
+  <h3>Request a Demo</h3>
+  <p class="ent-dialog-lead">Tell us a bit about your facility and we'll follow up to schedule a walkthrough.</p>
+  <form id="ent-demo-form" class="ent-dialog-form">
+    <input type="hidden" name="access_key" value="1293e495-bc7c-4f7a-a6b2-d31d69fbed42">
+    <input type="hidden" name="subject" value="New Enterprise demo request from SURDS site">
+    <input type="text" name="name" required placeholder="Name">
+    <input type="text" name="company" required placeholder="Company">
+    <input type="email" name="email" required placeholder="Email">
+    <textarea name="message" rows="3" required placeholder="Tell us about your facility..."></textarea>
+    <button type="submit" class="ent-btn ent-dialog-submit">Send Request <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+  </form>
+</dialog>
+
 <script>
 document.querySelectorAll('[data-dialog-target]').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -481,6 +498,42 @@ document.querySelectorAll('.ent-dialog').forEach(function(dlg){
   if (video) {
     dlg.addEventListener('close', function(){ video.pause(); });
   }
+});
+
+function entShowToast(message, isError){
+  var t = document.createElement('div');
+  t.className = 'ent-toast' + (isError ? ' ent-toast-error' : '');
+  t.textContent = message;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('show'); });
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){ t.remove(); }, 400);
+  }, 4000);
+}
+
+var demoForm = document.getElementById('ent-demo-form');
+demoForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  var btn = demoForm.querySelector('.ent-dialog-submit');
+  var originalLabel = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  fetch('https://api.web3forms.com/submit', {method:'POST', headers:{'Accept':'application/json'}, body:new FormData(demoForm)})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.success) throw new Error(data.message || 'Submission failed');
+      demoForm.reset();
+      document.getElementById('ent-dialog-demo').close();
+      entShowToast("Thanks — we'll be in touch shortly to schedule your demo.");
+    })
+    .catch(function(){
+      entShowToast("Couldn't send — please email info@surdstech.com directly.", true);
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.innerHTML = originalLabel;
+    });
 });
 </script>
 

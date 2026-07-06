@@ -34,11 +34,20 @@ function initCardView(){
     if(_cvIo)_cvIo.disconnect();
     var steps=getCvSteps();
     if(!steps.length)return;
-    _cvIo=new IntersectionObserver(function(entries){
-      entries.forEach(function(e){if(e.isIntersecting)setCvStage(+e.target.dataset.stage||0)});
-    },{root:cardView,rootMargin:'-40% 0px -40% 0px',threshold:0});
+    function pickCurrent(){
+      var mid=cardView.getBoundingClientRect().top+cardView.clientHeight/2,best=0,bestDist=Infinity;
+      steps.forEach(function(st){
+        var r=st.getBoundingClientRect(),center=(r.top+r.bottom)/2,d=Math.abs(center-mid);
+        if(d<bestDist){bestDist=d;best=+st.dataset.stage||0}
+      });
+      setCvStage(best);
+    }
+    /* IntersectionObserver only tells us something crossed the band; pickCurrent()
+       decides which step is authoritative by proximity to the viewport center,
+       avoiding "last entry in the batch wins" when two steps briefly overlap. */
+    _cvIo=new IntersectionObserver(function(){pickCurrent()},{root:cardView,rootMargin:'-40% 0px -40% 0px',threshold:0});
     steps.forEach(function(st){_cvIo.observe(st)});
-    setCvStage(0);
+    pickCurrent();
   }
   observeSteps();
   /* sticker pop-in for card view */
@@ -49,7 +58,7 @@ function initCardView(){
     _cvStickerIo=new IntersectionObserver(function(entries){
       entries.forEach(function(e){
         if(!e.isIntersecting)return;
-        var stickers=e.target.querySelectorAll('.sticker, .pop');
+        var stickers=e.target.querySelectorAll('.sticker:not(.po), .pop:not(.po)');
         stickers.forEach(function(s,i){
           var extra=parseFloat(s.dataset.delay||'0');
           setTimeout(function(){s.classList.add('in')},i*95+extra);

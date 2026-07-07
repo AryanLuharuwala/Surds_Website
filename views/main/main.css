@@ -31,3 +31,21 @@
 [data-mode="light"] .text-gray-600{color:rgba(26,26,26,.35)!important}
 /* Button default state */
 [data-mode="light"] .bg-brand{color:#fff!important}
+
+/* Facility-specific analytics panels */
+.facility-panel{position:fixed;top:64px;right:20px;z-index:15;width:230px;padding:14px 16px;border-radius:14px;background:var(--m-glass3);border:1px solid var(--m-border);backdrop-filter:blur(12px);color:var(--m-text);opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+.fp-head{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--m-text2);margin-bottom:10px}
+.fp-head i{color:#FF006E}
+.fp-heatmap{display:block;width:100%;height:auto;border-radius:8px;color:var(--m-text)}
+.fp-legend{display:flex;gap:12px;margin:8px 0;font-size:9px;color:var(--m-text3)}
+.fp-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px}
+.fp-insight{font-size:10.5px;line-height:1.5;color:var(--m-text3);margin:0}
+.fp-bars{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.fp-bar-row{display:flex;align-items:center;gap:8px;font-size:9px}
+.fp-bar-label{width:88px;flex-shrink:0;color:var(--m-text3)}
+.fp-bar-track{flex:1;height:6px;border-radius:3px;background:rgba(128,128,128,.2);overflow:hidden}
+.fp-bar-fill{height:100%;border-radius:3px}
+.fp-bar-val{width:28px;text-align:right;font-family:'Space Mono',monospace;font-weight:600;color:var(--m-text)}
+[data-facility="retail"] #retail-heatmap-panel{opacity:1;transform:translateY(0)}
+[data-facility="chemical"] #chemical-process-panel{opacity:1;transform:translateY(0)}
+@media(max-width:900px){.facility-panel{display:none}}

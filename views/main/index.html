@@ -26,6 +26,38 @@ tailwind.config={theme:{extend:{colors:{brand:'#FF006E','brand-hover':'#E60063',
   <div class="legend-chip" data-legend="4"><span class="legend-dot" style="background:#22c55e"></span>ESG</div>
 </div>
 
+<div id="retail-heatmap-panel" class="facility-panel">
+  <div class="fp-head"><i data-lucide="flame" class="w-3 h-3"></i> Live Movement Heatmap</div>
+  <svg viewBox="0 0 220 120" class="fp-heatmap" role="img" aria-label="Top-down heatmap of the retail floor showing high foot traffic near checkout, medium near produce, and lower traffic near dairy and the entrance">
+    <defs>
+      <radialGradient id="heatHigh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></radialGradient>
+      <radialGradient id="heatMed" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f97316" stop-opacity="0.7"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></radialGradient>
+      <radialGradient id="heatLow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#eab308" stop-opacity="0.55"/><stop offset="100%" stop-color="#eab308" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect x="3" y="3" width="214" height="114" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <ellipse cx="70" cy="88" rx="42" ry="24" fill="url(#heatHigh)"/>
+    <ellipse cx="152" cy="28" rx="34" ry="20" fill="url(#heatMed)"/>
+    <ellipse cx="30" cy="28" rx="24" ry="17" fill="url(#heatLow)"/>
+    <ellipse cx="182" cy="88" rx="22" ry="16" fill="url(#heatLow)"/>
+    <text x="70" y="91" text-anchor="middle" font-size="7" font-family="Space Mono,monospace" fill="#fff" opacity="0.9">CHECKOUT</text>
+    <text x="152" y="32" text-anchor="middle" font-size="7" font-family="Space Mono,monospace" fill="#fff" opacity="0.8">PRODUCE</text>
+    <text x="30" y="32" text-anchor="middle" font-size="6.5" font-family="Space Mono,monospace" fill="#fff" opacity="0.65">DAIRY</text>
+    <text x="182" y="91" text-anchor="middle" font-size="6.5" font-family="Space Mono,monospace" fill="#fff" opacity="0.65">ENTRANCE</text>
+  </svg>
+  <div class="fp-legend"><span><i class="fp-dot" style="background:#ef4444"></i>High</span><span><i class="fp-dot" style="background:#f97316"></i>Med</span><span><i class="fp-dot" style="background:#eab308"></i>Low</span></div>
+  <p class="fp-insight">68% of foot traffic concentrates near checkout during peak hours — reposition high-margin impulse items within this zone.</p>
+</div>
+
+<div id="chemical-process-panel" class="facility-panel">
+  <div class="fp-head"><i data-lucide="timer" class="w-3 h-3"></i> Process Cycle Analysis</div>
+  <div class="fp-bars">
+    <div class="fp-bar-row"><span class="fp-bar-label">Reactor · Cook</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:65%;background:#3b82f6"></div></div><span class="fp-bar-val">42m</span></div>
+    <div class="fp-bar-row"><span class="fp-bar-label">Vat Mixer · Blend</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:100%;background:#ef4444"></div></div><span class="fp-bar-val">65m</span></div>
+    <div class="fp-bar-row"><span class="fp-bar-label">Cool Tower · Cooldown</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:43%;background:#22c55e"></div></div><span class="fp-bar-val">28m</span></div>
+  </div>
+  <p class="fp-insight"><b>Bottleneck:</b> the Vat Mixer blend cycle is the longest step. SURDS suggests staggering batch starts to overlap blend time with the next reactor's cook cycle — cutting total cycle time ~18%.</p>
+</div>
+
 <div class="edit-hint" id="editHint">Click to place · Right-click to erase · Number keys to switch · Esc to exit</div>
 <div id="edit-panel"><div class="inner" id="palette-inner"></div></div>
 <button id="mode-toggle" onclick="toggleMode()">

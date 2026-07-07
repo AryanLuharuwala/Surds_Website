@@ -41,6 +41,7 @@ loadDefault();
 /* ===== THEME SYSTEM ===== */
 var HOTKEY={};
 var currentTheme='retail';
+document.documentElement.setAttribute('data-facility',currentTheme);
 var PIECES_RETAIL=PIECES,ORDER_RETAIL=ORDER.slice();
 var HOTKEY_RETAIL=Object.assign({},HOTKEY);
 var PIECES_ENTERPRISE=PIECES,ORDER_ENTERPRISE=ORDER.slice();
@@ -524,6 +525,32 @@ function sensorsSVG(){
   s+='</g>'}return s
 }
 
+/* ===== CHEMICAL PROCESS-DURATION BADGES ===== */
+var PROCESS_BADGES=[
+  {gx:1,gy:0,h:3.5,label:'Reactor · Cook',duration:'42 min',color:'#3b82f6'},
+  {gx:6,gy:2,h:2.2,label:'Vat Mixer · Blend',duration:'65 min',color:'#ef4444',bottleneck:true},
+  {gx:10,gy:0,h:4.2,label:'Cool Tower · Cooldown',duration:'28 min',color:'#22c55e'}
+];
+function processBadgesSVG(){
+  if(currentTheme!=='chemical')return'';
+  var s='';
+  for(var i=0;i<PROCESS_BADGES.length;i++){
+    var b=PROCESS_BADGES[i];
+    var topX=isoX(b.gx+.5,b.gy+.5),topY=isoY(b.gx+.5,b.gy+.5,b.h);
+    var cx=topX,cy=topY-34,w=b.bottleneck?128:106;
+    s+='<g>';
+    s+='<line x1="'+topX.toFixed(1)+'" y1="'+topY.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+(cy+15).toFixed(1)+'" stroke="'+b.color+'" stroke-width="1" opacity="0.4" stroke-dasharray="2 2"/>';
+    if(b.bottleneck){
+      s+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="14" fill="none" stroke="'+b.color+'" stroke-width="1.5" opacity="0.4"><animate attributeName="r" from="14" to="26" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.45" to="0" dur="2.2s" repeatCount="indefinite"/></circle>';
+    }
+    s+='<rect x="'+(cx-w/2).toFixed(1)+'" y="'+(cy-15).toFixed(1)+'" width="'+w+'" height="30" rx="7" fill="#0a1a2a" opacity="0.92" stroke="'+b.color+'" stroke-width="1.2"/>';
+    s+='<text x="'+cx.toFixed(1)+'" y="'+(cy-3).toFixed(1)+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" font-weight="600" fill="#cbd5e1">'+b.label+'</text>';
+    s+='<text x="'+cx.toFixed(1)+'" y="'+(cy+9).toFixed(1)+'" text-anchor="middle" font-family="Space Mono,monospace" font-size="11" font-weight="bold" fill="'+b.color+'">'+b.duration+(b.bottleneck?' ⚠':'')+'</text>';
+    s+='</g>'
+  }
+  return s
+}
+
 /* ===== CAMERA ===== */
 var _PAD=Math.round(VB.w*.35);VB.x-=_PAD;VB.w+=_PAD;
 var canvas=document.getElementById('canvas');
@@ -555,5 +582,5 @@ function hoverSVG(){
   var ok=(editTool==='eraser')||((!pieceAt(gx,gy))&&(!walkerAt(gx,gy)));
   return poly(q,ok?'#c2402a':'#00000000','opacity="0.3" stroke="#c2402a" stroke-width="1.5"')
 }
-function render(){canvas.innerHTML='<defs>'+gradientDefs()+'</defs>'+floorSVG()+entitiesSVG()+sensorsSVG()+hoverSVG()}
+function render(){canvas.innerHTML='<defs>'+gradientDefs()+'</defs>'+floorSVG()+entitiesSVG()+sensorsSVG()+processBadgesSVG()+hoverSVG()}
 

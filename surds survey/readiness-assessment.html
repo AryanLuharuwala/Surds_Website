@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURDS — Can You Spot It?</title>
+<meta name="description" content="Five questions, ninety seconds. Tell us where your operation actually hurts and we'll tell you if it's worth fixing — and how SURDS would fix it.">
+<meta name="survey:title" content="Can You Spot It?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+    --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+    --ease:cubic-bezier(0.22,0.8,0.24,1);
+    --void:#F5F5F4; --surf:#FFFFFF;
+    --rust:#4A4B4D; --signal:#2A2B2D;
+    --mist:#57585B; --dim:#8E9094; --hair:rgba(28,29,31,0.1);
+    --white:#1C1D1F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);color:var(--white);font-family:var(--body);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;
+    position:relative;
+  }
+
+  /* Subtle animated dot grid — "sensing network" feel */
+  body::before{
+    content:'';position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(circle, rgba(28,29,31,0.06) 1px, transparent 1px);
+    background-size:32px 32px;
+    animation:gridDrift 20s linear infinite;
+  }
+  @keyframes gridDrift{
+    0%{background-position:0 0;}
+    100%{background-position:32px 32px;}
+  }
+  @media (prefers-reduced-motion: reduce){ * { animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }
+
+  .topstrip{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+    padding:1.6rem 2.2rem;font-family:var(--mono);}
+  .wordmark{font-size:0.78rem;font-weight:700;letter-spacing:0.32em;color:var(--white);display:flex;align-items:center;gap:0.6rem;}
+  .wordmark .dot{width:6px;height:6px;border-radius:50%;background:var(--signal);box-shadow:0 0 8px var(--signal);animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  .topstrip-left{display:flex;align-items:center;gap:0.9rem;}
+  .topstrip-right{display:flex;align-items:center;gap:1rem;}
+  .stepread{font-size:0.66rem;letter-spacing:0.18em;color:var(--dim);}
+  .stepread b{color:var(--mist);font-weight:500;}
+
+  .progress-track{position:fixed;top:52px;left:0;right:0;z-index:19;height:56px;
+    display:flex;align-items:center;gap:0.8rem;padding:0 2.2rem;}
+  .track-label{font-family:var(--mono);font-size:0.6rem;font-weight:700;letter-spacing:0.14em;color:var(--dim);
+    transition:color 0.3s var(--ease);flex-shrink:0;}
+  .track-label.active{color:var(--signal);}
+  #miniCar{display:block;flex:1;width:100%;height:56px;}
+
+  main.stage{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;
+    justify-content:center;padding:7rem 2.8rem 4rem;}
+  .split{display:flex;gap:4.5rem;align-items:center;width:100%;max-width:1200px;margin:0 auto;}
+  .frame{max-width:560px;width:100%;flex-shrink:0;}
+
+  .step{display:none;}
+  .step.active{display:block;}
+  .step.active > *{opacity:0;animation:riseIn 0.6s var(--ease) forwards;}
+  .step.active > *:nth-child(1){animation-delay:0.02s;}
+  .step.active > *:nth-child(2){animation-delay:0.09s;}
+  .step.active > *:nth-child(3){animation-delay:0.17s;}
+  .step.active > *:nth-child(4){animation-delay:0.25s;}
+  .step.active > *:nth-child(5){animation-delay:0.33s;}
+  .step.active > *:nth-child(6){animation-delay:0.41s;}
+  @keyframes riseIn{from{opacity:0;transform:translateY(16px) translateX(14px);}to{opacity:1;transform:translateY(0) translateX(0);}}
+
+  .step.active .options{opacity:1;animation:none;}
+  .step.active .options .opt{opacity:0;animation:riseIn 0.5s var(--ease) forwards;}
+  .step.active .options .opt:nth-child(1){animation-delay:0.3s;}
+  .step.active .options .opt:nth-child(2){animation-delay:0.36s;}
+  .step.active .options .opt:nth-child(3){animation-delay:0.42s;}
+  .step.active .options .opt:nth-child(4){animation-delay:0.48s;}
+  .step.active .options .opt:nth-child(5){animation-delay:0.54s;}
+  .step.active .options .opt:nth-child(6){animation-delay:0.6s;}
+  .step.active .options .opt:nth-child(7){animation-delay:0.66s;}
+  .step.active .options .opt:nth-child(8){animation-delay:0.72s;}
+
+  .eyebrow{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--signal);margin-bottom:1.6rem;}
+
+  h1.hook-h{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,6vw,4.2rem);line-height:1.08;letter-spacing:-0.02em;margin-bottom:1.5rem;}
+  h1.hook-h .fade{color:var(--dim);}
+  .hook-sub{font-size:1.08rem;line-height:1.65;color:var(--mist);max-width:50ch;margin-bottom:2.2rem;}
+
+  /* Trust micro-badges */
+  .trust-badges{
+    display:flex;align-items:center;gap:1.4rem;margin-top:1.8rem;flex-wrap:wrap;
+  }
+  .trust-badge{
+    display:flex;align-items:center;gap:0.45rem;
+    font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;
+    color:var(--dim);text-transform:uppercase;
+  }
+  .trust-badge .badge-icon{
+    width:18px;height:18px;border-radius:50%;background:rgba(42,43,45,0.08);
+    display:flex;align-items:center;justify-content:center;font-size:0.55rem;
+    color:var(--mist);flex-shrink:0;
+  }
+  .trust-sep{
+    width:3px;height:3px;border-radius:50%;background:var(--dim);opacity:0.4;
+  }
+
+  /* Social proof counter */
+  .social-proof{
+    display:flex;align-items:center;gap:0.7rem;
+    margin-top:2.6rem;padding:0.9rem 1.3rem;
+    border:1px solid var(--hair);border-radius:2rem;
+    background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);
+    width:fit-content;
+  }
+  .proof-dot{
+    width:7px;height:7px;border-radius:50%;background:#4CAF50;
+    box-shadow:0 0 8px rgba(76,175,80,0.5);
+    animation:proofPulse 2s ease-in-out infinite;
+  }
+  @keyframes proofPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(0.85);}}
+  .proof-text{
+    font-family:var(--mono);font-size:0.64rem;letter-spacing:0.14em;color:var(--mist);
+  }
+  .proof-text strong{color:var(--white);font-weight:700;}
+
+  .qtext{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,3.4vw,2.6rem);line-height:1.18;letter-spacing:-0.02em;margin-bottom:2.6rem;max-width:28ch;}
+
+  .options{display:flex;flex-direction:column;border-top:1px solid var(--hair);}
+  .opt{
+    display:flex;align-items:center;gap:1.2rem;padding:1.35rem 0.6rem;
+    border-bottom:1px solid var(--hair);cursor:pointer;transition:padding 0.28s var(--ease),background 0.28s var(--ease);
+  }
+  .opt:hover{padding-left:1.2rem;background:linear-gradient(90deg, rgba(42,43,45,0.08), rgba(42,43,45,0));}
+  .opt .mk{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--dim);flex-shrink:0;transition:all 0.28s var(--ease);}
+  .opt .tx{font-size:1.06rem;color:var(--mist);transition:color 0.28s var(--ease);}
+  .opt:hover .tx{color:var(--white);}
+  .opt:hover .mk{border-color:var(--signal);}
+  .opt.selected{background:linear-gradient(90deg, rgba(42,43,45,0.12), rgba(42,43,45,0));padding-left:1.2rem;}
+  .opt.selected .mk{background:var(--signal);border-color:var(--signal);box-shadow:0 0 8px rgba(42,43,45,0.45);}
+  .opt.selected .tx{color:var(--white);font-weight:500;}
+
+  .cta{
+    font-family:var(--mono);font-size:0.74rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;
+    background:var(--signal);color:var(--void);border:none;border-radius:3rem;
+    padding:1.15rem 2.4rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.6rem;
+    transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);
+  }
+  .cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(42,43,45,0.32);}
+  .cta:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+  .back{margin-top:2.6rem;font-family:var(--mono);font-size:0.68rem;letter-spacing:0.14em;color:var(--dim);
+    cursor:pointer;display:inline-block;transition:color 0.25s var(--ease);}
+  .back:hover{color:var(--mist);}
+
+  .field-row{margin-bottom:1.1rem;}
+  .field-row label{display:block;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--dim);margin-bottom:0.6rem;}
+  .field-row input{
+    width:100%;background:transparent;border:none;border-bottom:1px solid var(--hair);
+    color:var(--white);font-family:var(--body);font-size:1.15rem;padding:0.6rem 0.1rem;
+    outline:none;transition:border-color 0.3s var(--ease);
+  }
+  .field-row input:focus{border-color:var(--signal);}
+  .field-row input::placeholder{color:var(--dim);}
+  .field-row textarea{
+    width:100%;background:transparent;border:1px solid var(--hair);border-radius:0.6rem;
+    color:var(--white);font-family:var(--body);font-size:1rem;padding:0.9rem;
+    outline:none;resize:vertical;transition:border-color 0.3s var(--ease);
+  }
+  .field-row textarea:focus{border-color:var(--signal);}
+  .field-row textarea::placeholder{color:var(--dim);}
+  .form-status{margin-top:0.9rem;font-family:var(--mono);font-size:0.66rem;letter-spacing:0.1em;color:var(--rust);min-height:1em;}
+
+  .loader-ring{display:none;flex-direction:column;align-items:center;gap:0.9rem;margin-top:1.6rem;opacity:1;transition:opacity 0.35s var(--ease);}
+  .loader-ring.active{display:flex;}
+  .loader-ring.fading{opacity:0;}
+  .loader-ring svg{width:64px;height:64px;animation:ringSpin 1.3s linear infinite;}
+  .ring-track{fill:none;stroke:rgba(142,144,148,0.2);stroke-width:5;}
+  .ring-sweep{fill:none;stroke:var(--signal);stroke-width:5;stroke-linecap:round;
+    stroke-dasharray:213.6 213.6;stroke-dashoffset:160;}
+  @keyframes ringSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .ring-label{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.2em;color:var(--dim);animation:ringPulse 1.3s ease-in-out infinite;}
+  @keyframes ringPulse{0%,100%{opacity:0.45;}50%{opacity:1;}}
+
+  .recap{font-size:1.06rem;line-height:1.75;color:var(--mist);max-width:56ch;margin-bottom:2.4rem;}
+  .recap strong{color:var(--white);}
+
+  .rec{font-size:1.06rem;line-height:1.7;color:var(--mist);max-width:52ch;margin-bottom:2.6rem;}
+  .rec strong{color:var(--white);}
+
+  /* Next steps on results page */
+  .next-steps{margin-top:2.2rem;margin-bottom:0.4rem;max-width:52ch;}
+  .next-step-row{
+    display:flex;align-items:flex-start;gap:1rem;padding:0.85rem 0;
+    border-bottom:1px solid var(--hair);
+  }
+  .next-step-row:last-child{border-bottom:none;}
+  .next-num{
+    font-family:var(--mono);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;
+    color:var(--signal);flex-shrink:0;padding-top:0.15rem;
+  }
+  .next-text{
+    font-size:0.98rem;line-height:1.55;color:var(--mist);
+  }
+
+  /* Gate & Results: hide right side completely, center the form */
+  .case-side.hidden-side{display:none !important;}
+  .split:has(.hidden-side){justify-content:center;}
+  .split:has(.hidden-side) .frame{margin:0 auto;text-align:left;}
+
+  /* ============ right side: detective (hook only) → industry panels (Q1+) ============ */
+  .case-side{flex:1;min-width:0;max-width:420px;display:flex;flex-direction:column;align-items:center;
+    padding-top:0;}
+  .case-float{animation:caseFloat 3.4s ease-in-out infinite;}
+  .case-float.hidden{display:none;}
+  @keyframes caseFloat{
+    0%,100%{transform:translateY(0) rotate(-4deg) scale(1);}
+    50%{transform:translateY(-26px) rotate(4deg) scale(1.05);}
+  }
+  #panelDetective{width:320px;height:auto;display:block;
+    filter:drop-shadow(0 26px 32px rgba(28,29,31,0.16));}
+
+  .industry-panels, .who-panels, .freq-panels, .impact-panels{display:none;flex-direction:column;gap:1rem;width:100%;}
+  .industry-panels.active, .who-panels.active, .freq-panels.active, .impact-panels.active{display:flex;}
+  .industry-panels.active .ind-tile, .who-panels.active .ind-tile, .freq-panels.active .ind-tile, .impact-panels.active .ind-tile{
+    opacity:0;animation:riseIn 0.55s var(--ease) forwards;}
+  .industry-panels.active .ind-tile:nth-child(2), .who-panels.active .ind-tile:nth-child(2), .freq-panels.active .ind-tile:nth-child(2), .impact-panels.active .ind-tile:nth-child(2){animation-delay:0.08s;}
+  .industry-panels.active .ind-tile:nth-child(3), .who-panels.active .ind-tile:nth-child(3), .freq-panels.active .ind-tile:nth-child(3), .impact-panels.active .ind-tile:nth-child(3){animation-delay:0.16s;}
+  .industry-panels.active .ind-tile:nth-child(4), .who-panels.active .ind-tile:nth-child(4), .freq-panels.active .ind-tile:nth-child(4), .impact-panels.active .ind-tile:nth-child(4){animation-delay:0.24s;}
+  .industry-panels.active .ind-tile:nth-child(5), .who-panels.active .ind-tile:nth-child(5), .freq-panels.active .ind-tile:nth-child(5), .impact-panels.active .ind-tile:nth-child(5){animation-delay:0.32s;}
+  .industry-panels.active .ind-tile:nth-child(6), .who-panels.active .ind-tile:nth-child(6), .freq-panels.active .ind-tile:nth-child(6), .impact-panels.active .ind-tile:nth-child(6){animation-delay:0.4s;}
+  .industry-panels.active .ind-tile:nth-child(7), .who-panels.active .ind-tile:nth-child(7), .freq-panels.active .ind-tile:nth-child(7), .impact-panels.active .ind-tile:nth-child(7){animation-delay:0.48s;}
+  .impact-panels.active .ind-tile:nth-child(8){animation-delay:0.56s;}
+  .ind-tile{display:flex;align-items:center;gap:1.2rem;padding:1.25rem 1.4rem;border:1px solid var(--hair);
+    border-radius:1rem;background:var(--surf);transition:all 0.35s var(--ease);opacity:0.55;}
+  .ind-tile.match{opacity:1;border-color:rgba(28,29,31,0.3);box-shadow:0 14px 30px rgba(28,29,31,0.12);
+    transform:scale(1.04);background:#F0F0EF;}
+  .ind-icon{font-size:1.7rem;filter:grayscale(1) contrast(1.1);flex-shrink:0;line-height:1;}
+  .ind-label{font-size:1.02rem;color:var(--mist);font-weight:500;}
+  .ind-tile.match .ind-label{color:var(--white);font-weight:700;}
+
+  .type-panels{display:none;flex-direction:column;gap:1rem;width:100%;}
+  .type-panels.active{display:flex;}
+  .type-panel{border:1px solid var(--hair);border-radius:1rem;padding:1.3rem 1.4rem;background:var(--surf);
+    opacity:0.45;transform:translateY(4px);
+    transition:opacity 0.4s var(--ease), transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);}
+  .type-panel.lit{opacity:1;transform:translateY(0);border-color:rgba(28,29,31,0.22);box-shadow:0 12px 26px rgba(28,29,31,0.1);}
+  .type-panel-h{font-family:var(--mono);font-size:0.66rem;font-weight:700;letter-spacing:0.12em;color:var(--dim);margin-bottom:0.55rem;
+    transition:color 0.4s var(--ease);}
+  .type-panel.lit .type-panel-h{color:var(--white);}
+  .type-panel-b{font-size:0.94rem;line-height:1.6;color:var(--mist);word-break:break-word;}
+
+  .footstrip{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;
+    padding:1.4rem 2.2rem;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.16em;color:var(--dim);}
+
+  @media(max-width:1080px){
+    .split{flex-direction:column;gap:2.8rem;align-items:flex-start;}
+    .case-side{max-width:100%;width:100%;padding-top:0;}
+    .frame{max-width:100%;}
+    main.stage{align-items:flex-start;padding-top:9rem;}
+  }
+
+  @media(max-width:640px){
+    .topstrip,.footstrip{padding:1.2rem 1.3rem;}
+    main.stage{padding:10rem 1.3rem 5rem;}
+    .qtext{margin-bottom:1.8rem;font-size:clamp(1.5rem,6vw,2rem);}
+    .opt{padding:1.1rem 0.4rem;gap:1rem;}
+    .opt .tx{font-size:0.96rem;}
+    .progress-track{padding:0 1.3rem;}
+    h1.hook-h{white-space:normal;font-size:clamp(2rem,9vw,2.8rem);}
+  }
+</style>
+</head>
+<body>
+
+<div class="topstrip">
+  <div class="topstrip-left">
+    <div class="wordmark"><span class="dot"></span>SURDS</div>
+  </div>
+  <div class="topstrip-right">
+    <div class="stepread" id="stepRead">SENSING · IDLE</div>
+  </div>
+</div>
+
+<div class="progress-track">
+  <span class="track-label active" id="trackStart">START</span>
+  <canvas id="miniCar"></canvas>
+  <span class="track-label" id="trackFinish">FINISH</span>
+</div>
+
+<main class="stage">
+  <div class="split">
+
+  <div class="frame">
+
+    <!-- HOOK -->
+    <div class="step active" data-step="hook">
+      <p class="eyebrow">SPOT THE PROBLEM</p>
+      <h1 class="hook-h">Can You<br><span class="fade">Spot It?</span></h1>
+      <p class="hook-sub">Five questions. Ninety seconds. Tell us where it actually hurts — we'll tell you if it's worth fixing, and how.</p>
+      <button class="cta" data-track="start" onclick="goTo(1)">Start →</button>
+      <div class="trust-badges">
+        <div class="trust-badge"><span class="badge-icon">⏱</span>90 SEC</div>
+        <span class="trust-sep"></span>
+        <div class="trust-badge"><span class="badge-icon">5</span>QUESTIONS</div>
+        <span class="trust-sep"></span>
+        <div class="trust-badge"><span class="badge-icon">✓</span>FREE</div>
+        <span class="trust-sep"></span>
+        <div class="trust-badge"><span class="badge-icon">🔒</span>NO SIGNUP</div>
+      </div>
+      <div class="social-proof">
+        <span class="proof-dot"></span>
+        <span class="proof-text"><strong id="proofCount">0</strong> problems spotted so far</span>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="step" data-step="1">
+      <p class="eyebrow">01 / 05 · PROFILE</p>
+      <p class="qtext">Which industry does this problem belong to?</p>
+      <div class="options" data-q="industry">
+        <div class="opt" data-value="buildings"><span class="mk"></span><span class="tx">Buildings & Commercial</span></div>
+        <div class="opt" data-value="datacenters"><span class="mk"></span><span class="tx">Data Centers</span></div>
+        <div class="opt" data-value="manufacturing"><span class="mk"></span><span class="tx">Manufacturing</span></div>
+        <div class="opt" data-value="cleanrooms"><span class="mk"></span><span class="tx">Clean Rooms & Pharma</span></div>
+        <div class="opt" data-value="energy"><span class="mk"></span><span class="tx">Energy & Utilities</span></div>
+        <div class="opt" data-value="healthcare"><span class="mk"></span><span class="tx">Healthcare & Labs</span></div>
+      </div>
+      <span class="back" onclick="goTo(0)">← Back</span>
+    </div>
+
+    <!-- Q2 -->
+    <div class="step" data-step="2">
+      <p class="eyebrow">02 / 05 · PROBLEM ONE</p>
+      <p class="qtext">Describe one recurring problem that you believe is worth solving.</p>
+      <div class="field-row">
+        <textarea id="q-problem1" rows="4" placeholder="Walk us through it — what keeps happening, and why does it matter?"></textarea>
+      </div>
+      <button class="cta" style="margin-top:1.4rem;" onclick="continueProblem1()">Continue →</button>
+      <span class="back" onclick="goTo(1)">← Back</span>
+    </div>
+
+    <!-- Q3 -->
+    <div class="step" data-step="3">
+      <p class="eyebrow">03 / 05 · WHO IT HITS</p>
+      <p class="qtext">Who experiences this problem most?</p>
+      <div class="options" data-q="who">
+        <div class="opt" data-value="customer"><span class="mk"></span><span class="tx">Customer</span></div>
+        <div class="opt" data-value="employee"><span class="mk"></span><span class="tx">Employee</span></div>
+        <div class="opt" data-value="manager"><span class="mk"></span><span class="tx">Manager</span></div>
+        <div class="opt" data-value="founder"><span class="mk"></span><span class="tx">Founder</span></div>
+        <div class="opt" data-value="smallbusiness"><span class="mk"></span><span class="tx">Small Business</span></div>
+        <div class="opt" data-value="other"><span class="mk"></span><span class="tx">Other</span></div>
+      </div>
+      <span class="back" onclick="goTo(2)">← Back</span>
+    </div>
+
+    <!-- Q4 -->
+    <div class="step" data-step="4">
+      <p class="eyebrow">04 / 05 · FREQUENCY</p>
+      <p class="qtext">How often does this problem occur?</p>
+      <div class="options" data-q="frequency">
+        <div class="opt" data-value="daily"><span class="mk"></span><span class="tx">Daily</span></div>
+        <div class="opt" data-value="weekly"><span class="mk"></span><span class="tx">Weekly</span></div>
+        <div class="opt" data-value="monthly"><span class="mk"></span><span class="tx">Monthly</span></div>
+        <div class="opt" data-value="rarely"><span class="mk"></span><span class="tx">Rarely, but painfully when it hits</span></div>
+      </div>
+      <span class="back" onclick="goTo(3)">← Back</span>
+    </div>
+
+    <!-- Q5 -->
+    <div class="step" data-step="5">
+      <p class="eyebrow">05 / 05 · IMPACT</p>
+      <p class="qtext">If this problem disappeared tomorrow, what would improve the most?</p>
+      <div class="options" data-q="impact">
+        <div class="opt" data-value="savetime"><span class="mk"></span><span class="tx">Save time</span></div>
+        <div class="opt" data-value="costs"><span class="mk"></span><span class="tx">Reduce operational costs</span></div>
+        <div class="opt" data-value="revenue"><span class="mk"></span><span class="tx">Increase revenue</span></div>
+        <div class="opt" data-value="cx"><span class="mk"></span><span class="tx">Improve customer experience</span></div>
+        <div class="opt" data-value="errors"><span class="mk"></span><span class="tx">Reduce errors</span></div>
+        <div class="opt" data-value="productivity"><span class="mk"></span><span class="tx">Improve employee productivity</span></div>
+        <div class="opt" data-value="compliance"><span class="mk"></span><span class="tx">Improve compliance or safety</span></div>
+        <div class="opt" data-value="other"><span class="mk"></span><span class="tx">Other</span></div>
+      </div>
+      <span class="back" onclick="goTo(4)">← Back</span>
+    </div>
+
+    <!-- GATE -->
+    <div class="step" data-step="gate">
+      <p class="eyebrow">NOTED</p>
+      <p class="qtext">Got it — we can see the shape of this.</p>
+      <p class="hook-sub" style="margin-bottom:2rem;">Enter your details and we'll tell you exactly what we'd build first.</p>
+      <div class="field-row"><label>Full name</label><input type="text" id="g-name" placeholder="Jordan Smith"></div>
+      <div class="field-row"><label>Company</label><input type="text" id="g-company" placeholder="Company name"></div>
+      <div class="field-row"><label>Work email</label><input type="email" id="g-email" placeholder="you@company.com"></div>
+      <button class="cta" id="submitBtn" style="margin-top:0.6rem;" onclick="submitAssessment()">Show me the fix →</button>
+      <p class="form-status" id="formStatus"></p>
+      <div class="loader-ring" id="loaderRing" aria-hidden="true">
+        <svg viewBox="0 0 80 80">
+          <circle class="ring-track" cx="40" cy="40" r="34"></circle>
+          <circle class="ring-sweep" cx="40" cy="40" r="34"></circle>
+        </svg>
+        <span class="ring-label">READING YOUR ANSWERS</span>
+      </div>
+      <span class="back" onclick="goTo(5)">← Back</span>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="step" data-step="results">
+      <p class="eyebrow">SPOTTED</p>
+      <p class="qtext" style="margin-bottom:1.2rem;">We spotted it too.</p>
+      <p class="recap" id="resultRecap"></p>
+      <p class="rec" id="resultRec"></p>
+
+      <div class="next-steps">
+        <p class="eyebrow" style="margin-bottom:1rem;">WHAT HAPPENS NEXT</p>
+        <div class="next-step-row">
+          <span class="next-num">01</span>
+          <span class="next-text">We review your answers and match them to our deployment playbook.</span>
+        </div>
+        <div class="next-step-row">
+          <span class="next-num">02</span>
+          <span class="next-text">You'll get a short walkthrough tailored to your exact problem.</span>
+        </div>
+        <div class="next-step-row">
+          <span class="next-num">03</span>
+          <span class="next-text">If the fit is right, we scope a pilot in under 2 weeks.</span>
+        </div>
+      </div>
+
+      <a class="cta" style="text-decoration:none;margin-top:2.4rem;" href="../surds-website-final.html#cta">Book a walkthrough →</a>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE — detective on the landing page only; industry panels once started -->
+  <aside class="case-side">
+    <div class="case-float" id="caseHookState">
+      <!-- Self-contained "spot the problem" mark — a magnifier scanning a sensor grid,
+           one node lit as the spotted issue. No external asset, so it can never 404. -->
+      <svg id="panelDetective" viewBox="0 0 320 320" role="img" aria-label="A magnifier spotting one problem node in a grid of sensors" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="pdGlow" cx="50%" cy="42%" r="60%">
+            <stop offset="0%" stop-color="#FFFFFF"/>
+            <stop offset="100%" stop-color="#ECECEA"/>
+          </radialGradient>
+        </defs>
+        <circle cx="160" cy="150" r="132" fill="url(#pdGlow)" stroke="rgba(28,29,31,0.10)"/>
+        <!-- sensor grid -->
+        <g fill="#8E9094">
+          <circle cx="96"  cy="96"  r="4"/><circle cx="140" cy="96"  r="4"/><circle cx="184" cy="96"  r="4"/><circle cx="228" cy="96"  r="4"/>
+          <circle cx="96"  cy="140" r="4"/><circle cx="140" cy="140" r="4"/><circle cx="184" cy="140" r="4"/><circle cx="228" cy="140" r="4"/>
+          <circle cx="96"  cy="184" r="4"/><circle cx="140" cy="184" r="4"/><circle cx="228" cy="184" r="4"/>
+          <circle cx="96"  cy="228" r="4"/><circle cx="140" cy="228" r="4"/><circle cx="184" cy="228" r="4"/><circle cx="228" cy="228" r="4"/>
+        </g>
+        <!-- the spotted problem node -->
+        <circle cx="184" cy="184" r="6.5" fill="#2A2B2D"/>
+        <circle class="pd-pulse" cx="184" cy="184" r="6.5" fill="none" stroke="#2A2B2D" stroke-width="2"/>
+        <!-- magnifier -->
+        <g fill="none" stroke="#1C1D1F" stroke-width="7" stroke-linecap="round">
+          <circle cx="184" cy="184" r="52" fill="rgba(42,43,45,0.05)"/>
+          <line x1="222" y1="222" x2="262" y2="262"/>
+        </g>
+        <circle cx="184" cy="184" r="52" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+        <style>
+          @keyframes pdPulse{0%{r:6.5;opacity:0.9;}100%{r:30;opacity:0;}}
+          .pd-pulse{animation:pdPulse 2.2s var(--ease) infinite;transform-box:fill-box;transform-origin:center;}
+        </style>
+      </svg>
+    </div>
+    <div class="industry-panels" id="industryPanels">
+      <p class="eyebrow" style="margin-bottom:1.2rem;">THE CASE FILE</p>
+      <div class="ind-tile" data-key="buildings"><span class="ind-icon">🏢</span><span class="ind-label">Buildings & Commercial</span></div>
+      <div class="ind-tile" data-key="datacenters"><span class="ind-icon">🖥️</span><span class="ind-label">Data Centers</span></div>
+      <div class="ind-tile" data-key="manufacturing"><span class="ind-icon">🏭</span><span class="ind-label">Manufacturing</span></div>
+      <div class="ind-tile" data-key="cleanrooms"><span class="ind-icon">🧪</span><span class="ind-label">Clean Rooms & Pharma</span></div>
+      <div class="ind-tile" data-key="energy"><span class="ind-icon">⚡</span><span class="ind-label">Energy & Utilities</span></div>
+      <div class="ind-tile" data-key="healthcare"><span class="ind-icon">🏥</span><span class="ind-label">Healthcare & Labs</span></div>
+    </div>
+    <div class="who-panels" id="whoPanels">
+      <p class="eyebrow" style="margin-bottom:1.2rem;">WHO IT HITS</p>
+      <div class="ind-tile" data-key="customer"><span class="ind-icon">👤</span><span class="ind-label">Customer</span></div>
+      <div class="ind-tile" data-key="employee"><span class="ind-icon">🧑‍💻</span><span class="ind-label">Employee</span></div>
+      <div class="ind-tile" data-key="manager"><span class="ind-icon">🗂️</span><span class="ind-label">Manager</span></div>
+      <div class="ind-tile" data-key="founder"><span class="ind-icon">🚀</span><span class="ind-label">Founder</span></div>
+      <div class="ind-tile" data-key="smallbusiness"><span class="ind-icon">🏪</span><span class="ind-label">Small Business</span></div>
+      <div class="ind-tile" data-key="other"><span class="ind-icon">✳️</span><span class="ind-label">Other</span></div>
+    </div>
+    <div class="freq-panels" id="freqPanels">
+      <p class="eyebrow" style="margin-bottom:1.2rem;">HOW OFTEN</p>
+      <div class="ind-tile" data-key="daily"><span class="ind-icon">☀️</span><span class="ind-label">Daily</span></div>
+      <div class="ind-tile" data-key="weekly"><span class="ind-icon">📅</span><span class="ind-label">Weekly</span></div>
+      <div class="ind-tile" data-key="monthly"><span class="ind-icon">🗓️</span><span class="ind-label">Monthly</span></div>
+      <div class="ind-tile" data-key="rarely"><span class="ind-icon">🌙</span><span class="ind-label">Rarely, but painfully when it hits</span></div>
+    </div>
+    <div class="impact-panels" id="impactPanels">
+      <p class="eyebrow" style="margin-bottom:1.2rem;">WHAT IT'D FIX</p>
+      <div class="ind-tile" data-key="savetime"><span class="ind-icon">⏱️</span><span class="ind-label">Save time</span></div>
+      <div class="ind-tile" data-key="costs"><span class="ind-icon">💰</span><span class="ind-label">Reduce operational costs</span></div>
+      <div class="ind-tile" data-key="revenue"><span class="ind-icon">📈</span><span class="ind-label">Increase revenue</span></div>
+      <div class="ind-tile" data-key="cx"><span class="ind-icon">😊</span><span class="ind-label">Improve customer experience</span></div>
+      <div class="ind-tile" data-key="errors"><span class="ind-icon">✅</span><span class="ind-label">Reduce errors</span></div>
+      <div class="ind-tile" data-key="productivity"><span class="ind-icon">⚙️</span><span class="ind-label">Improve employee productivity</span></div>
+      <div class="ind-tile" data-key="compliance"><span class="ind-icon">🛡️</span><span class="ind-label">Improve compliance or safety</span></div>
+      <div class="ind-tile" data-key="other"><span class="ind-icon">✳️</span><span class="ind-label">Other</span></div>
+    </div>
+    <div class="type-panels" id="typePanels">
+      <p class="eyebrow" style="margin-bottom:1.2rem;">BUILDS AS YOU TYPE</p>
+      <div class="type-panel" id="typePanel1">
+        <p class="type-panel-h">WHAT WE'RE HEARING</p>
+        <p class="type-panel-b" id="typeMirror">Start typing…</p>
+      </div>
+      <div class="type-panel" id="typePanel2">
+        <p class="type-panel-h">WHY THIS MATTERS</p>
+        <p class="type-panel-b">Recurring costs more than it looks like — that's exactly the kind of thing worth fixing.</p>
+      </div>
+      <div class="type-panel" id="typePanel3">
+        <p class="type-panel-h">WORTH A CLOSER LOOK</p>
+        <p class="type-panel-b">Specific enough to act on. That's exactly what we need to build the right fix.</p>
+      </div>
+    </div>
+  </aside>
+
+  </div>
+</main>
+
+<div class="footstrip">
+  <span id="footLeft">SURDS SENSING NETWORK · LIVE</span>
+  <span id="footClock">00:00:00</span>
+</div>
+
+<script>
+  /* ================= MINI DRONE (progress track) ================= */
+  (function miniCar(){
+    const cv = document.getElementById('miniCar');
+    const ctx = cv.getContext('2d');
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W, H, dispD = 0;
+
+    function size(){
+      W = cv.width = cv.clientWidth * dpr;
+      H = cv.height = cv.clientHeight * dpr;
+    }
+    size(); addEventListener('resize', size);
+
+    function draw(now){
+      ctx.clearRect(0, 0, W, H);
+      const w = 46 * dpr, h = 24 * dpr;
+
+      const targetD = Math.min(current, 6) / 6;
+      dispD += (targetD - dispD) * 0.1;
+      const travelPad = w * 0.65;
+      const cx = travelPad + (W - travelPad * 2) * dispD;
+      const trackY = H * 0.8;
+
+      // line connecting the checkpoints
+      ctx.strokeStyle = 'rgba(28,29,31,0.15)';
+      ctx.lineWidth = 1.5 * dpr;
+      ctx.beginPath();
+      ctx.moveTo(travelPad, trackY);
+      ctx.lineTo(W - travelPad, trackY);
+      ctx.stroke();
+
+      // one checkpoint per question, plus a final stop for the email gate (6 total)
+      for (let i = 1; i <= 6; i++){
+        const d = i / 6;
+        const tx = travelPad + (W - travelPad * 2) * d;
+        const passed = d <= dispD + 0.01;
+        ctx.beginPath();
+        ctx.arc(tx, trackY, 2.6 * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = passed ? '#2A2B2D' : 'rgba(28,29,31,0.22)';
+        ctx.fill();
+      }
+
+      const bob = reduced ? 0 : Math.sin(now / 300) * 1.4 * dpr;
+      const s = h * 1.35;
+      ctx.save();
+      ctx.translate(cx, trackY - h * 0.55 + bob);
+
+      // hover shadow on the track below
+      ctx.fillStyle = 'rgba(28,29,31,0.14)';
+      ctx.beginPath();
+      ctx.ellipse(0, h * 0.62, s * 0.42, s * 0.1, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const armLen = s * 0.58;
+      const armAngles = [Math.PI * 0.22, Math.PI * 0.78, Math.PI * 1.22, Math.PI * 1.78];
+
+      // arms
+      ctx.strokeStyle = '#2A2B2D';
+      ctx.lineWidth = 2.2 * dpr;
+      ctx.lineCap = 'round';
+      armAngles.forEach(a => {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * armLen, Math.sin(a) * armLen * 0.5);
+        ctx.stroke();
+      });
+
+      // spinning propellers at each arm tip
+      const spin = reduced ? 0 : now / 35;
+      armAngles.forEach((a, i) => {
+        const px = Math.cos(a) * armLen, py = Math.sin(a) * armLen * 0.5;
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(spin + i * (Math.PI / 4));
+        ctx.fillStyle = 'rgba(28,29,31,0.32)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, s * 0.24, s * 0.06, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(px, py, s * 0.075, 0, Math.PI * 2);
+        ctx.fillStyle = '#1C1D1F';
+        ctx.fill();
+      });
+
+      // body
+      ctx.fillStyle = '#1C1D1F';
+      ctx.beginPath();
+      ctx.roundRect(-s * 0.24, -s * 0.15, s * 0.48, s * 0.3, s * 0.09);
+      ctx.fill();
+
+      // camera lens underneath (brand nod — sensing)
+      ctx.fillStyle = '#8E9094';
+      ctx.beginPath();
+      ctx.arc(0, s * 0.1, s * 0.06, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  /* ================= RIGHT SIDE: detective (hook) → a tile panel matching each question ================= */
+  function updateRightSide(n){
+    const hookState = document.getElementById('caseHookState');
+    const indPanels = document.getElementById('industryPanels');
+    const typePanels = document.getElementById('typePanels');
+    const whoPanels = document.getElementById('whoPanels');
+    const freqPanels = document.getElementById('freqPanels');
+    const impactPanels = document.getElementById('impactPanels');
+    const caseSide = document.querySelector('.case-side');
+    hookState.classList.toggle('hidden', n !== 0);
+    indPanels.classList.toggle('active', n === 1);
+    typePanels.classList.toggle('active', n === 2);
+    whoPanels.classList.toggle('active', n === 3);
+    freqPanels.classList.toggle('active', n === 4);
+    impactPanels.classList.toggle('active', n === 5);
+    // gate & results: hide entire right side
+    caseSide.classList.toggle('hidden-side', n >= 6);
+  }
+  function highlightTile(container, value){
+    container.querySelectorAll('.ind-tile').forEach(tile => {
+      tile.classList.toggle('match', tile.dataset.key === value);
+    });
+  }
+  function highlightIndustry(value){ highlightTile(document.getElementById('industryPanels'), value); }
+  function highlightWho(value){ highlightTile(document.getElementById('whoPanels'), value); }
+  function highlightImpact(value){ highlightTile(document.getElementById('impactPanels'), value); }
+  function highlightFreq(value){ highlightTile(document.getElementById('freqPanels'), value); }
+
+  // "builds as you type" — Q2's problem textarea lights up panels progressively
+  (function typeReveal(){
+    const ta = document.getElementById('q-problem1');
+    const mirror = document.getElementById('typeMirror');
+    const p1 = document.getElementById('typePanel1');
+    const p2 = document.getElementById('typePanel2');
+    const p3 = document.getElementById('typePanel3');
+    if (!ta) return;
+    ta.addEventListener('input', () => {
+      const len = ta.value.trim().length;
+      mirror.textContent = len ? ta.value : 'Start typing…';
+      p1.classList.toggle('lit', len > 0);
+      p2.classList.toggle('lit', len > 35);
+      p3.classList.toggle('lit', len > 80);
+    });
+  })();
+
+  updateRightSide(0);
+
+  /* Social proof counter — animated count-up */
+  (function proofCounter(){
+    const el = document.getElementById('proofCount');
+    if (!el) return;
+    const target = 537; // realistic number
+    const duration = 2200; // ms
+    const start = performance.now();
+    function tick(now){
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target).toLocaleString();
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target + '+';
+    }
+    requestAnimationFrame(tick);
+  })();
+
+  /* clock */
+  (function clock(){
+    const el = document.getElementById('footClock');
+    function tick(){
+      el.textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+
+  /* ================= QUIZ LOGIC ================= */
+  const TOTAL_STEPS = 6; // 1-5 are questions, 6 is gate
+  let current = 0;
+  const answers = {};
+
+  function stepEl(name){ return document.querySelector(`.step[data-step="${name}"]`); }
+  function stepName(n){ return n === 0 ? 'hook' : (n === TOTAL_STEPS ? 'gate' : String(n)); }
+
+  function goTo(n){
+    // Detect backward navigation
+    if (n < current) {
+      navigatingBack = true;
+      setTimeout(() => { navigatingBack = false; }, 500);
+    }
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    stepEl(stepName(n)).classList.add('active');
+    current = n;
+    document.getElementById('stepRead').textContent =
+      n === 0 ? 'SENSING · IDLE' : (n === TOTAL_STEPS ? 'SENSING · 100%' : `SENSING · Q${n} / 05`);
+    updateRightSide(n);
+  }
+
+  let navigatingBack = false;
+
+  document.querySelectorAll('.options').forEach(group => {
+    group.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        group.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        const qKey = group.dataset.q;
+        answers[qKey] = { value: opt.dataset.value };
+        if (qKey === 'industry') highlightIndustry(opt.dataset.value);
+        if (qKey === 'who') highlightWho(opt.dataset.value);
+        if (qKey === 'frequency') highlightFreq(opt.dataset.value);
+        if (qKey === 'impact') highlightImpact(opt.dataset.value);
+        // Only auto-advance if not navigating back
+        if (!navigatingBack) {
+          setTimeout(() => goTo(current + 1), 360);
+        }
+      });
+    });
+  });
+
+  function continueProblem1(){
+    answers.problem1 = { value: document.getElementById('q-problem1').value.trim() };
+    goTo(3);
+  }
+
+  const RECS = {
+    buildings: "Buildings & Commercial is our flagship deployment. SURDS' thermal occupancy sensing reads real headcount room-by-room — zero PII, physically incapable of capturing a face — and auto-scales HVAC in unoccupied zones. Facilities like yours typically see a <strong>30–38% cut in HVAC spend</strong> within the first deployment cycle.",
+    datacenters: "In Data Centers, rack-level thermal intelligence moves cooling <strong>before heat peaks</strong> — not sized for worst-case margin. Cooling typically runs ~40% of industry power, which is where the fastest payback lives.",
+    manufacturing: "In Manufacturing, machines self-report condition through live health rings, turning downtime into a <strong>forecast, not a surprise</strong> — losses become visible from the shop floor up.",
+    cleanrooms: "In Clean Rooms & Pharma, we predict contamination excursions instead of catching them at inspection. Compliance becomes <strong>a verified state, not a snapshot</strong>.",
+    energy: "In Energy & Utilities, asset health is monitored at the grid edge, so infrastructure <strong>acts on its own condition</strong> instead of waiting on a fixed inspection rotation.",
+    healthcare: "In Healthcare & Labs, air, cold chain and environment are verified <strong>24/7</strong> — replacing point-in-time rounds with continuous, always-on compliance."
+  };
+
+  const FREQ_LABEL = { daily: 'daily', weekly: 'weekly', monthly: 'monthly', rarely: 'rarely, but hard when it lands' };
+  const WHO_LABEL = { customer: 'customers', employee: 'employees', manager: 'managers', founder: 'founder', smallbusiness: 'small business', other: 'team' };
+  const IMPACT_LABEL = {
+    savetime: 'more time back', costs: 'lower operational costs', revenue: 'more revenue',
+    cx: 'a better customer experience', errors: 'fewer errors', productivity: 'better employee productivity',
+    compliance: 'stronger compliance or safety', other: 'something else entirely'
+  };
+
+  function submitAssessment(){
+    const name = document.getElementById('g-name').value.trim();
+    const company = document.getElementById('g-company').value.trim();
+    const email = document.getElementById('g-email').value.trim();
+    const status = document.getElementById('formStatus');
+
+    if (!name || !company || !email){ status.textContent = 'Please fill in all fields.'; return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)){ status.textContent = 'Please enter a valid email.'; return; }
+
+    status.textContent = '';
+    document.getElementById('submitBtn').style.display = 'none';
+    const ring = document.getElementById('loaderRing');
+    ring.classList.remove('fading');
+    ring.classList.add('active');
+
+    const industry = answers.industry ? answers.industry.value : 'buildings';
+    const problem1 = answers.problem1 ? answers.problem1.value : '';
+    const who = answers.who ? answers.who.value : '';
+    const frequency = answers.frequency ? answers.frequency.value : '';
+    const impact = answers.impact ? answers.impact.value : '';
+
+    const payload = {
+      access_key: "1293e495-bc7c-4f7a-a6b2-d31d69fbed42",
+      subject: "Problem Spot Assessment — SURDS site",
+      name, company, email,
+      industry, problem1, who, frequency, impact
+    };
+
+    const minWait = new Promise(resolve => setTimeout(resolve, 950));
+    const request = fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+
+    Promise.all([request, minWait]).then(() => {
+      ring.classList.add('fading');
+      return new Promise(resolve => setTimeout(resolve, 350));
+    }).then(() => {
+      ring.classList.remove('active', 'fading');
+      document.getElementById('submitBtn').style.display = '';
+
+      // pure recap of what they actually said — no invented score, no calculated position
+      let recap = "Here's what you told us: ";
+      recap += problem1 ? `"${problem1}"` : 'a problem worth solving';
+      if (who) recap += ` — hitting your ${WHO_LABEL[who] || who} the most`;
+      if (frequency) recap += `, happening ${FREQ_LABEL[frequency] || frequency}`;
+      recap += '.';
+      if (impact) recap += ` If it disappeared tomorrow, you'd get ${IMPACT_LABEL[impact] || impact}.`;
+      document.getElementById('resultRecap').textContent = recap;
+
+      document.getElementById('resultRec').innerHTML = RECS[industry] || RECS.buildings;
+
+
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      stepEl('results').classList.add('active');
+      current = 7; // signal results mode
+      updateRightSide(7);
+      document.getElementById('stepRead').textContent = 'SENSING · COMPLETE';
+      document.getElementById('footLeft').textContent = 'SURDS SENSING NETWORK · READING LOCKED';
+      document.getElementById('trackFinish').classList.add('active');
+    });
+  }
+</script>
+
+<script>
+  /* ============ SURDS survey telemetry ============
+     First-party analytics for this study. For each anonymous session it captures:
+       • internal clock (ms since load) stamped on every event
+       • landing view + Start click              -> click-through / start-CTR
+       • each step view + dwell of the previous   -> per-question response time
+       • every option selection (incl. midway changes) -> "what they chose midway"
+       • every keystroke + full text snapshot on the free-text & gate fields
+         -> partial submissions, typed-then-deleted text (character & word level)
+       • every click with its DOM target + timestamp
+       • drop-off: the furthest step reached, sent on exit
+     Buffered and flushed to /api/track (Neon in prod, logs/survey-events.jsonl in dev)
+     via sendBeacon/fetch, with a localStorage mirror so nothing is lost on reload. */
+  (function(){
+    var SURVEY = 'readiness-assessment';
+    var ENDPOINT = '/api/track';
+    var t0 = (window.performance && performance.now) ? performance.now() : Date.now();
+    function now(){ return Math.round(((window.performance&&performance.now)?performance.now():Date.now()) - t0); }
+
+    var SID = (function(){
+      try{
+        var k='surds_survey_sid', s=sessionStorage.getItem(k);
+        if(!s){ s=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():('s-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)); sessionStorage.setItem(k,s); }
+        return s;
+      }catch(e){ return 's-'+Date.now().toString(36); }
+    })();
+
+    var seq=0, buffer=[], PENDING_KEY='surds_survey_pending_'+SID;
+    try{ var prev=JSON.parse(localStorage.getItem(PENDING_KEY)||'[]'); if(prev&&prev.length) buffer=prev.concat(buffer); }catch(e){}
+    function persist(){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify(buffer.slice(-800))); }catch(e){} }
+
+    var maxIndex=0, maxStep='hook', answersSnapshot={};
+    function snap(){ return Object.assign({}, answersSnapshot); }
+
+    function push(type, payload){
+      var e={ seq:seq++, t:now(), ts:new Date().toISOString(), type:type };
+      if(payload) for(var k in payload) e[k]=payload[k];
+      buffer.push(e); persist();
+      if(buffer.length>=25) flush(false);
+      return e;
+    }
+
+    function flush(useBeacon){
+      if(!buffer.length) return;
+      var batch=buffer.slice(0);
+      var body=JSON.stringify({ s:SID, survey:SURVEY, events:batch });
+      buffer=[]; persist();
+      var restore=function(){ buffer=batch.concat(buffer); persist(); };
+      if(useBeacon && navigator.sendBeacon){
+        var ok=false;
+        try{ ok=navigator.sendBeacon(ENDPOINT, new Blob([body],{type:'application/json'})); }catch(e){ ok=false; }
+        if(!ok) restore();
+        return;
+      }
+      try{
+        fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'application/json'}, body:body, keepalive:true})
+          .then(function(r){ if(!r||!r.ok) restore(); }).catch(restore);
+      }catch(e){ restore(); }
+    }
+    setInterval(function(){ flush(false); }, 4000);
+
+    function selectorFor(el){
+      if(!el||el===document) return 'document';
+      if(el.id) return '#'+el.id;
+      var parts=[], depth=0, node=el;
+      while(node && node.nodeType===1 && depth<4){
+        var s=node.tagName.toLowerCase();
+        if(node.dataset && node.dataset.track) s+='[data-track='+node.dataset.track+']';
+        else if(node.dataset && node.dataset.value) s+='[data-value='+node.dataset.value+']';
+        else if(node.className && typeof node.className==='string'){
+          var c=node.className.trim().split(/\s+/).filter(function(x){return x&&x!=='active'&&x!=='selected';})[0];
+          if(c) s+='.'+c;
+        }
+        parts.unshift(s); node=node.parentElement; depth++;
+      }
+      return parts.join('>');
+    }
+
+    push('session_start', {
+      ua:navigator.userAgent, lang:navigator.language, referrer:document.referrer,
+      tz:(window.Intl&&Intl.DateTimeFormat)?Intl.DateTimeFormat().resolvedOptions().timeZone:'',
+      viewport:innerWidth+'x'+innerHeight, screen:(window.screen?screen.width+'x'+screen.height:''), url:location.href
+    });
+    push('landing_view', { step:'hook', index:0 });
+
+    // Every click: DOM target + coordinates + internal clock
+    document.addEventListener('click', function(ev){
+      var el=ev.target, track=null, n=el;
+      while(n && n!==document){ if(n.dataset && n.dataset.track){ track=n.dataset.track; break; } n=n.parentElement; }
+      push('click', { sel:selectorFor(el), tag:(el.tagName||'').toLowerCase(),
+        text:(el.textContent||'').trim().slice(0,60), x:ev.clientX, y:ev.clientY, track:track });
+      if(track==='start') push('start_click', { step:'hook' });
+    }, true);
+
+    // Step transitions -> response time + drop-off, via class mutations
+    var INDEX={ hook:0,'1':1,'2':2,'3':3,'4':4,'5':5, gate:6, results:7 };
+    var currentStepName='hook', stepEnterT=now();
+    function onStep(name){
+      if(!name || name===currentStepName) return;
+      push('step_view', { step:name, index:(name in INDEX?INDEX[name]:null), prevStep:currentStepName, prevDwellMs:now()-stepEnterT });
+      currentStepName=name; stepEnterT=now();
+      var idx=(name in INDEX)?INDEX[name]:0;
+      if(idx>maxIndex){ maxIndex=idx; maxStep=name; }
+    }
+    var stepMO=new MutationObserver(function(){ var a=document.querySelector('.step.active'); if(a) onStep(a.getAttribute('data-step')); });
+    document.querySelectorAll('.step').forEach(function(s){ stepMO.observe(s,{attributes:true,attributeFilter:['class']}); });
+
+    // Option selections (incl. changes made midway)
+    document.addEventListener('click', function(ev){
+      var opt=ev.target.closest?ev.target.closest('.opt'):null; if(!opt) return;
+      var group=opt.closest('.options'); if(!group) return;
+      var q=group.getAttribute('data-q'), value=opt.getAttribute('data-value');
+      var txEl=opt.querySelector('.tx'), label=txEl?txEl.textContent.trim():'';
+      answersSnapshot[q]=value;
+      push('option_select', { q:q, value:value, label:label, answers:snap() });
+    }, true);
+
+    // Keystrokes + text snapshots on free-text & gate fields
+    function watchField(el, field){
+      if(!el) return;
+      el.addEventListener('keydown', function(ev){
+        var k=ev.key, kind=(k==='Backspace'||k==='Delete')?'del':(k.length===1?'add':'other');
+        push('key', { field:field, key:k, code:ev.code, kind:kind });
+      });
+      el.addEventListener('input', function(){
+        var v=el.value; answersSnapshot[field]=v;
+        push('input', { field:field, value:v, len:v.length, words:v.trim()?v.trim().split(/\s+/).length:0 });
+      });
+      el.addEventListener('blur', function(){ push('field_blur', { field:field, value:el.value, len:el.value.length }); });
+    }
+    ['q-problem1','g-name','g-company','g-email'].forEach(function(id){ watchField(document.getElementById(id), id); });
+
+    // Submit + completion
+    var submitBtn=document.getElementById('submitBtn');
+    if(submitBtn) submitBtn.addEventListener('click', function(){ push('submit_attempt', { answers:snap() }); }, true);
+    var resultsStep=document.querySelector('.step[data-step="results"]'), completeFired=false;
+    if(resultsStep) new MutationObserver(function(){
+      if(!completeFired && resultsStep.classList.contains('active')){ completeFired=true; push('complete', { answers:snap() }); }
+    }).observe(resultsStep,{attributes:true,attributeFilter:['class']});
+
+    // Drop-off / exit
+    var ended=false;
+    function end(reason){
+      if(ended) return; ended=true;
+      var e=push('drop', { reason:reason, reachedStep:maxStep, reachedIndex:maxIndex,
+        completed:currentStepName==='results', durationMs:now(), answers:snap() });
+      e.step=maxStep; e.index=maxIndex;
+      flush(true);
+    }
+    document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden') flush(true); });
+    addEventListener('pagehide', function(){ end('pagehide'); });
+    addEventListener('beforeunload', function(){ end('beforeunload'); });
+
+    window.__surdsTrack={ id:SID, flush:flush, buffer:function(){return buffer;} };
+  })();
+</script>
+
+</body>
+</html>

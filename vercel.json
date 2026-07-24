@@ -1,7 +1,11 @@
 {
-  "routes": [
-    { "src": "/", "dest": "/views/main/index.html" },
-    { "src": "/enterprise", "dest": "/views/enterprise/index.html" },
-    { "src": "/card-tour", "dest": "/views/card-tour/index.html" }
-  ]
+  "rewrites": [
+    { "source": "/", "destination": "/views/main/index.html" },
+    { "source": "/enterprise", "destination": "/views/enterprise/index.html" },
+    { "source": "/card-tour", "destination": "/views/card-tour/index.html" },
+    { "source": "/survey", "destination": "/survey.html" }
+  ],
+  "functions": {
+    "api/surveys.js": { "includeFiles": "surds survey/**" }
+  }
 }

@@ -34,6 +34,7 @@ var FacMove = (function(){
   var mvVisitedText = document.getElementById('mvVisitedText');
   var mvSuggestText = document.getElementById('mvSuggestText');
   var facVizEl = document.getElementById('facVizReal');
+  var statsPanel = document.getElementById('moveIntelStats');
 
   var dwell = {}, trails = [], TRAIL_MAX = 50;
   var active = false, lastP = -1, suggestTarget = null;
@@ -85,6 +86,7 @@ var FacMove = (function(){
         }
       }
       renderOverlay();
+      updateStatsPanel();
     }
   }
 
@@ -185,6 +187,40 @@ var FacMove = (function(){
       flagSuggest.classList.remove('show');
       suggestTarget = null;
     }
+  }
+  function updateStatsPanel(){
+    if (!statsPanel || !walkers) return;
+    var activeWalkers = walkers.filter(function(w){ return w.state === 'walking'; }).length;
+    var stoppedWalkers = walkers.filter(function(w){ return w.state === 'browsing'; }).length;
+    var label = VISIT_WORD[currentTheme] || 'Visitors';
+    var singleLabel = label.slice(0, -1);
+
+    var statsHtml = '';
+    statsHtml += '<div style="font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:#fff; margin-bottom:0.4rem; font-size:0.58rem; opacity:0.6;">LIVE FACILITY TELEMETRY</div>';
+    statsHtml += '<div style="margin-bottom:0.5rem; display:flex; gap:0.8rem; font-size:0.65rem;">';
+    statsHtml += '<span>POPULATION: <b style="color:#fff;">' + walkers.length + '</b></span>';
+    statsHtml += '<span>STATUS: <b style="color:#34D399;">' + stoppedWalkers + ' Dwell</b> / <b style="color:#7ad8ff;">' + activeWalkers + ' Mobile</b></span>';
+    statsHtml += '</div>';
+    statsHtml += '<div style="display:flex; flex-direction:column; gap:0.3rem;">';
+    for (var i = 0; i < walkers.length; i++) {
+      var w = walkers[i];
+      var nameStr = singleLabel + ' #' + (i + 1);
+      var actionStr = '';
+      if (w.state === 'browsing' && w.visiting) {
+        var pName = (PIECES[w.visiting.type] && PIECES[w.visiting.type].name) || w.visiting.type;
+        actionStr = '<span style="color:#34D399;">Stationary at ' + pName + '</span>';
+      } else {
+        var destName = w.goalPiece ? ((PIECES[w.goalPiece.type] && PIECES[w.goalPiece.type].name) || w.goalPiece.type) : 'open area';
+        actionStr = '<span style="color:#7ad8ff;">Moving to ' + destName + '</span>';
+      }
+      statsHtml += '<div style="display:flex; justify-content:space-between; font-size:0.6rem; border-left:2px solid ' + WALKER_COLORS[i % WALKER_COLORS.length] + '; padding-left:0.45rem; line-height:1.2;">';
+      statsHtml += '<span style="color:rgba(251,251,253,0.85);">' + nameStr + '</span>';
+      statsHtml += '<span style="font-weight:500;">' + actionStr + '</span>';
+      statsHtml += '</div>';
+    }
+    statsHtml += '</div>';
+
+    statsPanel.innerHTML = statsHtml;
   }
 
   return { tick: tick, onOpen: onOpen, onClose: onClose, onScrollOpen: onScrollOpen, reset: reset };

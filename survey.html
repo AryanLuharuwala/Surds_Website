@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURDS | Surveys</title>
+<meta name="description" content="SURDS surveys and field research — open any study to take part.">
+<link rel="icon" type="image/svg+xml" href="/shared/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@0,400;0,500;0,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+    --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+    --ease:cubic-bezier(0.22,0.8,0.24,1);
+  }
+  html[data-theme="light"]{
+    --bg:#fbfbfd; --bg-2:#f1f1f4; --fg:#0b0b0c; --grey:#5c5c62; --grey-dim:#9a9aa2;
+    --line:rgba(10,10,12,0.1); --card:#ffffff; --shadow:0 24px 60px rgba(15,15,30,0.12);
+  }
+  html[data-theme="dark"]{
+    --bg:#000000; --bg-2:#0c0c0e; --fg:#ffffff; --grey:#9a9aa0; --grey-dim:#55555c;
+    --line:rgba(255,255,255,0.12); --card:#101014; --shadow:0 24px 60px rgba(0,0,0,0.55);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--fg);font-family:var(--body);-webkit-font-smoothing:antialiased;
+    transition:background-color .5s var(--ease),color .5s var(--ease);min-height:100vh;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,.nav-logo{font-family:var(--display);}
+  ::selection{background:var(--fg);color:var(--bg);}
+
+  nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem clamp(1.2rem,5vw,3.2rem);border-bottom:1px solid var(--line);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);}
+  .nav-logo{font-weight:700;font-size:1.05rem;letter-spacing:-0.01em;display:flex;align-items:center;gap:.5rem;}
+  .nav-logo .live{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.5);
+    animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5);}50%{box-shadow:0 0 0 5px rgba(52,211,153,0);}}
+  .nav-right{display:flex;align-items:center;gap:1.4rem;font-family:var(--mono);font-size:.62rem;
+    letter-spacing:.18em;text-transform:uppercase;}
+  .nav-right a{color:var(--grey);transition:color .25s ease;}
+  .nav-right a:hover{color:var(--fg);}
+  #themeToggle{width:42px;height:23px;border-radius:999px;border:1px solid var(--line);background:var(--bg-2);
+    position:relative;cursor:pointer;}
+  #themeToggle::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+    background:var(--fg);transition:transform .3s var(--ease);}
+  html[data-theme="dark"] #themeToggle::after{transform:translateX(19px);}
+
+  header.head{max-width:1400px;margin:0 auto;padding:clamp(3rem,9vh,7rem) clamp(1.2rem,5vw,3.2rem) 1.5rem;}
+  .eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--grey);margin-bottom:1.2rem;}
+  header.head h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:600;line-height:1.04;letter-spacing:-0.02em;}
+  header.head p{margin-top:1.2rem;max-width:52ch;color:var(--grey);font-size:clamp(.95rem,1.2vw,1.1rem);line-height:1.7;}
+  .count{margin-top:1.4rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-dim);}
+
+  main{max-width:1400px;margin:0 auto;padding:1.5rem clamp(1.2rem,5vw,3.2rem) 8rem;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:clamp(1.1rem,2.2vw,1.8rem);}
+  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;
+    overflow:hidden;transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .3s ease;}
+  .card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--fg) 22%,transparent);}
+  .card .cover{aspect-ratio:1/1;position:relative;display:flex;align-items:flex-end;padding:1.1rem;overflow:hidden;}
+  .card .cover::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(120% 80% at 15% 12%,rgba(255,255,255,.28),transparent 55%),
+    linear-gradient(180deg,transparent 40%,rgba(0,0,0,.34));}
+  .card .cover .badge{position:relative;z-index:1;font-family:var(--mono);font-size:.54rem;letter-spacing:.22em;
+    text-transform:uppercase;color:#fff;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.28);
+    padding:.34rem .6rem;border-radius:999px;backdrop-filter:blur(4px);}
+  .card .cover .idx{position:absolute;top:1rem;right:1.1rem;z-index:1;font-family:var(--display);font-weight:700;
+    font-size:2.6rem;color:rgba(255,255,255,.85);line-height:1;text-shadow:0 2px 14px rgba(0,0,0,.25);}
+  .card .body{padding:1.15rem 1.2rem 1.3rem;display:flex;flex-direction:column;gap:.55rem;flex:1;}
+  .card .body h3{font-size:1.08rem;font-weight:600;letter-spacing:-0.01em;line-height:1.25;}
+  .card .body .desc{font-size:.86rem;line-height:1.5;color:var(--grey);
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .card .body .meta{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+    font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-dim);}
+  .card .body .open{color:var(--fg);display:inline-flex;align-items:center;gap:.35rem;font-weight:500;}
+  .card:hover .open .arw{transform:translateX(3px);}
+  .arw{transition:transform .3s var(--ease);}
+
+  .state{padding:5rem 1rem;text-align:center;color:var(--grey);}
+  .state .big{font-family:var(--display);font-size:1.4rem;font-weight:600;color:var(--fg);margin-bottom:.6rem;}
+  .state code{font-family:var(--mono);font-size:.85rem;background:var(--bg-2);padding:.15rem .45rem;border-radius:6px;}
+  .skeleton{aspect-ratio:1/1;border-radius:18px;background:linear-gradient(100deg,var(--bg-2) 30%,color-mix(in srgb,var(--fg) 6%,var(--bg-2)) 50%,var(--bg-2) 70%);
+    background-size:200% 100%;animation:sh 1.3s linear infinite;border:1px solid var(--line);}
+  @keyframes sh{to{background-position:-200% 0;}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr 1fr;gap:.9rem;}.card .body h3{font-size:.92rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/merge-preview1.html">SURDS<span class="live" aria-hidden="true"></span></a>
+  <div class="nav-right">
+    <a href="/merge-preview1.html">← Home</a>
+    <button id="themeToggle" aria-label="Toggle light and dark mode"></button>
+  </div>
+</nav>
+
+<header class="head">
+  <p class="eyebrow">SURDS · FIELD RESEARCH</p>
+  <h1>Surveys</h1>
+  <p>Open studies and research forms from the SURDS team. Pick one to take part — new studies appear here automatically as they're published.</p>
+  <p class="count" id="count"></p>
+</header>
+
+<main>
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<script>
+  /* theme toggle (persisted), consistent with the rest of the site */
+  (function(){
+    var root=document.documentElement, saved=localStorage.getItem('surds-theme');
+    if(saved) root.setAttribute('data-theme',saved);
+    else if(matchMedia('(prefers-color-scheme: dark)').matches) root.setAttribute('data-theme','dark');
+    document.getElementById('themeToggle').addEventListener('click',function(){
+      var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+      root.setAttribute('data-theme',next); localStorage.setItem('surds-theme',next);
+    });
+  })();
+
+  var grid=document.getElementById('grid'), countEl=document.getElementById('count');
+
+  function coverStyle(title){
+    /* deterministic two-tone gradient cover derived from the title */
+    var h=0; for(var i=0;i<title.length;i++) h=(h*31+title.charCodeAt(i))>>>0;
+    var a=h%360, b=(a+38+ (h>>9)%50)%360;
+    return 'background:linear-gradient(135deg,hsl('+a+' 68% 52%),hsl('+b+' 72% 42%));';
+  }
+  function fmtDate(iso){
+    if(!iso) return '';
+    try{ return new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }
+    catch(e){ return ''; }
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function skeletons(n){
+    var s=''; for(var i=0;i<n;i++) s+='<div class="skeleton"></div>'; grid.innerHTML=s;
+  }
+  function render(surveys){
+    if(!surveys.length){
+      grid.innerHTML='<div class="state" style="grid-column:1/-1"><div class="big">No surveys yet</div>'+
+        'Drop an <code>.html</code> file into the <code>surds survey/</code> folder and it will show up here.</div>';
+      countEl.textContent='0 studies';
+      return;
+    }
+    countEl.textContent=surveys.length+(surveys.length===1?' study':' studies');
+    grid.innerHTML=surveys.map(function(s,i){
+      var num=String(i+1).padStart(2,'0');
+      return '<a class="card" href="'+esc(s.url)+'">'+
+        '<div class="cover" style="'+coverStyle(s.title)+'">'+
+          '<span class="idx">'+num+'</span>'+
+          '<span class="badge">Survey</span>'+
+        '</div>'+
+        '<div class="body">'+
+          '<h3>'+esc(s.title)+'</h3>'+
+          (s.description ? '<p class="desc">'+esc(s.description)+'</p>' : '')+
+          '<div class="meta"><span>'+esc(fmtDate(s.updated))+'</span>'+
+            '<span class="open">Open <span class="arw">→</span></span></div>'+
+        '</div>'+
+      '</a>';
+    }).join('');
+  }
+  function fail(msg){
+    grid.innerHTML='<div class="state" style="grid-column:1/-1"><div class="big">Couldn’t load surveys</div>'+
+      esc(msg)+'<br><br>Run the local dev server (<code>python dev-server.py</code>) so <code>/api/surveys</code> is available.</div>';
+    countEl.textContent='';
+  }
+
+  skeletons(6);
+  fetch('/api/surveys',{cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(d){ render(d.surveys||[]); })
+    .catch(function(e){ fail(e.message||String(e)); });
+</script>
+</body>
+</html>

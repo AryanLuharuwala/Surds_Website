@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\Hokage X Pirate king\Surds_Website\dev-server.py", line 145, in <module>
+    with socketserver.TCPServer(("", PORT), RewriteHandler) as httpd:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gmadh\AppData\Local\Python\pythoncore-3.14-64\Lib\socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Users\gmadh\AppData\Local\Python\pythoncore-3.14-64\Lib\socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted

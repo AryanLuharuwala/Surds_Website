@@ -62,9 +62,6 @@
     transition:opacity 0.25s ease;
   }
   #xhDot::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--fg);}
-  #xhCoords{
-    font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;color:var(--grey-dim);white-space:nowrap;
-  }
   body.locked #xhH, body.locked #xhV{opacity:0.05;}
   body.locked #xhDot{opacity:0;}
   #lock{opacity:0;transition:opacity 0.2s ease;}
@@ -79,14 +76,6 @@
     font-size:0.5rem;letter-spacing:0.12em;color:var(--grey-dim);white-space:nowrap;
   }
 
-  /* ============ AMBIENT SENSOR HUD ============ */
-  #hud{
-    position:fixed;left:1.2rem;bottom:1.1rem;z-index:60;display:none;gap:1.3rem;
-    font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;color:var(--grey-dim);
-    opacity:0;transition:opacity 1s ease 0.5s;
-  }
-  body.ready #hud{opacity:1;}
-  @media(pointer:fine) and (min-width:900px){ #hud{display:flex;} }
 
   /* ============ LOADER ============ */
   #loader{
@@ -154,6 +143,11 @@
   .nav-links a,.nav-contact{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey);transition:color 0.3s ease;padding:0.5rem 0;}
   .nav-links a:hover,.nav-contact:hover{color:var(--fg);}
   .nav-contact{display:none;}
+  /* Survey: a solid pill button that redirects to the /survey listing page */
+  .nav-survey{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--bg);background:var(--fg);border-radius:999px;padding:0.5rem 1.05rem;
+    transition:opacity 0.3s ease,transform 0.3s ease;white-space:nowrap;}
+  .nav-survey:hover{opacity:0.82;transform:translateY(-1px);}
   #themeToggle{
     width:46px;height:26px;border-radius:13px;border:1px solid var(--line);
     background:var(--bg-2);position:relative;cursor:pointer;transition:background 0.4s var(--ease);
@@ -183,29 +177,9 @@
   .hero-sub{margin-top:2.2rem;color:var(--grey);font-size:clamp(0.88rem,1.1vw,1rem);line-height:1.7;max-width:42ch;opacity:0;transform:translateY(14px);}
   body.ready .hero-sub{animation:rise 1.2s var(--ease) 1.3s forwards;}
   @keyframes rise{to{opacity:1;transform:none;}}
-  .telemetry{
-    margin-top:3.2rem;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;color:var(--grey-dim);
-    display:flex;gap:1.8rem;align-items:center;flex-wrap:wrap;justify-content:center;opacity:0;
-  }
-  body.ready .telemetry{animation:rise 1.2s var(--ease) 1.7s forwards;}
-  .telemetry .sep{width:22px;height:1px;background:var(--line);}
-  #sqrtTick{white-space:nowrap;max-width:min(46vw,300px);overflow:hidden;display:inline-block;vertical-align:bottom;
-    mask-image:linear-gradient(90deg,#000 78%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 78%,transparent);}
   .hero-scroll{position:absolute;bottom:2.4rem;left:50%;transform:translateX(-50%);width:1px;height:52px;background:linear-gradient(var(--fg),transparent);opacity:0;}
   body.ready .hero-scroll{animation:fadeHalf 1s ease 2.3s forwards;}
   @keyframes fadeHalf{to{opacity:0.4;}}
-
-  /* ============ MARQUEE ============ */
-  .marquee{
-    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    overflow:hidden;display:flex;background:var(--bg);position:relative;z-index:1;
-  }
-  .mq{
-    flex-shrink:0;white-space:nowrap;padding:1.05rem 0;
-    font-family:var(--mono);font-size:0.6rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--grey-dim);
-    animation:mq 30s linear infinite;
-  }
-  @keyframes mq{to{transform:translateX(-100%);}}
 
   /* ============ SHARED ============ */
   .eyebrow{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--grey);margin-bottom:2rem;}
@@ -244,8 +218,6 @@
     transform:translate(-50%,-50%);will-change:transform;left:0;top:0;
   }
   .ind-head{position:absolute;top:9vh;left:clamp(1.2rem,6vw,5rem);z-index:6;margin-bottom:0;}
-  .ind-count{position:absolute;top:9vh;right:clamp(1.2rem,6vw,5rem);z-index:6;font-family:var(--mono);font-size:0.64rem;letter-spacing:0.3em;color:var(--grey);}
-  .ind-count b{color:var(--fg);font-weight:500;}
   .ghost{
     position:absolute;top:50%;left:50%;white-space:nowrap;z-index:1;
     font-weight:600;letter-spacing:-0.02em;font-size:clamp(4rem,16vw,14rem);
@@ -295,8 +267,10 @@
   .ind-rail button.on{color:var(--acc);}
   .ind-rail button.on .tick{width:40px;}
   .ind-rail button:hover{color:var(--fg);}
-  .ind-rail .label{opacity:0;transform:translateX(6px);transition:opacity 0.3s ease,transform 0.3s ease;}
-  .ind-rail button.on .label,.ind-rail button:hover .label{opacity:1;transform:none;}
+  /* labels are always visible (dim when idle, accent when active), and bold on hover */
+  .ind-rail .label{opacity:0.7;transition:opacity 0.3s ease;}
+  .ind-rail button.on .label{opacity:1;}
+  .ind-rail button:hover .label{opacity:1;font-weight:700;}
   @media(max-width:900px){
     .ind-slide .cards{flex-direction:column;gap:0.8rem;padding:9vh 0 11vh;}
     .cardWrap{width:min(86vw,430px);}
@@ -310,7 +284,6 @@
     .ind-rail button .tick{width:12px;}
     .ind-rail button.on .tick{width:26px;}
     .ind-head{top:5.4vh;}
-    .ind-count{top:5.4vh;}
     .ind-name{bottom:4.2vh;}
     .ghost{font-size:clamp(3rem,15vw,7rem);-webkit-text-stroke-width:1px;}
   }
@@ -418,18 +391,19 @@
   .fac-tabs button.active{color:var(--card-neutral-fg);background:var(--card-neutral);border-color:var(--card-neutral);}
   .facViz-slot{width:100%;height:clamp(360px,54vh,540px);}
   #facVizBackdrop{
-    position:fixed;inset:0;z-index:13;pointer-events:none;opacity:0;
-    background:radial-gradient(ellipse at 50% 45%, rgba(0,0,0,.58), rgba(0,0,0,.8));
+    position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0;
+    /* solid white background to completely blank out the rest of the page */
+    background:#ffffff;
     transition:opacity .4s var(--ease);
   }
   #facVizBase{
-    position:fixed;top:0;left:0;width:0;height:0;z-index:14;pointer-events:none;opacity:0;
+    position:fixed;top:0;left:0;width:0;height:0;z-index:81;pointer-events:none;opacity:0;
     background:radial-gradient(ellipse at 50% 55%, rgba(255,168,90,.4), rgba(255,168,90,0) 72%);
     filter:blur(22px);transition:opacity .4s var(--ease);
     will-change:top,left,width,height;
   }
   .facViz{
-    position:fixed;top:0;left:0;width:0;height:0;z-index:15;cursor:pointer;
+    position:fixed;top:0;left:0;width:0;height:0;z-index:82;cursor:pointer;
     border:1px solid var(--line);overflow:hidden;background:var(--card-neutral);
     will-change:top,left,width,height,clip-path,border-radius;
     transition:top .6s var(--ease),left .6s var(--ease),width .6s var(--ease),height .6s var(--ease),border-radius .6s var(--ease),clip-path .6s var(--ease);
@@ -459,8 +433,11 @@
   .facViz.is-open .fac-close{opacity:1;pointer-events:auto;}
   #facCanvasWrap{position:relative;width:100%;height:100%;overflow:hidden;}
   /* the shared iso-engine pads its viewBox entirely on the left (by design, for the
-     original site's left-aligned text layout) — shift back to recenter it in this card */
-  #facCanvasWrap svg{width:100%;height:100%;display:block;transform:translateX(-13%);}
+     original site's left-aligned text layout) — shift back to recenter it in this card.
+     #canvas holds the static fixtures, #canvasDyn the per-frame walkers/glow, stacked
+     exactly on top of each other with identical viewBox + transform. */
+  #facCanvasWrap svg{position:absolute;inset:0;width:100%;height:100%;display:block;transform:translateX(-11%);transform-origin:50% 50%;}
+  #facCanvasWrap #canvasDyn{pointer-events:none;}
   .facViz .k{position:absolute;left:1.1rem;top:0.9rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(251,251,253,0.45);z-index:5;}
   .facPanel{
     position:absolute;top:3.2rem;right:1rem;z-index:6;width:200px;padding:0.9rem 1rem;
@@ -540,17 +517,10 @@
     border:1px solid var(--line);border-radius:999px;padding:0.3rem 0.6rem;
   }
 
-  @media(max-width:520px){
-    #clock{display:none;}
-    .telemetry{gap:1.1rem;}
-    .telemetry .sep:last-of-type{display:none;}
-  }
-
   @media(prefers-reduced-motion:reduce){
-    .reveal,.hero-sub,.telemetry,.hero-statement .row span{opacity:1 !important;transform:none !important;animation:none !important;transition:none !important;}
-    .mq{animation:none !important;}
+    .reveal,.hero-sub,.hero-statement .row span{opacity:1 !important;transform:none !important;animation:none !important;transition:none !important;}
     html{scroll-behavior:auto;}
-    .xh,#heat,#hud{display:none !important;}
+    .xh,#heat{display:none !important;}
   }
 </style>
 </head>
@@ -560,16 +530,7 @@
 <div class="xh" id="xhH"></div>
 <div class="xh" id="xhV"></div>
 <div class="xh" id="xhDot"></div>
-<div class="xh" id="xhCoords"></div>
 <div class="xh" id="lock"><i></i><i></i><i></i><i></i><span id="lockDim"></span></div>
-<div id="hud">
-  <span>PTR <b id="hudPtr">0000·0000</b></span>
-  <span>VEL <b id="hudVel">0.00</b></span>
-  <span>THM <b id="hudThm">00%</b></span>
-  <span>LUX <b id="hudLux">840</b></span>
-  <span>UPT <b id="hudUpt">00:00</b></span>
-  <span>SEC <b id="hudSec">HERO</b></span>
-</div>
 
 <!-- ================= LOADER ================= -->
 <div id="loader" aria-hidden="true">
@@ -598,6 +559,7 @@
       <a href="#sensors" data-hover>Sensors</a>
       <a href="#cta" data-hover>Contact</a>
     </div>
+    <a class="nav-survey" href="/survey" data-hover>Survey</a>
     <a class="nav-contact" href="#cta" data-hover>Contact</a>
     <button id="themeToggle" aria-label="Toggle light and dark mode" data-hover></button>
   </div>
@@ -613,21 +575,8 @@
     <span class="row"><span>the physical world.</span></span>
   </h1>
   <p class="hero-sub">Sensing, control and decision systems for environments that can't afford to fail.</p>
-  <div class="telemetry" aria-hidden="true">
-    <span>SYS · NOMINAL</span>
-    <span class="sep"></span>
-    <span>√2 = <span id="sqrtTick"></span></span>
-    <span class="sep"></span>
-    <span id="clock">00:00:00</span>
-  </div>
   <div class="hero-scroll"></div>
 </section>
-
-<!-- ================= MARQUEE ================= -->
-<div class="marquee" aria-hidden="true">
-  <div class="mq" id="mq1"></div>
-  <div class="mq" id="mq2"></div>
-</div>
 
 <!-- ================= STATEMENT ================= -->
 <section id="statement" data-sec="COMPANY">
@@ -688,7 +637,7 @@
  <div class="facViz" id="facVizReal">
    <span class="k">LIVE · FACILITY SIM</span>
    <button type="button" class="fac-close" id="facClose" aria-label="Close expanded view" data-hover>&times;</button>
-   <div id="facCanvasWrap"><svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
+   <div id="facCanvasWrap"><svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg><svg id="canvasDyn" xmlns="http://www.w3.org/2000/svg"></svg></div>
    <button type="button" class="fac-see-more" id="facSeeMore" data-hover>
      See More
      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -733,6 +682,7 @@
    <div id="moveIntelHead">
      <p class="eyebrow" data-scramble>MOVEMENT INTELLIGENCE</p>
      <h2>Keypoints your infrastructure didn't know it could generate.</h2>
+     <div id="moveIntelStats"></div>
      <p id="moveIntelSub"></p>
    </div>
    <svg class="fac-move-overlay" id="facMoveOverlay" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -752,7 +702,6 @@
   <div id="industriesSticky">
     <div id="spot"></div>
     <p class="eyebrow ind-head" data-scramble>INDUSTRIES</p>
-    <p class="ind-count"><b id="indNow">01</b> / <span id="indTotal">07</span></p>
     <div id="ghosts"></div>
     <div id="slides"></div>
     <div class="ind-name"><div class="nm" id="indName"></div><div class="next" id="indNext"></div></div>
@@ -1011,7 +960,6 @@
       loader.classList.add("done");
       document.body.classList.remove("loading");
       document.body.classList.add("ready");
-      startTelemetry();
       setTimeout(()=>{ loader.style.display = "none"; }, 1000);
     }, 250);
   }
@@ -1020,30 +968,9 @@
   if (DEBUG){
     loader.style.display = "none";
     document.body.classList.add("ready");
-    startTelemetry();
   } else {
     runLoader();
   }
-
-  /* ============ telemetry ============ */
-  function startTelemetry(){
-    const tick = document.getElementById("sqrtTick");
-    const clock = document.getElementById("clock");
-    let n = 12;
-    if (!reduced){
-      setInterval(()=>{ n = n >= SQRT2.length ? 12 : n+1; tick.textContent = SQRT2.slice(0,n); }, 140);
-    } else tick.textContent = SQRT2.slice(0,18);
-    function clk(){
-      const d = new Date(), p = x=>String(x).padStart(2,"0");
-      clock.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
-    }
-    clk(); setInterval(clk,1000);
-  }
-
-  /* ============ marquee ============ */
-  const MQ = "ALWAYS-ON SENSING&nbsp;&nbsp;·&nbsp;&nbsp;EDGE CONTROL&nbsp;&nbsp;·&nbsp;&nbsp;SELF-HEALING MESH&nbsp;&nbsp;·&nbsp;&nbsp;PREDICTIVE MAINTENANCE&nbsp;&nbsp;·&nbsp;&nbsp;REAL-TIME DECISIONS&nbsp;&nbsp;·&nbsp;&nbsp;CONTINUOUS VERIFICATION&nbsp;&nbsp;·&nbsp;&nbsp;";
-  document.getElementById("mq1").innerHTML = MQ + MQ;
-  document.getElementById("mq2").innerHTML = MQ + MQ;
 
   /* ============ hero particle grid ============ */
   (function heroDots(){
@@ -1191,7 +1118,6 @@
     b.addEventListener("click", ()=>scrollToIndustry(i));
     railEl.appendChild(b);
   });
-  document.getElementById("indTotal").textContent = "0"+N;
   const railBtns = [...railEl.children];
   const nameEl = document.getElementById("indName");
   const nextEl = document.getElementById("indNext");
@@ -1241,7 +1167,6 @@
     if (idx === activeIdx) return;
     activeIdx = idx;
     railBtns.forEach((b,j)=>b.classList.toggle("on", j===idx));
-    document.getElementById("indNow").textContent = "0"+(idx+1);
     scramble(nameEl, IND[idx].name, 460);
     nextEl.textContent = idx < N-1 ? "Next: "+IND[idx+1].name : "Next: talk to us";
     spot.style.background = `radial-gradient(closest-side, ${hexToRgba(IND[idx].c1, root.getAttribute("data-theme")==="dark"?0.2:0.16)}, transparent 70%)`;
@@ -1628,12 +1553,8 @@
     const xhH = document.getElementById("xhH");
     const xhV = document.getElementById("xhV");
     const xhDot = document.getElementById("xhDot");
-    const xhCoords = document.getElementById("xhCoords");
     const lock = document.getElementById("lock");
     const lockDim = document.getElementById("lockDim");
-    const hudPtr = document.getElementById("hudPtr");
-    const hudVel = document.getElementById("hudVel");
-    const hudThm = document.getElementById("hudThm");
     let mx = innerWidth/2, my = innerHeight/2, dx = mx, dy = my, lx = mx, ly = my;
     let lockEl = null;
     const L = {x:0,y:0,w:0,h:0,init:false};
@@ -1654,8 +1575,6 @@
       xhH.style.transform = `translateY(${my}px)`;
       xhV.style.transform = `translateX(${mx}px)`;
       xhDot.style.transform = `translate(${dx-17}px, ${dy-17}px)`;
-      xhCoords.style.transform = `translate(${dx+16}px, ${dy+14}px)`;
-      xhCoords.textContent = `${String(Math.round(mx)).padStart(4,"0")} · ${String(Math.round(my)).padStart(4,"0")}`;
 
       /* thermal render */
       hctx.clearRect(0,0,heatCv.width,heatCv.height);
@@ -1687,11 +1606,6 @@
         lock.style.height = L.h+"px";
         lockDim.textContent = Math.round(L.w)+"×"+Math.round(L.h);
       }
-
-      /* ambient HUD */
-      hudPtr.textContent = `${String(Math.round(mx)).padStart(4,"0")}·${String(Math.round(my)).padStart(4,"0")}`;
-      hudVel.textContent = (Math.hypot(mx-dx,my-dy)/10).toFixed(2);
-      hudThm.textContent = String(Math.round(heatPts.length/200*100)).padStart(2,"0")+"%";
 
       requestAnimationFrame(loop);
     })(performance.now());
@@ -1754,44 +1668,6 @@
     });
   }
 
-  /* always on: lux follows the theme, uptime never stops, idle is still sensing */
-  const hudLux = document.getElementById("hudLux");
-  const hudUpt = document.getElementById("hudUpt");
-  const bootT = performance.now();
-  let lastInput = performance.now();
-  ["pointermove","pointerdown","keydown","scroll","touchstart"].forEach(ev=>
-    addEventListener(ev, ()=>{ lastInput = performance.now(); }, {passive:true}));
-  setInterval(()=>{
-    if (hudLux) hudLux.textContent = root.getAttribute("data-theme")==="dark" ? "012" : "840";
-    if (hudUpt){
-      const s = Math.floor((performance.now()-bootT)/1000);
-      hudUpt.textContent = String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
-    }
-    const secEl = document.getElementById("hudSec");
-    if (secEl){
-      if (performance.now()-lastInput > 8000) secEl.dataset.idle = "1";
-      else if (secEl.dataset.idle){ delete secEl.dataset.idle; }
-      if (secEl.dataset.idle && !secEl.textContent.includes("IDLE"))
-        secEl.textContent = "IDLE · STILL SENSING";
-    }
-  }, 1000);
-
-  /* section tracker for the HUD */
-  const hudSec = document.getElementById("hudSec");
-  if (hudSec){
-    let curSec = "HERO";
-    const secIO = new IntersectionObserver(es=>{
-      es.forEach(en=>{
-        if (en.isIntersecting && en.target.dataset.sec){
-          curSec = en.target.dataset.sec;
-          if (!hudSec.dataset.idle) hudSec.textContent = curSec;
-        }
-      });
-    },{threshold:0.4});
-    setInterval(()=>{ if (!hudSec.dataset.idle) hudSec.textContent = curSec; }, 1200);
-    document.querySelectorAll("[data-sec]").forEach(s=>secIO.observe(s));
-  }
-
   /* ============ reveals + scramble ============ */
   const io = new IntersectionObserver(es=>{
     es.forEach(en=>{
@@ -1813,29 +1689,91 @@
 
 <!-- ================= LIVE FACILITY ENGINE (reused from the consumer-side isometric demo) ================= -->
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="/shared/iso-core.js"></script>
-<script src="/shared/iso-pieces-retail.js"></script>
-<script src="/shared/iso-pieces-industrial.js"></script>
-<script src="/shared/iso-pieces-chemical.js"></script>
-<script src="/shared/iso-theme.js"></script>
-<script src="/shared/iso-walkers.js"></script>
-<script src="/shared/iso-sensors.js"></script>
-<script src="/shared/iso-render.js"></script>
-<script src="/shared/fac-move.js"></script>
+<script src="/shared/iso-core.js?v=5"></script>
+<script src="/shared/iso-pieces-retail.js?v=5"></script>
+<script src="/shared/iso-pieces-industrial.js?v=5"></script>
+<script src="/shared/iso-pieces-chemical.js?v=5"></script>
+<script src="/shared/iso-theme.js?v=5"></script>
+<script src="/shared/iso-walkers.js?v=5"></script>
+<script src="/shared/iso-sensors.js?v=5"></script>
+<script src="/shared/iso-render.js?v=5"></script>
+<script src="/shared/fac-move.js?v=5"></script>
 <script>
   function onScroll(){} /* switchLayout() calls this; the scroll-driven camera isn't used in this static preview */
   document.documentElement.setAttribute('data-facility', currentTheme);
   if (window.lucide) lucide.createIcons();
-  render();
-  /* throttled + visibility-gated: full-innerHTML re-render is expensive, so cap it at
-     ~24x/sec (walkers move fast enough now that 10x/sec read as discrete jumps) and
-     only run at all while the section is in view */
+
+  /* ===== LAYERED RENDERING =========================================================
+     The detailed fixtures never move, so they're drawn ONCE per layout into #canvas
+     (static layer). Only the walkers and the "busy fixture" glow are redrawn each frame
+     into #canvasDyn (dynamic layer). Parsing the heavy fixture geometry once instead of
+     ~30x/second is what keeps the scene smooth however detailed the fixtures get.
+     (Sensors render nothing here — their opacity stays 0 — so nothing else is dynamic.) */
+  var canvasDyn = document.getElementById('canvasDyn');
+
+  /* zoom the scene in a little so the fixtures read bigger inside the card. FacMove reads
+     the live getScreenCTM(), so tightening the viewBox stays perfectly in sync. */
+  (function zoomScene(){
+    var vb=(canvas.getAttribute('viewBox')||'').split(/\s+/).map(Number);
+    if(vb.length!==4||vb.some(isNaN))return;
+    var z=0.88, nw=vb[2]*z, nh=vb[3]*z, nx=vb[0]+(vb[2]-nw)*0.5, ny=vb[1]+(vb[3]-nh)*0.52;
+    canvas.setAttribute('viewBox', nx.toFixed(1)+' '+ny.toFixed(1)+' '+nw.toFixed(1)+' '+nh.toFixed(1));
+  })();
+  function syncDynView(){ canvasDyn.setAttribute('viewBox', canvas.getAttribute('viewBox')); }
+
+  /* the static layer draws each fixture in its REAL visited state (register screen lights
+     up green, fridge handles glow, etc. — plus the generic spotlight for fixtures without
+     a bespoke reaction), exactly like the old full render. It's rebuilt only when the set
+     of currently-visited fixtures changes (a customer arrives at / leaves one — a few
+     times a second at most), so the "light up the moment they stop" detail is back without
+     the per-frame cost. */
+  function staticSceneSVG(){
+    var items=[];
+    for(var i=0;i<pieces.length;i++){var p=pieces[i],vis=isVisited(p.id);
+      var svg='<g>'+PIECES[p.type].gen(p.gx,p.gy,p.rot,p.text,vis)+(vis?visitGlow(p.type,p.gx,p.gy,(PIECES[p.type].h||1)):'')+'</g>';
+      items.push({k:p.gx+p.gy, svg:svg});}
+    items.sort(function(a,b){return a.k-b.k});
+    var out='';for(var j=0;j<items.length;j++)out+=items[j].svg;return out;
+  }
+  function renderStatic(){
+    canvas.innerHTML='<defs>'+gradientDefs()+'</defs>'+floorSVG()+staticSceneSVG()+processBadgesSVG();
+  }
+  function visitKey(){var v=[];for(var i=0;i<pieces.length;i++)if(isVisited(pieces[i].id))v.push(pieces[i].id);return v.join(',');}
+
+  /* fading movement trail behind each customer (in their own colour) so you can read the
+     paths they trace across the floor. In the open "See More" view FacMove paints its own
+     richer trails, so these step aside there to avoid doubling up. */
+  var trailHist={}, TRAIL_LEN=26, TRAIL_COL=['#ffa85a','#5ad1ff','#ff6fd8','#8aff6f'];
+  function pushTrails(){
+    for(var w=0;w<walkers.length;w++){var wk=walkers[w],h=trailHist[wk.id]||(trailHist[wk.id]=[]),last=h[h.length-1];
+      if(!last||Math.hypot(wk.cx-last.gx,wk.cy-last.gy)>0.16){h.push({gx:wk.cx,gy:wk.cy});if(h.length>TRAIL_LEN)h.shift();}}
+  }
+  function trailsSVG(){
+    var s='';
+    for(var w=0;w<walkers.length;w++){var h=trailHist[walkers[w].id];if(!h||h.length<2)continue;var col=TRAIL_COL[w%TRAIL_COL.length];
+      for(var i=1;i<h.length;i++){var A=[isoX(h[i-1].gx,h[i-1].gy),isoY(h[i-1].gx,h[i-1].gy)],B=[isoX(h[i].gx,h[i].gy),isoY(h[i].gx,h[i].gy)];
+        s+=ln(A,B,col,2.3,'opacity="'+((i/h.length)*0.7).toFixed(2)+'" stroke-linecap="round"');}}
+    return s;
+  }
+  function renderDyn(){
+    var out=window.__facOpen?'':trailsSVG();   /* trails sit under the walkers */
+    var items=[];
+    for(var w=0;w<walkers.length;w++){var wk=walkers[w];items.push({k:wk.cx+wk.cy,svg:walkerSVG(wk)});}
+    items.sort(function(a,b){return a.k-b.k});
+    for(var j=0;j<items.length;j++)out+=items[j].svg;
+    canvasDyn.innerHTML=out;
+  }
+  var lastVisitKey='';
+  syncDynView(); renderStatic(); renderDyn();
+
   (function facilityLoop(){
-    var RENDER_INTERVAL = 42, lastRender = 0;
+    var RENDER_INTERVAL = 33, lastRender = 0;   /* only the cheap dynamic layer redraws here */
     function tick(now){
       if (document.body.classList.contains('fac-in-view') && now - lastRender >= RENDER_INTERVAL){
         updateWalkers();
-        render();
+        var vk=visitKey(); if(vk!==lastVisitKey){lastVisitKey=vk; renderStatic();}  /* a fixture lights up the instant a customer stops at it */
+        pushTrails();
+        renderDyn();
         if (window.FacMove) FacMove.tick(RENDER_INTERVAL / 1000);
         lastRender = now;
       }
@@ -1844,8 +1782,7 @@
     requestAnimationFrame(tick);
   })();
 
-  /* crossfade the whole card out/in around a theme switch, since render() replaces
-     the SVG's innerHTML wholesale each frame (individual elements can't be CSS-transitioned) */
+  /* crossfade the card out/in around a theme switch, then rebuild the static fixture layer once */
   var switchTimer = null, pendingTheme = null;
   function smoothSwitchLayout(theme){
     var canvasWrap = document.getElementById('facCanvasWrap');
@@ -1855,7 +1792,9 @@
     canvasWrap.style.transition = 'opacity .3s ease';
     canvasWrap.style.opacity = '0.2';
     switchTimer = setTimeout(function(){
-      switchLayout(theme);
+      switchLayout(theme);      /* rebuilds pieces + walkers for the new theme (also calls render()) */
+      renderStatic();           /* replace #canvas with the static-only fixture layer */
+      renderDyn();
       if (window.FacMove) FacMove.reset();
       canvasWrap.style.opacity = '1';
       switchTimer = null;
@@ -1874,10 +1813,8 @@
     /* banner target: a contained card roughly on the scale of the Network section's
        mesh box, not a fullscreen takeover — right-anchored so the copy stays clear */
     function bannerRect(){
-      var bw = innerWidth * 0.74;
-      var bh = innerHeight * 0.68;
-      var marginRight = innerWidth * 0.035;
-      return { top: (innerHeight - bh) / 2, left: innerWidth - bw - marginRight, width: bw, height: bh };
+      var margin = 24;
+      return { top: margin, left: margin, width: innerWidth - margin * 2, height: innerHeight - margin * 2 };
     }
 
     var facWrap = document.getElementById('facilityWrap');
@@ -1892,13 +1829,14 @@
     var closeBtn = document.getElementById('facClose');
     if (!facWrap || !facSlot || !facViz) return;
 
-    var PINCH = 14;
-    var TRAPEZOID_CLIP = 'polygon(' + PINCH + '% 0%, ' + (100 - PINCH) + '% 0%, 100% 100%, 0% 100%)';
     var isOpen = false;
-    /* scroll runway for the post-open movement narrative: captured at the moment the
-       card opens so the narrative always gets a full, consistent scroll distance to
-       play out in, regardless of how far into the auto-preview the visitor clicked */
-    var openProgressBase = 0, openProgressSpan = 1, spacerPadded = false;
+    /* while the card is open the page scroll is trapped: wheel/touch advances the
+       post-open movement narrative (openP: 0..1) instead of scrolling the page, and the
+       background only scrolls again once the narrative is complete or the visitor exits */
+    var openP = 0;
+    var WHEEL_SPAN = 1200;      /* accumulated wheel/touch delta (px) to play 0..1 */
+    var touchLastY = 0;
+    var lockedScrollbarPad = '';
 
     function setFacVizRect(top, left, width, height, radius, clip){
       facViz.style.top = top + 'px';
@@ -1936,33 +1874,91 @@
     function openCard(){
       if (isOpen || innerWidth <= 900) return;
       isOpen = true;
+      window.__facOpen = true;
+      openP = 0;
+      lockScroll();                 /* lock first so bannerRect() measures the final width */
+      bindOpenListeners(true);
       facViz.classList.add('is-open');
       var b = bannerRect();
-      setFacVizRect(b.top, b.left, b.width, b.height, 22, TRAPEZOID_CLIP);
+      /* a clean rounded rectangle (not a trapezoid) so the movement-intel copy in the
+         bottom-left is never clipped by an angled edge — the text stays perfectly aligned */
+      setFacVizRect(b.top, b.left, b.width, b.height, 22, 'none');
       setBase(b.top, b.left, b.width, b.height);
       setDim(1, true);
       setPanelsEligible(false);
-
-      var wrapRect = facWrap.getBoundingClientRect();
-      var totalScrollable = facWrap.offsetHeight - innerHeight;
-      openProgressBase = -wrapRect.top;
-      openProgressSpan = Math.max(innerHeight * 2, 1);
-      var shortfall = (openProgressBase + openProgressSpan) - totalScrollable;
-      if (shortfall > 0){
-        facSpacer.style.height = (facSpacer.offsetHeight + shortfall) + 'px';
-        spacerPadded = true;
-      }
       FacMove.onOpen();
+      FacMove.onScrollOpen(0);
     }
     function closeCard(){
       if (!isOpen) return;
       isOpen = false;
+      window.__facOpen = false;
+      bindOpenListeners(false);
+      unlockScroll();
       facViz.classList.remove('is-open');
       syncRestingRect();
       setDim(0, false);
       setPanelsEligible(true);
-      if (spacerPadded){ facSpacer.style.height = ''; spacerPadded = false; }
       FacMove.onClose();
+    }
+
+    /* ---- scroll trap while the card is open ---------------------------------
+       Lock the page and route wheel/touch/keys into the narrative. It stays locked
+       until the narrative is fully played (openP === 1, then one more scroll down),
+       or the visitor clicks outside the frame / the close button. */
+    function lockScroll(){
+      var sbw = innerWidth - document.documentElement.clientWidth;
+      lockedScrollbarPad = document.documentElement.style.paddingRight;
+      if (sbw > 0) document.documentElement.style.paddingRight = sbw + 'px';
+      document.documentElement.style.overflow = 'hidden';
+    }
+    function unlockScroll(){
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = lockedScrollbarPad;
+    }
+    /* returns true if the gesture was consumed by the narrative, false to release the
+       page (only ever released by finishing downward — up just clamps at the start) */
+    function advanceNarrative(delta){
+      if (delta > 0 && openP >= 1) return false;
+      openP = Math.min(Math.max(openP + delta / WHEEL_SPAN, 0), 1);
+      FacMove.onScrollOpen(openP);
+      return true;
+    }
+    function onOpenWheel(e){
+      if (!isOpen) return;
+      var dy = e.deltaY;
+      if (e.deltaMode === 1) dy *= 16;            /* lines -> px  */
+      else if (e.deltaMode === 2) dy *= innerHeight; /* pages -> px */
+      if (advanceNarrative(dy)) e.preventDefault();
+      else closeCard();  /* narrative finished: hand scrolling back to the page */
+    }
+    function onOpenTouchStart(e){
+      if (!isOpen || !e.touches.length) return;
+      touchLastY = e.touches[0].clientY;
+    }
+    function onOpenTouchMove(e){
+      if (!isOpen || !e.touches.length) return;
+      var y = e.touches[0].clientY, delta = touchLastY - y;  /* swipe up => advance */
+      touchLastY = y;
+      if (advanceNarrative(delta)) e.preventDefault();
+      else closeCard();
+    }
+    function onOpenKey(e){
+      if (!isOpen) return;
+      if (e.key === 'Escape'){ closeCard(); return; }
+      var dir = ({ ArrowDown:1, PageDown:1, ' ':1, Spacebar:1, ArrowUp:-1, PageUp:-1 })[e.key];
+      if (!dir) return;
+      if (advanceNarrative(dir * WHEEL_SPAN * 0.5)) e.preventDefault();
+      else closeCard();
+    }
+    /* only bound while open, so normal page scrolling stays fully passive/unaffected
+       (the non-passive wheel/touch handlers would otherwise slow scrolling everywhere) */
+    function bindOpenListeners(on){
+      var fn = (on ? window.addEventListener : window.removeEventListener).bind(window);
+      fn('wheel', onOpenWheel, {passive:false});
+      fn('touchstart', onOpenTouchStart, {passive:true});
+      fn('touchmove', onOpenTouchMove, {passive:false});
+      fn('keydown', onOpenKey);
     }
 
     facViz.addEventListener('click', function(){ openCard(); });
@@ -1985,10 +1981,13 @@
       facViz.style.pointerEvents = 'auto';
 
       if (isOpen){
-        if (innerWidth <= 900) return;
-        var scrolledNow = -rect.top;
-        var pOpen = Math.min(Math.max((scrolledNow - openProgressBase) / openProgressSpan, 0), 1);
-        FacMove.onScrollOpen(pOpen);
+        if (innerWidth <= 900){ closeCard(); return; }
+        /* scroll is trapped while open, so this only fires on resize — keep the banner
+           and its overlay pinned to the (possibly new) viewport geometry */
+        var b = bannerRect();
+        setFacVizRect(b.top, b.left, b.width, b.height, 22, 'none');
+        setBase(b.top, b.left, b.width, b.height);
+        FacMove.onScrollOpen(openP);
         return;
       }
       if (innerWidth <= 900) return;

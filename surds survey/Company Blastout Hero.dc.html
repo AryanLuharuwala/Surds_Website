@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0; background:#0B0E14;}
+    a{color:inherit; text-decoration:none;}
+    @media (max-width:1150px){
+      .hero-svg-wrap{ width:340px; }
+      .hero-svg-wrap svg{ width:340px; height:340px; }
+      .hero-copy{ max-width:400px; }
+      .hero-headline{ font-size:36px !important; }
+      .report-row{ padding:70px 40px !important; gap:32px !important; }
+      .report-copy{ max-width:400px !important; }
+      .report-doc{ width:240px !important; }
+    }
+    @media (max-width:760px){
+      .flow-diagram{ transform:scale(0.62); transform-origin:top center; margin-bottom:-260px; }
+      .flow-eyebrow{ letter-spacing:0.15em !important; }
+    }
+
+  </style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; box-sizing:border-box; overflow:hidden;">
+  <svg style="position:absolute; inset:0; width:100%; height:100%; display:block;" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+    <rect width="1600" height="900" fill="#0B0E14"></rect>
+    <polygon points="{{ cone.points }}" fill="rgba(212,255,77,0.06)" stroke="rgba(212,255,77,0.3)" stroke-width="1"></polygon>
+    <sc-for list="{{ bgBubbles }}" as="bub" hint-placeholder-count="0">
+      <circle cx="{{ bub.x }}" cy="{{ bub.y }}" r="{{ bub.r }}" fill="{{ bub.color }}" opacity="{{ bub.opacity }}" stroke="{{ bub.stroke }}" stroke-width="{{ bub.strokeWidth }}"></circle>
+      <sc-if value="{{ bub.hasLabel }}">
+        <foreignObject x="{{ bub.fx }}" y="{{ bub.fy }}" width="{{ bub.fw }}" height="{{ bub.fh }}" style="pointer-events:none;">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="{{ bub.textStyle }}">{{ bub.label }}</div>
+        </foreignObject>
+      </sc-if>
+    </sc-for>
+  </svg>
+
+  <div style="position:relative; z-index:1; color:#F3F5F7; font-family:'Archivo',sans-serif; display:flex; align-items:center; justify-content:center; gap:40px; padding:60px 40px; flex-wrap:nowrap; min-height:100vh; box-sizing:border-box;">
+
+    <div class="hero-copy" style="max-width:480px; flex-shrink:1; min-width:0;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.35em; color:#D4FF3F;">BREAKING IT DOWN</div>
+      <div class="hero-headline" style="margin-top:20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:48px; line-height:1.12; letter-spacing:-0.02em;">Every company is a cluster of small, unsolved problems.</div>
+      <div style="margin-top:24px; font-size:16.5px; line-height:1.65; color:#B7BECC;">We map exactly where those problems live — team by team — so we can go build something for the ones enterprises never bother with.</div>
+      <a href="#form" style="display:inline-flex; margin-top:32px; background:#D4FF3F; color:#0B0E14; font-weight:700; font-size:15px; padding:15px 28px; border-radius:10px;">Show us where it hurts →</a>
+    </div>
+
+    <div class="hero-svg-wrap" style="flex-shrink:0; width:440px;">
+      <div style="text-align:right; font-size:11px; font-weight:700; letter-spacing:0.2em; color:#6F7787; margin-bottom:12px;">ONE COMPANY, MAPPED</div>
+      <svg width="100%" height="100%" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+        <circle cx="260" cy="260" r="258" fill="#121826"></circle>
+        <circle cx="260" cy="260" r="258" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"></circle>
+
+        <circle cx="170" cy="170" r="95" fill="#D4FF3F"></circle>
+        <text x="170" y="163" text-anchor="middle" font-family="Archivo" font-size="13" font-weight="700" fill="#0B0E14">FRONTLINE OPS</text>
+        <text x="170" y="190" text-anchor="middle" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#0B0E14">28%</text>
+
+        <circle cx="360" cy="150" r="78" fill="#F3F5F7"></circle>
+        <text x="360" y="144" text-anchor="middle" font-family="Archivo" font-size="12" font-weight="700" fill="#0B0E14">SALES &amp; GROWTH</text>
+        <text x="360" y="169" text-anchor="middle" font-family="Space Grotesk" font-size="25" font-weight="700" fill="#0B0E14">19%</text>
+
+        <circle cx="150" cy="350" r="68" fill="#FF6B4A"></circle>
+        <text x="150" y="345" text-anchor="middle" font-family="Archivo" font-size="11.5" font-weight="700" fill="#FFF6E9">SUPPORT</text>
+        <text x="150" y="368" text-anchor="middle" font-family="Space Grotesk" font-size="22" font-weight="700" fill="#FFF6E9">15%</text>
+
+        <circle cx="350" cy="370" r="60" fill="#2FA8A0"></circle>
+        <text x="350" y="365" text-anchor="middle" font-family="Archivo" font-size="10.5" font-weight="700" fill="#FFF6E9">FINANCE</text>
+        <text x="350" y="387" text-anchor="middle" font-family="Space Grotesk" font-size="19" font-weight="700" fill="#FFF6E9">12%</text>
+
+        <circle cx="270" cy="65" r="42" fill="#5B8CFF"></circle>
+        <text x="270" y="61" text-anchor="middle" font-family="Archivo" font-size="9" font-weight="700" fill="#0B0E14">IT</text>
+        <text x="270" y="77" text-anchor="middle" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#0B0E14">9%</text>
+
+        <circle cx="440" cy="270" r="46" fill="#FFB020"></circle>
+        <text x="440" y="266" text-anchor="middle" font-family="Archivo" font-size="9.5" font-weight="700" fill="#0B0E14">MARKETING</text>
+        <text x="440" y="284" text-anchor="middle" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#0B0E14">10%</text>
+
+        <circle cx="50" cy="280" r="45" fill="#9B7EDE"></circle>
+        <text x="50" y="276" text-anchor="middle" font-family="Archivo" font-size="9.5" font-weight="700" fill="#0B0E14">HR</text>
+        <text x="50" y="294" text-anchor="middle" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#0B0E14">7%</text>
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+<div style="position:relative; background:#0B0E14; overflow:hidden;">
+  <sc-for list="{{ miniDocs }}" as="d" hint-placeholder-count="0">
+    <div style="{{ d.wrapperStyle }}">
+      <div style="width:100%; aspect-ratio:0.77; background:#F3F5F7; border-radius:2px; padding:10%; box-sizing:border-box;">
+        <div style="width:70%; height:8%; background:#0B0E14; margin-bottom:8%;"></div>
+        <div style="width:100%; height:5%; background:#8A93A6; margin-bottom:6%;"></div>
+        <div style="width:100%; height:5%; background:#8A93A6; margin-bottom:6%;"></div>
+        <div style="width:60%; height:5%; background:#8A93A6;"></div>
+      </div>
+    </div>
+  </sc-for>
+  <div class="report-row" style="position:relative; z-index:1; color:#F3F5F7; font-family:'Archivo',sans-serif; padding:100px 72px; display:flex; align-items:center; justify-content:center; gap:64px; flex-wrap:nowrap;">
+  <div class="report-copy" style="max-width:520px; min-width:0; order:2;">
+    <div style="font-size:12px; font-weight:700; letter-spacing:0.3em; color:#D4FF3F;">WHY WE DON'T JUST READ A REPORT</div>
+    <div style="margin-top:18px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:38px; line-height:1.15;">Reports can't hold everything you know.</div>
+    <div style="margin-top:22px; font-size:16px; line-height:1.7; color:#B7BECC;">Most industry reports only capture a summary — and even that summary gets filtered, distilled, and rewritten by whoever wrote the deck. The details that actually matter to you rarely survive that process. We want them straight from you, not through a middleman.</div>
+  </div>
+
+  <div class="report-doc" style="flex-shrink:0; width:300px; position:relative; order:1;">
+    <div style="position:relative; width:100%; height:440px; border-radius:10px; background:#F3F5F7; padding:32px 28px; box-sizing:border-box; overflow:hidden;">
+      <div style="width:150px; height:14px; border-radius:3px; background:#0B0E14;"></div>
+      <div style="width:90px; height:8px; border-radius:3px; background:#8A93A6; margin-top:12px;"></div>
+      <div style="height:1px; background:#D8DCE3; margin-top:14px;"></div>
+      <div style="width:100%; height:7px; border-radius:3px; background:#C7CCD6; margin-top:20px;"></div>
+      <div style="width:95%; height:7px; border-radius:3px; background:#C7CCD6; margin-top:16px;"></div>
+      <div style="width:100%; height:7px; border-radius:3px; background:#C7CCD6; margin-top:16px;"></div>
+      <div style="width:70%; height:7px; border-radius:3px; background:#C7CCD6; margin-top:16px;"></div>
+      <div style="width:192px; height:22px; border-radius:6px; border:2px dashed #FF6B4A; margin-top:35px; display:flex; align-items:center; padding:0 6px; box-sizing:border-box;">
+        <div style="width:180px; height:9px; border-radius:3px; background:#FF6B4A;"></div>
+      </div>
+      <div style="width:100%; height:7px; border-radius:3px; background:#E4E7EB; margin-top:25px;"></div>
+      <div style="width:80%; height:7px; border-radius:3px; background:#E4E7EB; margin-top:16px;"></div>
+      <div style="width:100%; height:7px; border-radius:3px; background:#E4E7EB; margin-top:16px;"></div>
+      <div style="width:64%; height:7px; border-radius:3px; background:#E4E7EB; margin-top:16px;"></div>
+      <div style="position:absolute; left:0; right:0; bottom:0; height:130px; border-radius:0 0 10px 10px; background:linear-gradient(to bottom, rgba(243,245,247,0) 0%, rgba(243,245,247,1) 85%); pointer-events:none;"></div>
+    </div>
+    <div style="text-align:center; margin-top:14px; font-size:12px; color:#FF6B4A; font-weight:700;">↑ your issue, compressed to one bullet</div>
+  </div>
+  </div>
+</div>
+
+<div style="position:relative; background:#0B0E14; color:#F3F5F7; font-family:'Archivo',sans-serif; padding:100px 40px; display:flex; flex-direction:column; align-items:center; overflow:hidden;">
+  <sc-for list="{{ startupCards }}" as="card" hint-placeholder-count="0">
+    <div style="{{ card.style }}">{{ card.label }}</div>
+  </sc-for>
+  <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center;">
+  <div class="flow-eyebrow" style="font-size:12px; font-weight:700; letter-spacing:0.2em; color:#D4FF3F; margin-bottom:16px; text-align:center;">FROM STATEMENT TO STRATEGY</div>
+  <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:34px; text-align:center; max-width:620px; margin-bottom:56px; line-height:1.2;">How a problem statement turns into a startup — and loops back to you</div>
+
+  <div class="flow-diagram" style="position:relative; width:700px; height:700px; flex-shrink:0;">
+    <svg width="700" height="700" viewBox="0 0 700 700" style="position:absolute; inset:0;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#3A4152"></path>
+        </marker>
+      </defs>
+      <path d="M 372 148 L 500 218" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+      <path d="M 572 268 L 572 432" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+      <path d="M 500 482 L 372 552" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+      <path d="M 328 552 L 200 482" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+      <path d="M 128 432 L 128 268" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+      <path d="M 200 218 L 328 148" stroke="#3A4152" stroke-width="1.5" marker-end="url(#arrowHead)" fill="none"></path>
+    </svg>
+
+    <div style="position:absolute; left:260px; top:260px; width:180px; height:180px; border-radius:50%; background:#12161F; border:2px solid #D4FF3F; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box;">
+      <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; line-height:1.35;">It loops back to you, richer than it left</div>
+    </div>
+
+    <div style="position:absolute; left:255px; top:34px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 01</div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Validate</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">Confirm the pain is real, recurring, and costs real time or money.</div>
+    </div>
+
+    <div style="position:absolute; left:480px; top:168px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 02</div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Size the market</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">See who else has it: 5 companies, or 5,000?</div>
+    </div>
+
+    <div style="position:absolute; left:480px; top:430px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 03</div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Shape the approach</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">Sketch the smallest version of a fix.</div>
+    </div>
+
+    <div style="position:absolute; left:255px; top:558px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 04</div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Talk to more people</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">Take the idea back to ten more people in the industry.</div>
+    </div>
+
+    <div style="position:absolute; left:30px; top:430px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 05</div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Define the MVP</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">Cut it down to the one feature that proves the idea.</div>
+    </div>
+
+    <div style="position:absolute; left:30px; top:168px; width:190px; background:#F3F5F7; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,0.35); box-sizing:border-box;">
+      <div style="position:absolute; top:-11px; left:12px; background:#D4FF3F; color:#0B0E14; font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; letter-spacing:0.05em;">STEP 06</div>
+      <div style="position:absolute; top:8px; right:10px; width:20px; height:24px; background:#FFFFFF; border:1px solid rgba(11,14,20,0.25); border-radius:2px; padding:3px; box-sizing:border-box;">
+        <div style="width:100%; height:2px; background:#0B0E14; margin-bottom:3px;"></div>
+        <div style="width:100%; height:2px; background:#8A93A6; margin-bottom:3px;"></div>
+        <div style="width:60%; height:2px; background:#8A93A6;"></div>
+      </div>
+      <div style="margin-top:8px; font-size:12px; font-weight:700; color:#0B0E14;">Report back to you</div>
+      <div style="margin-top:4px; font-size:11px; line-height:1.5; color:#6F7787;">You get back more than you sent — your idea, with context from everyone else's data too, as an actual document.</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div style="background:#12161F; color:#F3F5F7; font-family:'Archivo',sans-serif; padding:100px 40px; display:flex; justify-content:center;">
+  <div style="max-width:1080px; width:100%; display:flex; gap:48px; align-items:flex-start; flex-wrap:wrap; justify-content:flex-end;">
+    <div style="flex:1; min-width:340px; max-width:460px;">
+      <div style="font-size:12px; font-weight:700; letter-spacing:0.2em; color:#D4FF3F;">SUBMIT YOUR IDEA</div>
+      <div style="margin-top:18px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:34px; line-height:1.2;">Think you've spotted a problem worth building?</div>
+      <div style="margin-top:16px; font-size:16px; line-height:1.7; color:#B7BECC;">Tell us what it is. We'll turn it into a real problem statement — and hand you an actual approach for how you could go build it yourself.</div>
+
+      <sc-if value="{{ showProblemFormFalse }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ onOpenProblemForm }}" style="margin-top:28px; background:#D4FF3F; color:#0B0E14; border:none; border-radius:10px; padding:16px 32px; font-size:15px; font-weight:700; cursor:pointer;">Tell us your idea →</button>
+      </sc-if>
+      <sc-if value="{{ showProblemForm }}">
+      <div style="margin-top:28px; background:#0B0E14; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:32px;">
+        <sc-if value="{{ problemNotSubmitted }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:13px; font-weight:700; color:#F3F5F7;">Describe the problem</div>
+          <textarea placeholder="What's broken, in what industry, and who feels it most?" value="{{ problemText }}" onChange="{{ onProblemText }}" style="width:100%; box-sizing:border-box; margin-top:12px; min-height:120px; background:#12161F; border:1px solid rgba(255,255,255,0.12); border-radius:10px; padding:14px; color:#F3F5F7; font-family:'Archivo',sans-serif; font-size:14.5px; resize:vertical;"></textarea>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:8px;">
+            <div style="font-size:11px; color:#6F7787;">{{ charCount }} / {{ charTarget }}</div>
+            <div style="font-size:11px; color:#6F7787; text-align:right; max-width:280px;">does it bug you enough to keep writing about it?</div>
+          </div>
+          <div style="margin-top:6px; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+            <div style="height:100%; background:#D4FF3F; width:{{ charBarWidth }}; transition:width 0.15s ease;"></div>
+          </div>
+          <input placeholder="Which industry? (optional)" value="{{ problemIndustry }}" onChange="{{ onProblemIndustry }}" style="width:100%; box-sizing:border-box; margin-top:12px; background:#12161F; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:12px 14px; color:#F3F5F7; font-size:13.5px;" />
+          <button onClick="{{ onSubmitProblem }}" disabled="{{ submitProblemDisabled }}" style="width:100%; box-sizing:border-box; margin-top:20px; background:#D4FF3F; color:#0B0E14; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer;">Get my strategy back</button>
+        </sc-if>
+        <sc-if value="{{ problemSubmitted }}">
+          <div style="text-align:center; padding:20px 0;">
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:22px; color:#D4FF3F;">Got it — thank you.</div>
+            <div style="margin-top:10px; font-size:14.5px; color:#B7BECC;">We'll turn this into a real problem statement and send you a breakdown of how you could go build it yourself.</div>
+            <button onClick="{{ onResetProblem }}" style="margin-top:20px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:#F3F5F7; padding:10px 18px; border-radius:8px; font-size:13px; cursor:pointer;">Submit another</button>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+    </div>
+
+    <div style="flex:1; min-width:320px; max-width:460px; display:flex; flex-direction:column; gap:16px; padding-top:8px;">
+      <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#6F7787;">Builds as you type</div>
+
+      <div style="{{ issuePanelStyle }}">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#D4FF3F; text-transform:uppercase;">The issue</div>
+        <div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:#F3F5F7; overflow-wrap:break-word; word-break:break-word; white-space:pre-wrap;">{{ problemText }}</div>
+      </div>
+
+      <div style="{{ approachPanelStyle }}">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#D4FF3F; text-transform:uppercase;">What it'd take to solve it</div>
+        <div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:#B7BECC;">A focused, narrow tool — not a platform. Something one small team could ship in a few months and get in front of real users fast.</div>
+      </div>
+
+      <div style="{{ whyPanelStyle }}">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#D4FF3F; text-transform:uppercase;">Why bigger companies aren't solving it</div>
+        <div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:#B7BECC;">The market's too small for their sales motion and too specific for their roadmap — exactly the size a startup is built for.</div>
+      </div>
+
+      <div style="{{ plaguesPanelStyle }}">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#D4FF3F; text-transform:uppercase;">What plagues the industry most</div>
+        <div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:#B7BECC;">This isn't a one-off complaint — it's the same workaround, spreadsheet, or manual step everyone in the industry has quietly accepted as normal.</div>
+      </div>
+
+      <div style="{{ stoppingPanelStyle }}">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; color:#D4FF3F; text-transform:uppercase;">If you wanted to build this, what's stopping you?</div>
+        <div style="margin-top:8px; font-size:13.5px; line-height:1.6; color:#B7BECC;">Probably time, technical depth, or not knowing who else has the same problem — not whether it's worth solving.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { bgBubbles: this.generateBubbles(), miniDocs: this.generateMiniDocs(), startupCards: this.generateStartupCards(), problemText: '', problemIndustry: '', problemSubmitted: false, showProblemForm: false };
+  }
+
+  setProblemText(e) { this.setState({ problemText: e.target.value }); }
+  setProblemIndustry(e) { this.setState({ problemIndustry: e.target.value }); }
+  submitProblem() { this.setState({ problemSubmitted: true }); }
+  resetProblem() { this.setState({ problemText: '', problemIndustry: '', problemSubmitted: false, showProblemForm: false }); }
+  openProblemForm() { this.setState({ showProblemForm: true }); }
+
+  charTarget(len) {
+    let target = 300;
+    while (len > target - 50) target += 50;
+    return target;
+  }
+
+  wordCount(text) {
+    const t = text.trim();
+    return t.length === 0 ? 0 : t.split(/\s+/).length;
+  }
+
+  panelStyle(active) {
+    return `background:#0B0E14; border-radius:12px; padding:18px; transition:border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; opacity:${active ? 1 : 0.15}; border:1px solid ${active ? '#D4FF3F' : 'rgba(255,255,255,0.08)'}; box-shadow:${active ? '0 0 0 1px rgba(212,255,77,0.15), 0 8px 24px rgba(212,255,77,0.12)' : 'none'};`;
+  }
+
+  generateStartupCards() {
+    const labels = ['Market size', 'Target user', 'Unit economics', 'Distribution', 'Competitive moat', 'Pricing model', 'Team fit', 'Timing', 'Retention', 'Channel strategy', 'Regulatory risk', 'Founder-market fit', 'Customer acquisition cost', 'Defensibility', 'Go-to-market', 'Churn rate', 'Runway', 'Positioning', 'Onboarding flow', 'Supply chain', 'Brand trust', 'Pilot customers', 'Margins', 'Network effects', 'Hiring plan', 'Fundraising', 'Compliance', 'Roadmap', 'Support model', 'Partnerships', 'Data moat', 'Switching cost'];
+    const CW = 1400, CH = 950;
+    const placed = [];
+    for (let i = 0; i < 32; i++) {
+      const label = labels[i % labels.length];
+      const w = label.length * 6.5 + 28, h = 34;
+      let ok = false, leftPct = 0, topPct = 0;
+      for (let attempt = 0; attempt < 25 && !ok; attempt++) {
+        leftPct = Math.random() * 92;
+        topPct = Math.random() * 92;
+        if (leftPct > 4 && leftPct < 88) continue; // stay in outer margins, clear of center diagram/headline
+        const x = (leftPct / 100) * CW, y = (topPct / 100) * CH;
+        ok = placed.every((p) => Math.abs(x - p.x) > (w + p.w) / 2 + 10 || Math.abs(y - p.y) > (h + p.h) / 2 + 10);
+        if (ok) placed.push({ x, y, w, h });
+      }
+      if (!ok) continue;
+      const rot = (Math.random() * 18 - 9).toFixed(1);
+      const op = (0.05 + Math.random() * 0.09).toFixed(2);
+      placed[placed.length - 1].style = `position:absolute; left:${leftPct.toFixed(2)}%; top:${topPct.toFixed(2)}%; opacity:${op}; transform:rotate(${rot}deg); background:#12161F; border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 14px; font-size:12px; font-weight:600; color:#B7BECC; pointer-events:none; white-space:nowrap;`;
+      placed[placed.length - 1].label = label;
+    }
+    return placed;
+  }
+
+  generateMiniDocs() {
+    const docs = [];
+    for (let i = 0; i < 55; i++) {
+      const left = (Math.random() * 100).toFixed(2) + '%';
+      const top = (Math.random() * 100).toFixed(2) + '%';
+      const w = 18 + Math.random() * 26;
+      const rot = (Math.random() * 40 - 20).toFixed(1);
+      const op = (0.03 + Math.random() * 0.07).toFixed(2);
+      docs.push({ wrapperStyle: `position:absolute; left:${left}; top:${top}; width:${w}px; opacity:${op}; transform:rotate(${rot}deg); pointer-events:none;` });
+    }
+    return docs;
+  }
+
+  generateBubbles() {
+    const W = 1600, H = 900;
+    const COLORS = ['#5B8CFF', '#FFB020', '#2FA8A0', '#FF6B4A', '#9B7EDE', '#FF8FB1', '#6BCB77', '#4FD1E3'];
+    const COMPANIES = ['Apple', 'Microsoft', 'Nvidia', 'Amazon', 'Alphabet', 'Meta', 'Berkshire', 'Eli Lilly', 'Broadcom', 'JPMorgan', 'Visa', 'ExxonMobil', 'UnitedHealth', 'Walmart'];
+    const n = 260;
+    const sizes = [];
+    for (let i = 0; i < n; i++) {
+      const t = Math.random();
+      sizes.push(3 + Math.pow(t, 3) * 34);
+    }
+    sizes.sort((a, b) => b - a);
+    const exclX0 = -40, exclX1 = 740, exclY0 = 130, exclY1 = 760;
+    const hitsExclusion = (x, y, r) =>
+      (x + r > exclX0 && x - r < exclX1 && y + r > exclY0 && y - r < exclY1) ||
+      (x + r > 1120 && y - r < 150);
+
+    const placed = [];
+    for (const r of sizes) {
+      for (let attempt = 0; attempt < 40; attempt++) {
+        const x = Math.random() * W;
+        const y = Math.random() * H;
+        if (hitsExclusion(x, y, r)) continue;
+        let ok = true;
+        for (const p of placed) {
+          const dx = x - p.x, dy = y - p.y;
+          if (Math.sqrt(dx * dx + dy * dy) < r + p.r + 2) { ok = false; break; }
+        }
+        if (ok) {
+          placed.push({
+            x, y, r,
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            opacity: (0.1 + Math.random() * 0.2).toFixed(2),
+            stroke: 'none', strokeWidth: 0,
+            hasLabel: false, label: '', labelY: y, fontSize: 10,
+          });
+          break;
+        }
+      }
+    }
+
+    const bySize = [...placed].sort((a, b) => b.r - a.r);
+    for (let i = 0; i < Math.min(COMPANIES.length, bySize.length); i++) {
+      const b = bySize[i];
+      b.hasLabel = true;
+      b.label = COMPANIES[i];
+      b.opacity = (0.75 + Math.random() * 0.2).toFixed(2);
+      b.fontSize = Math.max(13, Math.min(20, Math.round(b.r * 0.42)));
+      b.fx = b.x - b.r;
+      b.fy = b.y - b.fontSize * 0.8;
+      b.fw = b.r * 2;
+      b.fh = b.fontSize * 1.6;
+      b.textStyle = `width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Archivo,sans-serif;font-weight:700;color:#fff;font-size:${b.fontSize}px;line-height:1.05;pointer-events:none;`;
+    }
+
+    // big foreground circle's actual position/radius in this 1600x900 background viewBox (measured from rendered layout)
+    const bigX = 1053, bigY = 470, bigR = 284;
+    const selected = bySize.find(b => {
+      const ddx = bigX - b.x, ddy = bigY - b.y;
+      return Math.sqrt(ddx * ddx + ddy * ddy) > (bigR - b.r) + 80;
+    }) || bySize[0];
+    selected.stroke = '#D4FF3F';
+    selected.strokeWidth = 2;
+    selected.opacity = '0.85';
+
+    const dx = bigX - selected.x, dy = bigY - selected.y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    const phi = Math.atan2(dy, dx);
+    const theta = Math.asin(Math.max(-1, Math.min(1, (bigR - selected.r) / d)));
+    const a1 = phi + Math.PI / 2 + theta;
+    const a2 = phi - Math.PI / 2 - theta;
+    const p1a = { x: selected.x + selected.r * Math.cos(a1), y: selected.y + selected.r * Math.sin(a1) };
+    const p2a = { x: bigX + bigR * Math.cos(a1), y: bigY + bigR * Math.sin(a1) };
+    const p1b = { x: selected.x + selected.r * Math.cos(a2), y: selected.y + selected.r * Math.sin(a2) };
+    const p2b = { x: bigX + bigR * Math.cos(a2), y: bigY + bigR * Math.sin(a2) };
+    const cone = {
+      points: `${p1a.x},${p1a.y} ${p2a.x},${p2a.y} ${p2b.x},${p2b.y} ${p1b.x},${p1b.y}`,
+    };
+
+    return { list: placed, cone };
+  }
+
+  renderVals() {
+    return {
+      bgBubbles: this.state.bgBubbles.list, cone: this.state.bgBubbles.cone, miniDocs: this.state.miniDocs, startupCards: this.state.startupCards,
+      problemText: this.state.problemText, problemIndustry: this.state.problemIndustry,
+      problemSubmitted: this.state.problemSubmitted, problemNotSubmitted: !this.state.problemSubmitted,
+      canSubmitProblem: this.state.problemText.trim().length > 0,
+      submitProblemDisabled: !(this.state.problemText.trim().length > 0),
+      onProblemText: (e) => this.setProblemText(e),
+      onProblemIndustry: (e) => this.setProblemIndustry(e),
+      onSubmitProblem: () => this.submitProblem(),
+      onResetProblem: () => this.resetProblem(),
+      showProblemForm: this.state.showProblemForm,
+      showProblemFormFalse: !this.state.showProblemForm,
+      showIssuePanelOpacity: this.state.problemText.trim().length > 8 ? 1 : 0.15,
+      showApproachPanelOpacity: this.state.problemText.trim().length > 50 ? 1 : 0.15,
+      showWhyPanelOpacity: this.state.problemText.trim().length > 110 ? 1 : 0.15,
+      charCount: this.state.problemText.length,
+      charTarget: this.charTarget(this.state.problemText.length),
+      charBarWidth: (Math.pow(Math.min(1, this.state.problemText.length / this.charTarget(this.state.problemText.length)), 1.8) * 100).toFixed(1) + '%',
+      issuePanelStyle: this.panelStyle(this.state.problemText.trim().length > 8),
+      approachPanelStyle: this.panelStyle(this.state.problemText.trim().length > 40),
+      whyPanelStyle: this.panelStyle(this.state.problemText.trim().length > 80),
+      plaguesPanelStyle: this.panelStyle(this.state.problemText.trim().length > 130),
+      stoppingPanelStyle: this.panelStyle(this.state.problemText.trim().length > 180),
+      onOpenProblemForm: () => this.openProblemForm(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

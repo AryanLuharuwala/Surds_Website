@@ -1,0 +1,2 @@
+sessions/** binary -diff -merge linguist-generated
+*.gz binary -diff

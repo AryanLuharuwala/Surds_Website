@@ -6,3 +6,35 @@ node_modules
 .env.*.local
 logs
 
+
+# --- 3D authoring sources -------------------------------------------------
+# These are DCC/CAD source files, not web assets. Several exceed GitHub's
+# 100 MB hard limit. Only the optimised GLBs the pages actually load are
+# tracked (see .vercelignore, which applies the same policy to the CDN).
+*.blend
+*.blend1
+*.max
+*.c4d
+*.3ds
+*.usdz
+*.usdc
+*.fbx
+*.7z
+*.step
+*.SLDPRT
+*.SLDASM
+*.npy
+models/iramk4/
+models/quarry_raw/
+mbks-swimming-pool-kuching-sarawak-oss/
+starry-night-off-shoulder-look/
+
+# Large GLBs that no page loads (originals the optimised GLBs derive from)
+gippsland_quarry_sand.glb
+lady_in_black_dress.glb
+appartement.glb
+tienda_22.glb
+90s_retro_office_pack.glb
+cartoon_lowpoly_small_city_free_pack.glb
+models/iramk4.glb
+models/isometric-office.glb

@@ -1,128 +1,2818 @@
 <!DOCTYPE html>
-<html lang="en" data-mode="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SURDS Tech Solutions — Industrial HVAC Intelligence</title>
-<link rel="icon" type="image/svg+xml" href="/shared/favicon.svg">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script>
-tailwind.config={theme:{extend:{colors:{brand:'#FF006E','brand-hover':'#E60063','brand-purple':'#6B2D8F',dark:{900:'#0A0A0A',800:'#050505'}},fontFamily:{inter:['Inter','sans-serif'],mono:['Space Mono','monospace']}}}}
-</script>
-<link rel="stylesheet" href="/shared/tokens.css">
-<link rel="stylesheet" href="/views/main/main.css">
+<title>SURDS | Intelligence for the physical world</title>
+<script type="module" src="https://unpkg.com/@google/model-viewer@4/dist/model-viewer.min.js"></script>
+<meta name="description" content="SURDS builds sensing, control and decision systems for environments that can't afford to fail. Buildings, data centers, clean rooms, drones and more. Incubated at IIT Kharagpur.">
+<link rel="stylesheet" href="/shared/fonts.css">
+<style>
+  :root{
+    --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+    --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+    --ease:cubic-bezier(0.22,0.8,0.24,1);
+    --ease-io:cubic-bezier(0.6,0,0.2,1);
+  }
+  html[data-theme="light"]{
+    --bg:#fbfbfd; --bg-2:#f1f1f4; --fg:#0b0b0c;
+    --grey:#5c5c62; --grey-dim:#9a9aa2;
+    --line:rgba(10,10,12,0.1);
+    --card-neutral:#0e0e12; --card-neutral-fg:#fbfbfd;
+    --shadow:0 30px 80px rgba(15,15,30,0.16);
+    --dot:10,10,12; --fgrgb:11,11,12;
+  }
+  html[data-theme="dark"]{
+    --bg:#000000; --bg-2:#0c0c0e; --fg:#ffffff;
+    --grey:#9a9aa0; --grey-dim:#55555c;
+    --line:rgba(255,255,255,0.12);
+    --card-neutral:#141418; --card-neutral-fg:#fbfbfd;
+    --shadow:0 30px 80px rgba(0,0,0,0.6);
+    --dot:255,255,255; --fgrgb:255,255,255;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--fg);font-family:var(--body);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    transition:background-color 0.5s var(--ease),color 0.5s var(--ease);
+  }
+  h1,h2,h3,h4,.nav-logo,.fl,.ghost,#slots,.hero-statement,.ind-name .nm{font-family:var(--display);}
+  ::selection{background:var(--fg);color:var(--bg);}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:var(--body);}
+  body.loading{overflow:hidden;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--fg);outline-offset:3px;border-radius:4px;}
+  @media(pointer:fine){ body.has-cursor, body.has-cursor a, body.has-cursor button{cursor:none;} }
+
+  /* ============ THERMAL TRAIL (the sensors see you) ============ */
+  #heat{position:fixed;inset:0;pointer-events:none;z-index:95;}
+
+  /* ============ CROSSHAIR CURSOR + TARGET LOCK ============ */
+  .xh{position:fixed;pointer-events:none;z-index:300;display:none;top:0;left:0;}
+  body.has-cursor .xh{display:block;}
+  #xhH{left:0;right:0;height:1px;background:var(--fg);opacity:0.14;}
+  #xhV{top:0;bottom:0;width:1px;background:var(--fg);opacity:0.14;}
+  #xhDot{
+    width:34px;height:34px;border:1px solid var(--fg);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity 0.25s ease;
+  }
+  #xhDot::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--fg);}
+  body.locked #xhH, body.locked #xhV{opacity:0.05;}
+  body.locked #xhDot{opacity:0;}
+  #lock{opacity:0;transition:opacity 0.2s ease;}
+  body.locked #lock{opacity:1;}
+  #lock i{position:absolute;width:11px;height:11px;border:0 solid var(--fg);}
+  #lock i:nth-child(1){top:0;left:0;border-top-width:1.5px;border-left-width:1.5px;}
+  #lock i:nth-child(2){top:0;right:0;border-top-width:1.5px;border-right-width:1.5px;}
+  #lock i:nth-child(3){bottom:0;left:0;border-bottom-width:1.5px;border-left-width:1.5px;}
+  #lock i:nth-child(4){bottom:0;right:0;border-bottom-width:1.5px;border-right-width:1.5px;}
+  #lockDim{
+    position:absolute;bottom:-1.1rem;right:0;font-family:var(--mono);
+    font-size:0.5rem;letter-spacing:0.12em;color:var(--grey-dim);white-space:nowrap;
+  }
+
+
+  /* ============ LOADER ============ */
+  #loader{
+    position:fixed;inset:0;background:#000;color:#fff;z-index:400;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity 0.9s var(--ease-io);
+  }
+  #loader.done{opacity:0;pointer-events:none;}
+  .ldWrap{position:relative;width:min(80vw,640px);}
+  .ldWrap svg{width:100%;display:block;overflow:visible;}
+  .ldWrap svg path{
+    fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:square;stroke-linejoin:miter;
+    stroke-dasharray:1200;stroke-dashoffset:1200;
+    transition:stroke-dashoffset 1s var(--ease-io);
+  }
+  .ldWrap.draw svg path{stroke-dashoffset:0;}
+  .ldWrap.radOut svg path{stroke-dashoffset:-1200;transition:stroke-dashoffset 0.9s var(--ease-io);}
+  .under{position:absolute;left:20.5%;right:1%;top:30%;font-size:clamp(1.15rem,3.4vw,2.1rem);line-height:1;}
+  #two{font-family:var(--mono);opacity:0;transition:opacity 0.5s ease;}
+  .ldWrap.showTwo #two{opacity:1;}
+  .ldWrap.streaming #two,.ldWrap.condense #two,.ldWrap.final #two{opacity:0;transition:opacity 0.2s ease;}
+  #stream{
+    position:absolute;inset:0;overflow:hidden;white-space:nowrap;
+    font-family:var(--mono);letter-spacing:0.06em;opacity:0;
+    mask-image:linear-gradient(90deg,#000 82%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);
+  }
+  .ldWrap.streaming #stream{opacity:1;}
+  #stream i{font-style:normal;display:inline-block;will-change:transform;}
+  .ldWrap.condense #stream,.ldWrap.final #stream{
+    opacity:0;transform:scaleX(0.12);transform-origin:left center;filter:blur(6px);
+    transition:opacity 0.45s var(--ease-io),transform 0.45s var(--ease-io),filter 0.45s var(--ease-io);
+  }
+  #slots{position:absolute;inset:0;display:flex;gap:0.14em;font-weight:600;opacity:0;transition:opacity 0.3s ease;}
+  .ldWrap.slots #slots{opacity:1;}
+  #slots b{font-weight:600;font-family:var(--mono);min-width:0.72em;text-align:center;}
+  #slots b.set{font-family:var(--display);}
+  .ldWrap.final .under{left:0;right:0;top:34%;text-align:center;}
+  .ldWrap.final #slots{justify-content:center;gap:0.34em;font-size:clamp(2.2rem,6.4vw,4.4rem);}
+  #skipIntro{
+    position:absolute;bottom:2rem;right:2rem;background:none;border:none;color:#565656;
+    font-family:var(--mono);font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;
+    cursor:pointer;padding:0.8rem;transition:color 0.3s ease;
+  }
+  #skipIntro:hover{color:#fff;}
+
+  /* ============ NAV ============ */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.4rem clamp(1.2rem,4vw,3.2rem);
+    opacity:0;transform:translateY(-8px);
+    transition:opacity 1s ease 0.2s,transform 1s ease 0.2s;
+    background:linear-gradient(var(--bg) 55%,transparent);
+  }
+  body.ready nav{opacity:1;transform:none;}
+  .nav-logo{font-weight:600;letter-spacing:0.38em;font-size:0.95rem;position:relative;}
+  .nav-logo .live{
+    display:inline-block;width:5px;height:5px;border-radius:50%;background:#34D399;
+    vertical-align:super;margin-left:0.15rem;animation:livePulse 2.4s ease-in-out infinite;
+  }
+  @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,0.5);}50%{opacity:0.55;box-shadow:0 0 0 4px rgba(52,211,153,0);}}
+  .nav-right{display:flex;gap:clamp(1.2rem,2.5vw,2.2rem);align-items:center;}
+  .nav-links{display:flex;gap:2.2rem;}
+  .nav-links a,.nav-contact{font-family:var(--mono);font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey);transition:color 0.3s ease;padding:0.5rem 0;}
+  .nav-links a:hover,.nav-contact:hover{color:var(--fg);}
+  .nav-contact{display:none;}
+  /* Survey: a solid pill button that redirects to the /survey listing page */
+  .nav-survey{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--bg);background:var(--fg);border-radius:999px;padding:0.5rem 1.05rem;
+    transition:opacity 0.3s ease,transform 0.3s ease;white-space:nowrap;}
+  .nav-survey:hover{opacity:0.82;transform:translateY(-1px);}
+  #themeToggle{
+    width:46px;height:26px;border-radius:13px;border:1px solid var(--line);
+    background:var(--bg-2);position:relative;cursor:pointer;transition:background 0.4s var(--ease);
+  }
+  #themeToggle::after{
+    content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+    background:var(--fg);transition:transform 0.4s var(--ease);
+  }
+  html[data-theme="dark"] #themeToggle::after{transform:translateX(20px);}
+  @media(max-width:720px){ .nav-links{display:none;} .nav-contact{display:block;} }
+
+  /* ============ HERO ============ */
+  #hero{
+    min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:0 1.4rem;position:relative;overflow:hidden;
+  }
+  #heroDots{position:absolute;inset:0;z-index:0;}
+  #hero > *:not(#heroDots){position:relative;z-index:1;}
+  .hero-statement{font-size:clamp(2.1rem,5.6vw,4.8rem);font-weight:500;line-height:1.1;letter-spacing:-0.02em;max-width:19ch;}
+  .hero-statement .row{display:block;overflow:hidden;}
+  .hero-statement .row span{display:block;transform:translateY(110%);}
+  body.ready .hero-statement .row span{animation:maskUp 1.3s var(--ease) forwards;}
+  body.ready .hero-statement .row:nth-child(1) span{animation-delay:0.45s;}
+  body.ready .hero-statement .row:nth-child(2) span{animation-delay:0.59s;}
+  body.ready .hero-statement .row:nth-child(3) span{animation-delay:0.73s;}
+  @keyframes maskUp{to{transform:translateY(0);}}
+  .hero-sub{margin-top:2.2rem;color:var(--grey);font-size:clamp(0.88rem,1.1vw,1rem);line-height:1.7;max-width:42ch;opacity:0;transform:translateY(14px);}
+  body.ready .hero-sub{animation:rise 1.2s var(--ease) 1.3s forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  .hero-scroll{position:absolute;bottom:2.4rem;left:50%;transform:translateX(-50%);width:1px;height:52px;background:linear-gradient(var(--fg),transparent);opacity:0;}
+  body.ready .hero-scroll{animation:fadeHalf 1s ease 2.3s forwards;}
+  @keyframes fadeHalf{to{opacity:0.4;}}
+
+  /* ============ INTRO BACKDROP + BURN ============
+     A low-poly city sits fixed behind Hero + Company Statement, barely
+     visible at the top and least faded right before the Facility section
+     takes over its own background system. Two warm glows (same palette as
+     the thermal cursor trail below) pulse at each section seam as you
+     cross it, like heat bleeding through. */
+  #introBackdrop{
+    position:fixed;top:0;left:-16vw;width:132vw;height:100%;z-index:0;pointer-events:none;
+    opacity:0;visibility:hidden;will-change:opacity,transform;
+  }
+  #introBackdrop model-viewer{
+    width:100%;height:100%;--poster-color:transparent;
+    filter:saturate(0.75) brightness(0.85) contrast(1.05);
+  }
+  html[data-theme="light"] #introBackdrop model-viewer{filter:saturate(0.6) brightness(1.2) contrast(1.02);}
+  .burn-glow{
+    position:fixed;left:50%;top:0;z-index:2;pointer-events:none;
+    width:130vw;height:52vh;transform:translate(-50%,-50%);
+    background:radial-gradient(closest-side, rgba(255,168,90,0.65), rgba(255,138,66,0.22) 45%, transparent 72%);
+    filter:blur(48px);opacity:0;will-change:opacity,transform;
+  }
+  @media(prefers-reduced-motion:reduce){ .burn-glow{display:none;} }
+
+  /* ============ SHARED ============ */
+  .eyebrow{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--grey);margin-bottom:2rem;}
+  .reveal{opacity:0;transform:translateY(36px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease);}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ============ STATEMENT ============ */
+  #statement{padding:20vh clamp(1.4rem,7vw,7rem);max-width:1500px;margin:0 auto;}
+  .st-grid{display:grid;grid-template-columns:minmax(0,7fr);gap:clamp(2.4rem,6vw,6rem);align-items:center;}
+  #statement h2{font-size:clamp(2.1rem,5.2vw,4.8rem);font-weight:500;line-height:1.06;letter-spacing:-0.02em;}
+  #statement h2 em{font-style:normal;color:var(--grey-dim);}
+  #statement .st-copy > p{margin-top:2.4rem;max-width:40ch;color:var(--grey);font-size:clamp(0.95rem,1.25vw,1.12rem);line-height:1.8;}
+  #statement .vision{
+    margin-top:2.2rem;font-family:var(--display);color:var(--fg);
+    font-size:clamp(1.1rem,1.8vw,1.5rem);font-weight:500;letter-spacing:-0.01em;max-width:none;line-height:1.4;
+  }
+
+  /* ============ INDUSTRIES (continuous 3D scroll, v4 system) ============ */
+  #industriesWrap{position:relative;}
+  #industriesSticky{
+    position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;
+    border-top:1px solid var(--line);background:var(--bg);
+    transition:background-color 0.5s var(--ease);
+  }
+  #spot{
+    position:absolute;width:52vmax;height:52vmax;border-radius:50%;z-index:0;
+    filter:blur(40px);opacity:0.55;pointer-events:none;
+    transform:translate(-50%,-50%);will-change:transform;left:0;top:0;
+  }
+  .ind-head{position:absolute;top:9vh;left:clamp(1.2rem,6vw,5rem);z-index:6;margin-bottom:0;}
+  .ghost{
+    position:absolute;top:50%;left:50%;white-space:nowrap;z-index:1;
+    font-weight:600;letter-spacing:-0.02em;font-size:clamp(4rem,16vw,14rem);
+    color:transparent;-webkit-text-stroke:1.5px var(--gc);
+    opacity:0;pointer-events:none;will-change:transform,opacity;
+  }
+  .ghost.pop{animation:ghostPop 0.9s var(--ease);}
+  @keyframes ghostPop{from{filter:blur(16px);letter-spacing:0.06em;}to{filter:blur(0);letter-spacing:-0.02em;}}
+  .ind-slide{position:absolute;inset:0;z-index:3;pointer-events:none;}
+  .ind-slide .cards{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    gap:clamp(1.6rem,5vw,5rem);perspective:1400px;
+  }
+  .cardWrap{width:min(34vw,420px);will-change:transform,opacity;}
+  .card{
+    border-radius:20px;padding:clamp(1.3rem,2.2vw,2.2rem);
+    min-height:clamp(300px,44vh,430px);display:flex;flex-direction:column;justify-content:space-between;
+    box-shadow:var(--shadow);transform-style:preserve-3d;position:relative;
+  }
+  .card::before,.card::after{content:"";position:absolute;width:13px;height:13px;opacity:0.5;}
+  .card::before{top:12px;left:12px;border-top:1.5px solid currentColor;border-left:1.5px solid currentColor;}
+  .card::after{bottom:12px;right:12px;border-bottom:1.5px solid currentColor;border-right:1.5px solid currentColor;}
+  .card .k{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.28em;text-transform:uppercase;opacity:0.65;}
+  .card h4{font-size:clamp(1.1rem,1.85vw,1.65rem);font-weight:500;line-height:1.3;letter-spacing:-0.01em;margin-top:1.3rem;}
+  .card .stat{font-family:var(--display);font-size:clamp(1.9rem,3.6vw,3.2rem);font-weight:600;letter-spacing:-0.03em;line-height:1;}
+  .card .statlbl{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;opacity:0.7;margin-top:0.7rem;}
+  .card.today{background:var(--card-neutral);color:var(--card-neutral-fg);}
+  .card.with{color:#fff;background:linear-gradient(150deg,var(--c1),var(--c2));}
+  .card.with .pill{
+    align-self:flex-start;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+    border:1px solid rgba(255,255,255,0.45);border-radius:999px;padding:0.62rem 1.05rem;margin-top:1.5rem;
+    background:rgba(255,255,255,0.12);display:inline-flex;gap:0.6rem;align-items:center;
+    transition:background 0.3s ease;min-height:36px;
+  }
+  .card.with .pill:hover{background:rgba(255,255,255,0.3);}
+  .caption{margin-top:1.1rem;text-align:center;color:var(--grey);font-size:0.78rem;line-height:1.6;font-style:italic;}
+  .ind-name{position:absolute;bottom:8vh;left:0;right:0;text-align:center;z-index:5;pointer-events:none;}
+  .ind-name .nm{font-size:clamp(1.05rem,2vw,1.55rem);font-weight:600;letter-spacing:-0.01em;}
+  .ind-name .next{margin-top:0.5rem;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--grey-dim);}
+  .ind-rail{position:absolute;right:clamp(0.8rem,4vw,3.4rem);top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end;}
+  .ind-rail button{
+    background:none;border:none;display:flex;align-items:center;gap:0.7rem;cursor:pointer;
+    color:var(--grey-dim);font-family:var(--mono);font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;
+    transition:color 0.35s ease;padding:0.5rem 0;min-height:30px;
+  }
+  .ind-rail button .tick{width:20px;height:1.5px;background:currentColor;transition:width 0.35s var(--ease);}
+  .ind-rail button.on{color:var(--acc);}
+  .ind-rail button.on .tick{width:40px;}
+  .ind-rail button:hover{color:var(--fg);}
+  /* labels are always visible (dim when idle, accent when active), and bold on hover */
+  .ind-rail .label{opacity:0.7;transition:opacity 0.3s ease;}
+  .ind-rail button.on .label{opacity:1;}
+  .ind-rail button:hover .label{opacity:1;font-weight:700;}
+  @media(max-width:900px){
+    .ind-slide .cards{flex-direction:column;gap:0.8rem;padding:9vh 0 11vh;}
+    .cardWrap{width:min(86vw,430px);}
+    .card{min-height:0;padding:1.15rem 1.25rem;border-radius:16px;}
+    .card h4{font-size:0.98rem;margin-top:0.9rem;}
+    .card .stat{font-size:1.7rem;margin-top:0.9rem;}
+    .card .statlbl{font-size:0.54rem;}
+    .card.with .pill{margin-top:1rem;}
+    .caption{display:none;}
+    .ind-rail .label{display:none;}
+    .ind-rail button .tick{width:12px;}
+    .ind-rail button.on .tick{width:26px;}
+    .ind-head{top:5.4vh;}
+    .ind-name{bottom:4.2vh;}
+    .ghost{font-size:clamp(3rem,15vw,7rem);-webkit-text-stroke-width:1px;}
+  }
+
+  /* ============ NETWORK (self-healing mesh) ============ */
+  #network{border-top:1px solid var(--line);padding:16vh clamp(1.4rem,7vw,7rem);max-width:1500px;margin:0 auto;}
+  .net-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(2rem,6vw,6rem);align-items:center;}
+  #network h2{font-size:clamp(2rem,4.8vw,4.4rem);font-weight:500;line-height:1.06;letter-spacing:-0.02em;}
+  #network .net-copy p{margin-top:2.2rem;color:var(--grey);font-size:clamp(0.94rem,1.2vw,1.08rem);line-height:1.8;max-width:38ch;}
+  .net-tags{margin-top:2.2rem;display:flex;gap:0.7rem;flex-wrap:wrap;}
+  .net-tags span{
+    font-family:var(--mono);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--grey);
+    border:1px solid var(--line);border-radius:999px;padding:0.55rem 1rem;
+  }
+  .net-hint{margin-top:2.4rem;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-dim);}
+  .meshBox{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--bg-2);}
+  #mesh{display:block;width:100%;height:clamp(340px,56vh,560px);}
+  .mesh-status{
+    position:absolute;left:1.1rem;bottom:0.9rem;font-family:var(--mono);
+    font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--grey-dim);
+  }
+  .mesh-status b{color:#34D399;font-weight:500;}
+  .meshBox .k{
+    position:absolute;left:1.1rem;top:0.9rem;font-family:var(--mono);
+    font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-dim);
+  }
+  @media(max-width:900px){ .net-grid{grid-template-columns:1fr;} #mesh{height:340px;} }
+
+  /* ============ CTA ============ */
+  #cta{
+    min-height:90vh;display:flex;align-items:center;justify-content:center;
+    border-top:1px solid var(--line);padding:14vh 1.4rem;background:var(--bg);position:relative;z-index:2;
+  }
+  .cta-inner{max-width:860px;text-align:center;}
+  #cta h2{font-size:clamp(2.1rem,5.2vw,4.4rem);font-weight:500;letter-spacing:-0.02em;line-height:1.08;}
+  #cta .cta-sub{margin-top:2rem;color:var(--grey);font-size:clamp(0.92rem,1.2vw,1.06rem);line-height:1.8;max-width:44ch;margin-left:auto;margin-right:auto;}
+  .cta-actions{margin-top:3rem;display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;align-items:center;}
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:0.9rem;
+    font-size:0.72rem;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;
+    background:var(--fg);color:var(--bg);padding:1.15rem 2.1rem;border:1px solid var(--fg);border-radius:999px;
+    transition:transform 0.25s var(--ease),background 0.35s ease,color 0.35s ease;
+    will-change:transform;min-height:48px;
+  }
+  .btn-primary:hover{background:transparent;color:var(--fg);}
+  .btn-secondary{
+    font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;color:var(--grey);
+    border-bottom:1px solid var(--line);padding:0.5rem 0.1rem;transition:color 0.3s ease,border-color 0.3s ease;
+    min-height:44px;display:inline-flex;align-items:center;
+  }
+  .btn-secondary:hover{color:var(--fg);border-color:var(--fg);}
+  .cta-form{margin-top:2.6rem;text-align:left;max-width:620px;margin-left:auto;margin-right:auto;}
+  .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;}
+  @media(max-width:640px){ .cta-grid{grid-template-columns:1fr;} }
+  .fld{display:block;margin-bottom:0.9rem;}
+  .fld>span{
+    display:block;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--grey-dim);margin-bottom:0.45rem;
+  }
+  .fld input,.fld textarea{
+    width:100%;background:rgba(var(--fgrgb),0.03);color:var(--fg);
+    border:1px solid var(--line);border-radius:10px;padding:0.75rem 0.9rem;
+    font-family:var(--body);font-size:0.92rem;line-height:1.5;transition:border-color .25s ease,background .25s ease;
+  }
+  .fld textarea{resize:vertical;min-height:104px;}
+  .fld input::placeholder,.fld textarea::placeholder{color:var(--grey-dim);}
+  .fld input:focus,.fld textarea:focus{
+    outline:none;border-color:var(--fg);background:rgba(var(--fgrgb),0.06);
+  }
+  .cta-form .cta-actions{margin-top:1.5rem;justify-content:flex-start;}
+  .cta-form button.btn-primary{cursor:pointer;font:inherit;}
+  .cta-form button.btn-primary[disabled]{opacity:.55;cursor:default;}
+  .cta-status{
+    margin-top:0.9rem;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;
+    min-height:1.2em;color:var(--grey);
+  }
+  .cta-status.ok{color:#34D399;}
+  .cta-status.err{color:#f87171;}
+  .cta-meta{
+    margin-top:3.4rem;display:flex;gap:2.2rem;justify-content:center;flex-wrap:wrap;
+    font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--grey-dim);
+  }
+
+  /* ============ FOOTER ============ */
+  footer{border-top:1px solid var(--line);background:var(--bg);position:relative;z-index:2;}
+  .foot-top{padding:3.4rem clamp(1.4rem,4vw,3.2rem) 2.4rem;display:flex;justify-content:space-between;gap:2.4rem;flex-wrap:wrap;}
+  .foot-brand .fl{font-weight:600;letter-spacing:0.38em;font-size:0.9rem;}
+  .foot-brand p{margin-top:1rem;color:var(--grey-dim);font-size:0.78rem;line-height:1.7;max-width:28ch;}
+  .foot-cols{display:flex;gap:clamp(2rem,6vw,5.5rem);flex-wrap:wrap;}
+  .foot-cols h5{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--grey-dim);margin-bottom:1.1rem;font-weight:500;}
+  .foot-cols a{display:block;font-size:0.8rem;color:var(--grey);padding:0.34rem 0;transition:color 0.3s ease;}
+  .foot-cols a:hover{color:var(--fg);}
+  .foot-legal{
+    border-top:1px solid var(--line);padding:1.5rem clamp(1.4rem,4vw,3.2rem);
+    display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+    font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;color:var(--grey-dim);
+  }
+  #replay{background:none;border:none;cursor:pointer;transition:color 0.3s ease;padding:0.5rem 0;color:var(--grey-dim);font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;}
+  #replay:hover{color:var(--fg);}
+
+  /* LiDAR ping on click */
+  .ping{
+    position:fixed;border:1px solid var(--fg);border-radius:50%;pointer-events:none;z-index:299;
+    width:10px;height:10px;transform:translate(-50%,-50%);opacity:0.5;
+    animation:ping 0.7s var(--ease-io) forwards;
+  }
+  @keyframes ping{to{width:150px;height:150px;opacity:0;}}
+  @keyframes dotBlink{0%,100%{opacity:1;}50%{opacity:0.15;}}
+
+  /* Proof strip */
+  #proof{border-top:1px solid var(--line);padding:12vh clamp(1.4rem,7vw,7rem);max-width:1500px;margin:0 auto;}
+  .proof-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2.4rem;margin-top:0.6rem;}
+  .proof-row .p-k{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--grey-dim);}
+  .proof-row p{margin-top:0.7rem;font-family:var(--display);font-size:clamp(1.05rem,1.6vw,1.4rem);font-weight:500;letter-spacing:-0.01em;line-height:1.3;}
+  .proof-row .p-sub{margin-top:0.3rem;font-size:0.78rem;color:var(--grey);font-family:var(--body);font-weight:400;}
+
+  /* ============ LIVE FACILITY (merged from the consumer-side isometric demo) ============ */
+  #facilityWrap{position:relative;}
+  #facilitySticky{position:sticky;top:0;min-height:100vh;min-height:100dvh;display:flex;align-items:center;border-top:1px solid var(--line);background:var(--bg);padding:8vh clamp(1.4rem,7vw,7rem);transition:background-color .5s var(--ease);}
+  #facilitySticky .fac-grid{max-width:1500px;margin:0 auto;width:100%;}
+  #facSpacer{height:340vh;}
+  .fac-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(2rem,6vw,6rem);align-items:center;}
+  #facilitySticky h2{font-size:clamp(1.7rem,3.6vw,3.1rem);font-weight:500;line-height:1.08;letter-spacing:-0.02em;}
+  #facilitySticky h2 em{font-style:normal;color:var(--grey-dim);}
+  #facilitySticky .fac-copy{transition:opacity .4s ease;}
+  #facilitySticky .fac-copy p{margin-top:2.2rem;color:var(--grey);font-size:clamp(0.94rem,1.2vw,1.08rem);line-height:1.8;max-width:38ch;}
+  /* ---- dashboard panel wrapping the facility copy ---------------------- */
+  .fac-panel{
+    border:1px solid var(--line);border-radius:16px;background:var(--bg-2);
+    box-shadow:0 1px 0 rgba(var(--fgrgb),0.04) inset, 0 18px 50px rgba(0,0,0,0.07);
+    overflow:hidden;
+  }
+  .fac-panel-head{
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:0.7rem 1.15rem;border-bottom:1px solid var(--line);
+    background:rgba(var(--fgrgb),0.025);
+  }
+  .fac-live{
+    display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--mono);
+    font-size:0.56rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--grey);
+  }
+  .fac-live i{
+    width:6px;height:6px;border-radius:50%;background:#22c55e;
+    box-shadow:0 0 0 0 rgba(34,197,94,0.55);animation:facPulse 2s ease-out infinite;
+  }
+  @keyframes facPulse{
+    0%{box-shadow:0 0 0 0 rgba(34,197,94,0.5);}
+    70%{box-shadow:0 0 0 7px rgba(34,197,94,0);}
+    100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
+  }
+  .fac-clock{
+    font-family:var(--mono);font-size:0.56rem;letter-spacing:0.14em;
+    color:var(--grey-dim);font-variant-numeric:tabular-nums;
+  }
+  .fac-panel-body{padding:1.5rem 1.6rem 1.6rem;}
+  .fac-stats{
+    margin-top:1.7rem;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    border:1px solid var(--line);border-radius:11px;overflow:hidden;
+  }
+  .fac-stat{
+    padding:0.8rem 0.9rem;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;gap:0.35rem;min-width:0;
+  }
+  .fac-stat:last-child{border-right:none;}
+  .fac-stat-k{
+    font-family:var(--mono);font-size:0.5rem;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--grey-dim);white-space:nowrap;
+  }
+  .fac-stat-v{
+    font-family:var(--display);font-size:clamp(0.98rem,1.5vw,1.22rem);font-weight:600;
+    color:var(--fg);letter-spacing:-0.01em;font-variant-numeric:tabular-nums;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .fac-stat-v small{font-size:0.62em;font-weight:500;color:var(--grey);margin-left:1px;}
+  .fac-panel-foot{
+    padding:1rem 1.6rem 1.25rem;border-top:1px solid var(--line);
+    background:rgba(var(--fgrgb),0.02);
+  }
+  .fac-foot-k{
+    display:block;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.2em;
+    text-transform:uppercase;color:var(--grey-dim);
+  }
+  .fac-tabs{margin-top:0.85rem;display:flex;gap:0.45rem;flex-wrap:wrap;}
+  .fac-tabs button{
+    font-family:var(--mono);font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--grey);background:none;border:1px solid var(--line);border-radius:7px;
+    padding:0.45rem 0.7rem;cursor:pointer;transition:all 0.3s ease;display:inline-flex;align-items:center;gap:0.5rem;
+  }
+  .fac-tabs button:hover{color:var(--fg);border-color:var(--fg);}
+  .fac-tabs button.active{color:var(--card-neutral-fg);background:var(--card-neutral);border-color:var(--card-neutral);}
+  .facViz-slot{width:100%;height:clamp(360px,54vh,540px);}
+  #facVizBackdrop{
+    position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0;
+    /* solid white background to completely blank out the rest of the page */
+    background:#ffffff;
+    transition:opacity .4s var(--ease);
+  }
+  #facVizBase{
+    position:fixed;top:0;left:0;width:0;height:0;z-index:81;pointer-events:none;opacity:0;
+    background:radial-gradient(ellipse at 50% 55%, rgba(255,168,90,.4), rgba(255,168,90,0) 72%);
+    filter:blur(22px);transition:opacity .4s var(--ease);
+  }
+  .facViz{
+    position:fixed;top:-9999px;left:-9999px;width:0;height:0;z-index:82;cursor:pointer;
+    border:1px solid var(--line);overflow:hidden;background:var(--card-neutral);
+    opacity:0;
+    transition:opacity .2s var(--ease);
+  }
+  .facViz.is-animating{
+    transition:top .6s var(--ease),left .6s var(--ease),width .6s var(--ease),height .6s var(--ease),border-radius .6s var(--ease),clip-path .6s var(--ease),opacity .2s var(--ease);
+  }
+  .facViz.is-open{cursor:default;}
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .fac-see-more{
+    position:absolute;right:1.1rem;bottom:1rem;z-index:7;
+    display:inline-flex;align-items:center;gap:0.5rem;
+    font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;
+    color:#fbfbfd;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+    border-radius:999px;padding:0.55rem 1.05rem;cursor:pointer;transition:background .25s ease,opacity .3s ease;
+    animation:facSeeMoreGlow 2.6s ease-in-out infinite;
+  }
+  @keyframes facSeeMoreGlow{
+    0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.22),0 0 10px 1px rgba(255,168,90,.25);}
+    50%{box-shadow:0 0 0 1px rgba(255,255,255,.32),0 0 20px 5px rgba(255,168,90,.5);}
+  }
+  .fac-see-more:hover{background:rgba(255,255,255,0.22);}
+  .facViz.is-open .fac-see-more{opacity:0;pointer-events:none;}
+  .fac-close{
+    position:absolute;top:0.9rem;right:1rem;z-index:9;
+    display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;
+    background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.2);color:#fbfbfd;
+    font-size:19px;line-height:1;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s ease,background .25s ease;
+  }
+  .fac-close:hover{background:rgba(0,0,0,0.6);}
+  .facViz.is-open .fac-close{opacity:1;pointer-events:auto;}
+  #facCanvasWrap{position:relative;width:100%;height:100%;overflow:hidden;}
+  /* the shared iso-engine pads its viewBox entirely on the left (by design, for the
+     original site's left-aligned text layout) — shift back to recenter it in this card.
+     #canvas holds the static fixtures, #canvasDyn the per-frame walkers/glow, stacked
+     exactly on top of each other with identical viewBox + transform. */
+  #facCanvasWrap svg{position:absolute;inset:0;width:100%;height:100%;display:block;transform:translateX(-11%);transform-origin:50% 50%;}
+  #facCanvasWrap #canvasDyn{pointer-events:none;}
+  .facViz .k{position:absolute;left:1.1rem;top:0.9rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(251,251,253,0.45);z-index:5;}
+  .facPanel{
+    position:absolute;top:3.2rem;right:1rem;z-index:6;width:200px;padding:0.9rem 1rem;
+    border-radius:12px;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);color:#fbfbfd;opacity:0;transform:translateY(-6px);
+    pointer-events:none;transition:opacity .4s ease,transform .4s ease;
+  }
+  [data-facility="retail"] #facHeatmap.panel-eligible{opacity:1;transform:none;}
+  [data-facility="chemical"] #facProcess.panel-eligible{opacity:1;transform:none;}
+  .facPanel .fp-head{display:flex;align-items:center;gap:0.4rem;font-family:var(--mono);font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(251,251,253,0.6);margin-bottom:0.6rem;}
+  .facPanel .fp-heatmap{width:100%;height:auto;border-radius:6px;display:block;}
+  .facPanel .fp-legend{display:flex;gap:0.6rem;margin:0.5rem 0;font-size:0.5rem;color:rgba(251,251,253,0.5);}
+  .facPanel .fp-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:3px;}
+  .facPanel .fp-insight{font-size:0.62rem;line-height:1.5;color:rgba(251,251,253,0.65);margin:0;}
+  .facPanel .fp-bars{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.5rem;}
+  .facPanel .fp-bar-row{display:flex;align-items:center;gap:0.4rem;font-size:0.5rem;}
+  .facPanel .fp-bar-label{width:64px;flex-shrink:0;color:rgba(251,251,253,0.55);}
+  .facPanel .fp-bar-track{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,0.14);overflow:hidden;}
+  .facPanel .fp-bar-fill{height:100%;border-radius:2px;}
+  .facPanel .fp-bar-val{width:22px;text-align:right;font-family:var(--mono);font-weight:600;}
+
+  /* Phase C: Live Movement Intelligence reveal, shown once the card is fully expanded.
+     Ring/trail/ghost graphics live in #facMoveOverlay (rebuilt each tick, like the main
+     canvas); the two flag cards are plain positioned divs like the old sv-callouts were. */
+  #moveIntelHead{
+    position:absolute;left:6%;bottom:8%;max-width:420px;color:#fbfbfd;z-index:9;
+    opacity:0;transform:translateY(16px);pointer-events:none;
+    transition:opacity .5s var(--ease),transform .5s var(--ease);
+  }
+  #moveIntelHead.show{opacity:1;transform:none;}
+  #moveIntelHead .eyebrow{color:rgba(251,251,253,.6);margin-bottom:1rem;}
+  #moveIntelHead h2{font-size:clamp(1.5rem,2.8vw,2.4rem);font-weight:500;letter-spacing:-0.02em;margin-bottom:0.8rem;}
+  #moveIntelHead p{font-size:0.85rem;line-height:1.7;color:rgba(251,251,253,.7);max-width:40ch;}
+  .fac-move-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none;opacity:0;transition:opacity .4s ease;}
+  .fac-move-overlay.show{opacity:1;}
+  /* the visited entity itself now reacts (glow/light-up baked into its own render in
+     shared/iso-render.js + the theme piece files), so there's no separate highlight-ring
+     overlay here anymore */
+  /* left/top are set live in JS to the exact scene point being flagged; the fixed px
+     offset here (not a %, which would scale with the card's own ~200px box) just
+     centers the small dot on that point, with the card cascading down-right from it */
+  /* ---------- scroll analytics deck ---------- */
+  #facDeck{
+    position:absolute;left:clamp(0.8rem,2.5vw,2rem);top:50%;transform:translateY(-50%);
+    z-index:9;display:none;align-items:center;gap:0.5rem;pointer-events:none;
+  }
+  #facDeck.has-cards{display:flex;}
+  .fd-stack{
+    position:relative;width:clamp(268px,27vw,392px);height:clamp(300px,52vh,436px);
+    pointer-events:auto;
+  }
+  .fd-arrow{
+    pointer-events:auto;flex:0 0 auto;width:34px;height:34px;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:1.15rem;line-height:1;
+    color:#eef4f8;background:rgba(226,238,246,0.16);border:1px solid rgba(226,238,246,0.3);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    transition:opacity .25s ease,background .25s ease,transform .25s ease;
+  }
+  .fd-arrow:hover:not(:disabled){background:rgba(226,238,246,0.3);transform:scale(1.08);}
+  .fd-arrow:disabled{opacity:0.22;cursor:default;}
+  .fd-dots{
+    position:absolute;left:0;right:0;bottom:-18px;display:flex;justify-content:center;gap:5px;
+    pointer-events:none;
+  }
+  .fd-dots i{width:5px;height:5px;border-radius:50%;background:rgba(226,238,246,0.32);transition:all .3s ease;}
+  .fd-dots i.on{background:#eef4f8;width:16px;border-radius:3px;}
+  /* frosted ice-grey glass: a cool desaturated tint over whatever the scene is
+     showing, rather than an opaque panel sitting on top of it */
+  .fd-card{
+    position:absolute;inset:0;overflow-y:auto;color:#131922;
+    background:linear-gradient(160deg,rgba(233,241,247,0.94),rgba(203,217,229,0.90));
+    backdrop-filter:blur(22px) saturate(130%);
+    -webkit-backdrop-filter:blur(22px) saturate(130%);
+    border:1px solid rgba(255,255,255,0.55);border-radius:17px;padding:1.15rem 1.25rem 1.3rem;
+    box-shadow:0 1px 0 rgba(255,255,255,0.7) inset, 0 18px 44px rgba(4,9,16,0.45);
+    opacity:0;transform:translateX(26px) scale(.96);pointer-events:none;
+    transition:opacity .45s var(--ease),transform .45s var(--ease);
+  }
+  .fd-card.active{opacity:1;transform:none;pointer-events:auto;}
+  .fd-card.before:not(.active){transform:translateX(-26px) scale(.96);}
+  .fd-card.fd-accent{
+    border-color:rgba(15,122,82,0.55);
+    box-shadow:0 1px 0 rgba(255,255,255,0.22) inset, 0 0 26px rgba(52,211,153,0.2);
+  }
+  .fd-card.fd-alarm{
+    border-color:rgba(179,52,28,0.55);
+    box-shadow:0 1px 0 rgba(255,255,255,0.22) inset, 0 0 26px rgba(255,107,74,0.22);
+  }
+  /* the log cards stay documents - same ice shell, but the table itself keeps
+     its paper white so it still reads as a spreadsheet you could export */
+  
+  .fd-head{display:flex;flex-direction:column;gap:0.25rem;margin-bottom:0.55rem;}
+  .fd-tag{
+    font-family:var(--mono);font-size:0.52rem;letter-spacing:0.22em;text-transform:uppercase;
+    color:#0b6d86;opacity:1;font-weight:600;
+  }
+  .fd-sheetcard .fd-tag{color:#0b6d86;}
+  .fd-alarm .fd-tag{color:#b3341c;}
+  .fd-accent .fd-tag{color:#0f7a52;}
+  .fd-head h4{font-family:var(--display);font-size:1.16rem;font-weight:600;letter-spacing:-0.01em;line-height:1.25;}
+  .fd-body{font-size:0.84rem;line-height:1.6;}
+  .fd-row{display:flex;gap:0.75rem;margin-top:0.55rem;flex-wrap:wrap;}
+  .fd-metric{display:flex;flex-direction:column;gap:0.1rem;min-width:0;}
+  .fd-val{font-family:var(--display);font-size:1.55rem;font-weight:600;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;}
+  .fd-val small{font-size:0.58em;font-weight:500;opacity:.65;margin-left:1px;}
+  .fd-lab{font-family:var(--mono);font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;opacity:.62;}
+  .fd-note{margin-top:0.75rem;font-size:0.76rem;line-height:1.55;opacity:.78;}
+  .fd-prod{display:flex;align-items:center;gap:0.6rem;}
+  .fd-prod svg{width:52px;height:52px;flex:0 0 52px;}
+  .fd-prod strong{display:block;font-size:0.98rem;font-weight:600;}
+  .fd-prod span{display:block;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;opacity:.55;margin-top:2px;}
+  .fd-swap{display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;font-size:0.86rem;margin-top:0.15rem;}
+  .fd-swap i{font-style:normal;opacity:.5;}
+  .fd-swap-to{color:#0b6d86;font-weight:600;}
+  .fd-price{display:flex;align-items:baseline;gap:0.5rem;font-family:var(--display);}
+  .fd-old{font-size:1.3rem;opacity:.5;text-decoration:line-through;}
+  .fd-price i{font-style:normal;opacity:.5;}
+  .fd-new{font-size:2.3rem;font-weight:600;color:#0f7a52;}
+  .fd-loop{display:flex;align-items:center;gap:0.35rem;font-family:var(--mono);font-size:0.52rem;
+    letter-spacing:0.1em;text-transform:uppercase;opacity:.72;margin-bottom:0.4rem;flex-wrap:wrap;}
+  .fd-loop span{border:1px solid rgba(19,25,34,.22);border-radius:5px;padding:3px 7px;}
+  .fd-loop i{font-style:normal;opacity:.5;}
+  .fd-chart{width:100%;color:#131922;}
+  .fd-legend{display:flex;flex-direction:column;gap:0.2rem;margin-top:0.35rem;}
+  .dc-leg{display:flex;align-items:center;gap:0.45rem;font-size:0.75rem;}
+  .dc-swatch{width:7px;height:7px;border-radius:2px;flex:0 0 7px;}
+  .dc-leg-k{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;opacity:.6;flex:1;}
+  .dc-leg-v{font-family:var(--display);font-weight:600;font-size:0.95rem;font-variant-numeric:tabular-nums;}
+  .dc-leg-v small{font-size:0.72em;opacity:.7;margin-left:1px;}
+  .fd-heat{width:100%;height:auto;display:block;}
+  .fd-sheet{overflow:auto;border:1px solid rgba(19,25,34,.16);border-radius:6px;background:#fdfefe;color:#14161c;}
+  .fd-sheet table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:0.62rem;}
+  .fd-sheet th,.fd-sheet td{border:1px solid rgba(0,0,0,.09);padding:3px 5px;text-align:right;white-space:nowrap;}
+  .fd-sheet th{background:#eef2f6;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;font-size:0.53rem;color:#48505e;}
+  .fd-sheet td:first-child+td,.fd-sheet th:first-child+th{text-align:left;}
+  .fd-rownum{background:#e9edf2;color:#8b93a1;text-align:center !important;width:16px;}
+  .fd-sheet td.fd-flag{background:#ffe3dd;color:#b3341c;font-weight:600;}
+  .fd-sheetcard .fd-note{opacity:.68;}
+  @media(max-width:900px){ #facDeck{right:0.6rem;gap:0.3rem;} .fd-stack{width:min(66vw,268px);height:min(52vh,330px);} .fd-arrow{width:28px;height:28px;} }
+
+  .move-flag{position:absolute;z-index:8;opacity:0;transform:translate(-5px,-5px) scale(.85);transform-origin:0 0;pointer-events:none;transition:opacity .4s ease,transform .4s ease;}
+  .move-flag.show{opacity:1;transform:translate(-5px,-5px) scale(1);}
+  .mv-dot{width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.22);}
+  .mv-card{
+    margin-top:0.6rem;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);
+    border-radius:10px;padding:0.7rem 0.9rem;font-size:0.72rem;line-height:1.5;color:rgba(251,251,253,.85);
+    max-width:190px;
+  }
+  .mv-tag{display:block;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#fff;margin-bottom:0.35rem;}
+
+  @media(max-width:900px){
+    .fac-grid{grid-template-columns:1fr;}
+    .facViz-slot{height:340px;}
+    .facViz{position:static !important;width:100% !important;height:340px !important;clip-path:none !important;border-radius:20px !important;margin-top:1.6rem;}
+    .facPanel{display:none;}
+    #moveIntelHead,.move-flag,.fac-move-overlay{display:none;}
+    #facVizBackdrop,#facVizBase{display:none;}
+    .fac-see-more,.fac-close{display:none;}
+    #facilitySticky{padding:6vh clamp(1.2rem,6vw,3rem);}
+    #facSpacer{height:150vh;}
+  }
+
+  /* ============ SENSORS (hardware) ============ */
+  #sensors{border-top:1px solid var(--line);padding:16vh clamp(1.4rem,7vw,7rem);max-width:1500px;margin:0 auto;}
+  #sensors h2{font-size:clamp(2rem,4.8vw,4.4rem);font-weight:500;line-height:1.06;letter-spacing:-0.02em;max-width:14ch;}
+  #sensors > .reveal > p{margin-top:1.6rem;color:var(--grey);font-size:clamp(0.94rem,1.2vw,1.08rem);line-height:1.8;max-width:56ch;}
+  .sensor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.6rem;margin-top:3.6rem;}
+  .sensor-card{border:1px solid var(--line);border-radius:16px;padding:1.6rem;transition:border-color .3s ease;}
+  .sensor-card:hover{border-color:var(--fg);}
+  .sensor-card svg{color:var(--fg);margin-bottom:1.2rem;}
+  .sensor-card h4{font-size:1.05rem;font-weight:500;letter-spacing:-0.01em;margin-bottom:0.5rem;}
+  .sensor-card .spec{font-family:var(--mono);font-size:0.68rem;color:var(--grey);letter-spacing:0.02em;}
+  .sensor-card .tags{margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;}
+  .sensor-card .tags span{
+    font-family:var(--mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-dim);
+    border:1px solid var(--line);border-radius:999px;padding:0.3rem 0.6rem;
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    .reveal,.hero-sub,.hero-statement .row span{opacity:1 !important;transform:none !important;animation:none !important;transition:none !important;}
+    html{scroll-behavior:auto;}
+    .xh,#heat{display:none !important;}
+  }
+</style>
 </head>
 <body>
 
-<div id="iso-bg"><svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
-
-<div id="legend">
-  <div class="legend-chip" data-legend="0"><span class="legend-dot" style="background:#f97316"></span>Climate</div>
-  <div class="legend-chip" data-legend="1"><span class="legend-dot" style="background:#3b82f6"></span>Utility</div>
-  <div class="legend-chip" data-legend="2"><span class="legend-dot" style="background:#a855f7"></span>Predictive</div>
-  <div class="legend-chip" data-legend="3"><span class="legend-dot" style="background:#ef4444"></span>Safety</div>
-  <div class="legend-chip" data-legend="4"><span class="legend-dot" style="background:#22c55e"></span>ESG</div>
+<div id="introBackdrop" aria-hidden="true">
+  <model-viewer
+    src="/models/cartoon-lowpoly-city.glb"
+    alt=""
+    auto-rotate
+    rotation-per-second="4deg"
+    camera-orbit="18deg 68deg 145%"
+    field-of-view="32deg"
+    shadow-intensity="0"
+    exposure="0.95"
+    interaction-prompt="none"
+    loading="lazy">
+  </model-viewer>
 </div>
+<div class="burn-glow" id="burnGlow1" aria-hidden="true"></div>
+<div class="burn-glow" id="burnGlow2" aria-hidden="true"></div>
 
-<div id="retail-heatmap-panel" class="facility-panel">
-  <div class="fp-head"><i data-lucide="flame" class="w-3 h-3"></i> Live Movement Heatmap</div>
-  <svg viewBox="0 0 220 120" class="fp-heatmap" role="img" aria-label="Top-down heatmap of the retail floor showing high foot traffic near checkout, medium near produce, and lower traffic near dairy and the entrance">
-    <defs>
-      <radialGradient id="heatHigh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></radialGradient>
-      <radialGradient id="heatMed" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f97316" stop-opacity="0.7"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></radialGradient>
-      <radialGradient id="heatLow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#eab308" stop-opacity="0.55"/><stop offset="100%" stop-color="#eab308" stop-opacity="0"/></radialGradient>
-    </defs>
-    <rect x="3" y="3" width="214" height="114" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
-    <ellipse cx="70" cy="88" rx="42" ry="24" fill="url(#heatHigh)"/>
-    <ellipse cx="152" cy="28" rx="34" ry="20" fill="url(#heatMed)"/>
-    <ellipse cx="30" cy="28" rx="24" ry="17" fill="url(#heatLow)"/>
-    <ellipse cx="182" cy="88" rx="22" ry="16" fill="url(#heatLow)"/>
-    <text x="70" y="91" text-anchor="middle" font-size="7" font-family="Space Mono,monospace" fill="#fff" opacity="0.9">CHECKOUT</text>
-    <text x="152" y="32" text-anchor="middle" font-size="7" font-family="Space Mono,monospace" fill="#fff" opacity="0.8">PRODUCE</text>
-    <text x="30" y="32" text-anchor="middle" font-size="6.5" font-family="Space Mono,monospace" fill="#fff" opacity="0.65">DAIRY</text>
-    <text x="182" y="91" text-anchor="middle" font-size="6.5" font-family="Space Mono,monospace" fill="#fff" opacity="0.65">ENTRANCE</text>
-  </svg>
-  <div class="fp-legend"><span><i class="fp-dot" style="background:#ef4444"></i>High</span><span><i class="fp-dot" style="background:#f97316"></i>Med</span><span><i class="fp-dot" style="background:#eab308"></i>Low</span></div>
-  <p class="fp-insight">68% of foot traffic concentrates near checkout during peak hours — reposition high-margin impulse items within this zone.</p>
-</div>
+<canvas id="heat" aria-hidden="true"></canvas>
+<div class="xh" id="xhH"></div>
+<div class="xh" id="xhV"></div>
+<div class="xh" id="xhDot"></div>
+<div class="xh" id="lock"><i></i><i></i><i></i><i></i><span id="lockDim"></span></div>
 
-<div id="chemical-process-panel" class="facility-panel">
-  <div class="fp-head"><i data-lucide="timer" class="w-3 h-3"></i> Process Cycle Analysis</div>
-  <div class="fp-bars">
-    <div class="fp-bar-row"><span class="fp-bar-label">Reactor · Cook</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:65%;background:#3b82f6"></div></div><span class="fp-bar-val">42m</span></div>
-    <div class="fp-bar-row"><span class="fp-bar-label">Vat Mixer · Blend</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:100%;background:#ef4444"></div></div><span class="fp-bar-val">65m</span></div>
-    <div class="fp-bar-row"><span class="fp-bar-label">Cool Tower · Cooldown</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:43%;background:#22c55e"></div></div><span class="fp-bar-val">28m</span></div>
-  </div>
-  <p class="fp-insight"><b>Bottleneck:</b> the Vat Mixer blend cycle is the longest step. SURDS suggests staggering batch starts to overlap blend time with the next reactor's cook cycle — cutting total cycle time ~18%.</p>
-</div>
-
-<div class="edit-hint" id="editHint">Click to place · Right-click to erase · Number keys to switch · Esc to exit</div>
-<div id="edit-panel"><div class="inner" id="palette-inner"></div></div>
-<button id="mode-toggle" onclick="toggleMode()">
-  <span class="mt-label">Dark</span>
-  <span class="mt-track"><span class="mt-thumb"></span></span>
-</button>
-<button id="edit-btn"><i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit Layout</button>
-
-<div class="layout-tabs" id="layout-tabs">
-  <button class="layout-tab active" data-theme="retail" onclick="switchLayout('retail')"><i data-lucide="store" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Retail Facility</button>
-  <button class="layout-tab" data-theme="industrial" onclick="switchLayout('industrial')"><i data-lucide="factory" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Steel Factory</button>
-  <button class="layout-tab" data-theme="chemical" onclick="switchLayout('chemical')"><i data-lucide="flask-conical" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Chemical Plant</button>
-  <a href="/enterprise" class="layout-tab" data-theme="enterprise"><i data-lucide="building-2" class="w-3 h-3 inline-block align-middle mr-1" style="vertical-align:-2px"></i>Enterprise</a>
-</div>
-
-<div id="content">
-
-<section data-section="0" class="min-h-screen relative flex items-center">
-  <div class="hero-backdrop"></div>
-  <div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-xl pt-20">
-    <div class="reveal">
-      <div class="badge mb-6"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>Live Facility Intelligence</div>
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.08] tracking-tight mb-5"><span class="gradient-text">Smarter Climate.</span><br><span class="gradient-text-brand">Sharper Control.</span></h1>
-      <p class="text-base font-light text-gray-400 leading-relaxed mb-8 max-w-md">SURDS deploys real-time sensor networks across your facility. Watch the coverage unfold as you scroll.</p>
-      <div class="flex flex-wrap gap-3">
-        <a href="#sec-contact" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-white font-medium rounded-full px-7 py-3 transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(255,0,110,0.5)] text-sm">Get a Quote <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-        <a href="/card-tour" class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium rounded-full px-7 py-3 transition-all text-sm"><i data-lucide="layout-grid" class="w-4 h-4"></i> Product Tour</a>
-      </div>
-    </div>
-    <div class="mt-12 flex items-center gap-4 reveal" style="transition-delay:200ms">
-      <div class="flex -space-x-2"><img src="https://picsum.photos/seed/e1/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"><img src="https://picsum.photos/seed/e2/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"><img src="https://picsum.photos/seed/e3/60/60.jpg" class="w-7 h-7 rounded-full border-2 border-dark-900 object-cover"></div>
-      <div><div class="flex gap-0.5"><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i><i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i></div><p class="text-[10px] text-gray-600 mt-0.5">Trusted by industrial manufacturers</p></div>
+<!-- ================= LOADER ================= -->
+<div id="loader" aria-hidden="true">
+  <div class="ldWrap" id="ldWrap">
+    <svg viewBox="0 0 640 170" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="M22 100 L48 80 L80 140 L120 26 L624 26"/>
+    </svg>
+    <div class="under">
+      <span id="two">2</span>
+      <div id="stream"><i id="streamInner"></i></div>
+      <div id="slots"><b></b><b></b><b></b><b></b><b></b></div>
     </div>
   </div>
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce"><span class="text-[9px] text-gray-600 uppercase tracking-[.2em]">Scroll</span><i data-lucide="chevron-down" class="w-3.5 h-3.5 text-gray-600"></i></div>
+  <button id="skipIntro">Skip</button>
+</div>
+
+<!-- ================= NAV ================= -->
+<nav>
+  <a class="nav-logo" href="#hero" data-hover title="Sensors online">SURDS<span class="live" aria-hidden="true"></span></a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#statement" data-hover>Company</a>
+      <a href="#facility" data-hover>Facility</a>
+      <a href="#industriesWrap" data-hover>Industries</a>
+      <a href="#network" data-hover>Network</a>
+      <a href="#sensors" data-hover>Sensors</a>
+      <a href="#cta" data-hover>Contact</a>
+    </div>
+    <a class="nav-survey" href="/survey" data-hover>Survey</a>
+    <a class="nav-contact" href="#cta" data-hover>Contact</a>
+    <button id="themeToggle" aria-label="Toggle light and dark mode" data-hover></button>
+  </div>
+</nav>
+
+<main>
+<!-- ================= HERO ================= -->
+<section id="hero" data-sec="HERO">
+  <canvas id="heroDots" aria-hidden="true"></canvas>
+  <h1 class="hero-statement">
+    <span class="row"><span>We engineer</span></span>
+    <span class="row"><span>intelligence for</span></span>
+    <span class="row"><span>the physical world.</span></span>
+  </h1>
+  <p class="hero-sub">Sensing, control and decision systems for environments that can't afford to fail.</p>
+  <div class="hero-scroll"></div>
 </section>
 
-<section data-section="1" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(249,115,22,.2);color:rgba(249,115,22,.8)"><span class="w-2 h-2 rounded-full bg-orange-500"></span>01 — Climate</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Climate Optimization for<br>Formulation & Storage</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Temperature or humidity fluctuations can affect viscosity, stability, and product quality. SURDS deploys thermal and humidity sensing to dynamically optimize HVAC.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Thermal & humidity sensing across formulation bays and storage</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Dynamic HVAC optimization based on live occupancy and heat load</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-orange-400"></i>Reduced cooling waste while maintaining process-critical stability</div></div></div></div></section>
+<!-- ================= STATEMENT ================= -->
+<section id="statement" data-sec="COMPANY">
+  <div class="reveal st-grid">
+    <div class="st-copy">
+      <p class="eyebrow" data-scramble>THE COMPANY</p>
+      <h2>Your infrastructure is<br><em>already talking.</em></h2>
+      <p>Every floor, line and duct throws off signal long before anything goes wrong. Most of it dies where it was made, because the intelligence lives in a cloud far from the room. SURDS puts it on site &mdash; sensing, deciding and acting in the same place, at the speed the physical world actually moves.</p>
+      <p class="vision">The world drifts.<br>We hold it on target.</p>
+    </div>
+  </div>
+</section>
 
-<section data-section="2" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(59,130,246,.2);color:rgba(59,130,246,.8)"><span class="w-2 h-2 rounded-full bg-blue-500"></span>02 — Utility</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Utility Intelligence for<br>High-Energy Infrastructure</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Chillers, compressors, ventilation systems, and pumps run continuously. SURDS layers real-time current sensing to identify idle-load and peak-demand spikes.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Real-time current sensing across all utility equipment</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Identify idle-load consumption and inefficient runtime cycles</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400"></i>Peak-demand spike detection and plant-wide optimization</div></div></div></div></section>
-
-<section data-section="3" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(168,85,247,.2);color:rgba(168,85,247,.8)"><span class="w-2 h-2 rounded-full bg-purple-500"></span>03 — Predictive</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Predictive Monitoring for<br>Critical Rotating Equipment</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Failure of agitators, compressors, or circulation pumps can interrupt batch schedules. SURDS monitors vibration signatures and thermal behavior to detect early wear.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Continuous vibration signature analysis</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Thermal behavior and machine-load pattern tracking</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-purple-400"></i>Early intervention before breakdowns impact production</div></div></div></div></section>
-
-<section data-section="4" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(239,68,68,.2);color:rgba(239,68,68,.8)"><span class="w-2 h-2 rounded-full bg-red-500"></span>04 — Safety</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">Safety & Hazard Detection<br>in Chemical Operations</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Localized overheating, solvent vapor accumulation, and ventilation inefficiencies pose real risks around mixing, packaging, and storage zones.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Real-time thermal hotspot identification</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Air-quality monitoring for vapor and gas detection</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-400"></i>Strengthened compliance readiness and worker safety</div></div></div></div></section>
-
-<section data-section="5" class="min-h-screen relative flex items-center"><div class="sec-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-lg"><div class="reveal"><div class="badge mb-5" style="border-color:rgba(34,197,94,.2);color:rgba(34,197,94,.8)"><span class="w-2 h-2 rounded-full bg-green-500"></span>05 — ESG</div><h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-4"><span class="gradient-text">ESG & Carbon Visibility<br>Across Operations</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Live dashboards with zone-wise energy usage, HVAC efficiency, and carbon savings — enabling stronger ESG reporting and carbon-credit opportunities.</p><div class="space-y-3"><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Live zone-wise energy and emissions dashboard</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Decarbonization planning with measurable data</div><div class="bullet"><i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>Unlock carbon-credit opportunities through verified data</div></div></div></div></section>
-
-<section data-section="6" class="min-h-screen relative flex items-center"><div class="full-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-xl mx-auto text-center"><div class="reveal"><div class="badge mb-6 mx-auto w-fit"><i data-lucide="building-2" class="w-3 h-3 text-brand"></i>About SURDS</div><h2 class="text-2xl md:text-3xl font-semibold tracking-tight mb-5"><span class="gradient-text">We Make Industrial Climate Systems Smarter</span></h2><p class="text-sm text-gray-400 font-light leading-relaxed mb-6">Our team combines deep expertise in HVAC engineering, IoT systems, and industrial process monitoring across chemical manufacturing, pharmaceutical production, and data centers.</p><div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-lg mx-auto"><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text-brand">40%</p><p class="text-[10px] text-gray-500 mt-1">Energy Reduction</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text">500+</p><p class="text-[10px] text-gray-500 mt-1">Sensors</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text-brand">99.7%</p><p class="text-[10px] text-gray-500 mt-1">Uptime</p></div><div class="bg-white/[.03] border border-white/[.06] rounded-xl p-4 text-center"><p class="text-2xl font-semibold gradient-text">24/7</p><p class="text-[10px] text-gray-500 mt-1">Monitoring</p></div></div></div></div></section>
-
-<section data-section="7" class="relative py-24 md:py-32 min-h-screen flex items-center" id="sec-contact"><div class="full-backdrop"></div><div class="relative z-10 px-6 md:px-16 lg:px-24 max-w-md mx-auto w-full"><div class="reveal"><div class="text-center mb-8"><div class="badge mb-5 mx-auto w-fit"><i data-lucide="mail" class="w-3 h-3 text-brand"></i>Contact</div><h2 class="text-2xl md:text-3xl font-semibold tracking-tight gradient-text mb-3">Ready to Optimize Your Facility?</h2><p class="text-sm text-gray-500 font-light">Schedule a free site assessment.</p></div><form id="contact-form" class="space-y-4" onsubmit="handleSubmit(event)"><input type="hidden" name="access_key" value="1293e495-bc7c-4f7a-a6b2-d31d69fbed42"><input type="hidden" name="subject" value="New lead from SURDS site — Get a Quote"><div class="grid grid-cols-2 gap-3"><input type="text" name="name" required placeholder="Name" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"><input type="text" name="company" required placeholder="Company" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"></div><input type="email" name="email" required placeholder="Email" class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all"><select name="industry" required class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-400 focus:outline-none focus:border-brand/50 transition-all appearance-none"><option value="" disabled selected>Industry</option><option>Chemical</option><option>Pharmaceutical</option><option>Semiconductor</option><option>Automotive</option><option>Food & Beverage</option><option>Data Center</option></select><textarea name="message" rows="3" required placeholder="Tell us about your facility..." class="w-full bg-white/[.05] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand/50 transition-all resize-none"></textarea><button type="submit" id="submit-btn" class="w-full bg-brand hover:bg-brand-hover text-white font-medium rounded-xl py-3.5 transition-all duration-300 hover:shadow-[0_0_30px_-5px_rgba(255,0,110,0.5)] flex items-center justify-center gap-2 text-sm"><span>Request Free Assessment</span><i data-lucide="send" class="w-4 h-4"></i></button></form><p class="text-[10px] text-gray-600 text-center mt-4">info@surdstech.com · India — Pan-India Operations</p></div></div></section>
-
-<footer class="relative z-10 border-t border-white/5 py-8 text-center"><p class="text-xs text-gray-600">© 2025 SURDS Tech Solutions. All rights reserved.</p></footer>
+<!-- ================= INDUSTRIES ================= -->
+<div id="industriesWrap" data-sec="INDUSTRIES">
+  <div id="industriesSticky">
+    <div id="spot"></div>
+    <p class="eyebrow ind-head" data-scramble>INDUSTRIES</p>
+    <div id="ghosts"></div>
+    <div id="slides"></div>
+    <div class="ind-name"><div class="nm" id="indName"></div><div class="next" id="indNext"></div></div>
+    <div class="ind-rail" id="indRail"></div>
+  </div>
+  <div id="indSpacer"></div>
 </div>
 
+<!-- ================= LIVE FACILITY ================= -->
+<div id="facilityWrap" data-sec="FACILITY">
+ <div id="facilitySticky">
+  <div class="reveal fac-grid">
+    <div class="fac-copy">
+     <div class="fac-panel">
+      <div class="fac-panel-head">
+        <span class="fac-live"><i></i>LIVE FACILITY</span>
+        <span class="fac-clock" id="facClock">--:--:--</span>
+      </div>
+      <div class="fac-panel-body">
+      <h2>Every movement,<br><em>already a datapoint.</em></h2>
+      <p>We generate keypoints your infrastructure didn't even know it could generate. Pick a facility below, then open the card to watch it happen live.</p>
+      <div class="fac-stats">
+        <div class="fac-stat"><span class="fac-stat-k">Sites online</span><span class="fac-stat-v" id="facStatSites">&mdash;</span></div>
+        <div class="fac-stat"><span class="fac-stat-k">Channel</span><span class="fac-stat-v" id="facStatChannel">&mdash;</span></div>
+        <div class="fac-stat"><span class="fac-stat-k">Uptime</span><span class="fac-stat-v">99.98<small>%</small></span></div>
+      </div>
+      </div>
+      <div class="fac-panel-foot">
+      <span class="fac-foot-k">Select facility</span>
+      <div class="fac-tabs" id="facTabs">
+        <button type="button" class="layout-tab active" data-theme="retail" data-hover onclick="smoothSwitchLayout('retail', true)">Retail Facility</button>
+        <button type="button" class="layout-tab" data-theme="industrial" data-hover onclick="smoothSwitchLayout('industrial', true)">Steel Factory</button>
+        <button type="button" class="layout-tab" data-theme="chemical" data-hover onclick="smoothSwitchLayout('chemical', true)">Chemical Plant</button>
+        <button type="button" class="layout-tab" data-theme="pool" data-hover onclick="smoothSwitchLayout('pool', true)">MBKS Pool 3D</button>
+        <button type="button" class="layout-tab" data-theme="quarry" data-hover onclick="smoothSwitchLayout('quarry', true)">Sand Quarry 3D</button>
+        <button type="button" class="layout-tab" data-theme="livingroom" data-hover onclick="smoothSwitchLayout('livingroom', true)">Living Room 3D</button>
+      </div>
+      </div>
+     </div>
+    </div>
+    <div class="facViz-slot"></div>
+  </div>
+ </div>
+ <div id="facSpacer"></div>
+
+ <!-- dimmed backdrop + glowing base plate, synced to the card's geometry as it expands -->
+ <div id="facVizBackdrop"></div>
+ <div id="facVizBase"></div>
+
+ <!-- the real card: lives outside the grid so it can freely animate from the slot's
+      bounded box to a fullscreen funnel-expanded view, independent of scroll-driven layout -->
+ <div class="facViz" id="facVizReal">
+   <span class="k">LIVE · FACILITY SIM</span>
+   <button type="button" class="fac-close" id="facClose" aria-label="Close expanded view" data-hover>&times;</button>
+   <div id="facCanvasWrap">
+     <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+     <svg id="canvasDyn" xmlns="http://www.w3.org/2000/svg"></svg>
+       <div id="poolModelWrap" style="display:none;position:absolute;inset:0;width:100%;height:100%;background:#090b10;overflow:hidden;z-index:4;">
+         <div class="model-loader" style="position:absolute;inset:0;z-index:7;background:rgba(9,11,16,0.92);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.8rem;opacity:0;visibility:hidden;transition:opacity 0.4s ease, visibility 0.4s;pointer-events:none;">
+           <div style="width:36px;height:36px;border:2px solid rgba(255,255,255,0.15);border-top-color:#34D399;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+           <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;color:rgba(255,255,255,0.8);text-transform:uppercase;">STREAMING 3D TELEMETRY MESH...</div>
+         </div>
+         <model-viewer
+           id="poolViewer"
+           data-src="/models/swimming-pool.glb"
+           alt="MBKS Swimming Pool 3D Model Kuching Sarawak"
+           camera-controls
+           auto-rotate
+           rotation-per-second="8deg"
+           camera-orbit="45deg 65deg 120%"
+           field-of-view="30deg"
+           shadow-intensity="1.5"
+           exposure="1.2"
+           loading="eager"
+           reveal="auto"
+           style="width:100%;height:100%;background:transparent;">
+         </model-viewer>
+         <svg id="poolMeshOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;"></svg>
+         <!-- the traffic sim owns its own layer; sharing one SVG with the
+              mesh animation meant the two overwrote each other every frame -->
+         <svg id="poolCarsOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;"></svg>
+       </div>
+       <!-- Swimming Pool Metrics Panel -->
+       <div id="poolMetricsPanel" style="position:absolute;top:1rem;left:1rem;z-index:6;background:rgba(12,16,24,0.85);backdrop-filter:blur(12px);border:1px solid rgba(52,211,153,0.3);border-radius:12px;padding:0.9rem 1.1rem;color:#fbfbfd;max-width:240px;">
+         <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#34D399;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;">
+           <span style="width:6px;height:6px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;"></span>
+           MBKS POOL TELEMETRY
+         </div>
+         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.4rem;">
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">WATER TEMP</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#60A5FA;">28.4 °C</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">PH LEVEL</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#34D399;">7.38</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">PUMP FLOW</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#FBBF24;">420 L/m</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">TURBIDITY</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#A78BFA;">0.4 NTU</div>
+           </div>
+         </div>
+       </div>
+
+       <!-- Swimming Pool Issues / Alerts Popups -->
+       <div class="pool-issue-popup" style="position:absolute;top:22%;right:8%;z-index:6;background:rgba(242,92,84,0.15);backdrop-filter:blur(10px);border:1px solid rgba(242,92,84,0.6);border-radius:10px;padding:0.7rem 0.9rem;max-width:210px;color:#fff;box-shadow:0 0 16px rgba(242,92,84,0.25);">
+         <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;color:#FCA5A5;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:0.3rem;">
+           <span style="width:6px;height:6px;border-radius:50%;background:#EF4444;animation:dotBlink 1.1s ease-in-out infinite;"></span>
+           ALERT · PUMP #2 CAVITATION
+         </div>
+         <div style="font-size:0.68rem;margin-top:0.3rem;line-height:1.4;color:rgba(255,255,255,0.85);">
+           Vibration anomaly detected (142 Hz). Automated flow bypass rerouted via Node #04.
+         </div>
+       </div>
+
+       <div class="pool-issue-popup" style="position:absolute;bottom:18%;left:24%;z-index:6;background:rgba(245,158,11,0.15);backdrop-filter:blur(10px);border:1px solid rgba(245,158,11,0.6);border-radius:10px;padding:0.7rem 0.9rem;max-width:210px;color:#fff;box-shadow:0 0 16px rgba(245,158,11,0.2);">
+         <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;color:#FDE68A;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:0.3rem;">
+           <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;"></span>
+           NOTICE · SOLAR HEATING BOOST
+         </div>
+         <div style="font-size:0.68rem;margin-top:0.3rem;line-height:1.4;color:rgba(255,255,255,0.85);">
+           Solar thermal collector efficiency at 91%. Maintaining target pool temp +0.8°C.
+         </div>
+       </div>
+
+       <!-- Robotic Arm Model -->
+      <!-- Quarry Model -->
+      <div id="quarryModelWrap" style="display:none;position:absolute;inset:0;width:100%;height:100%;background:#090b10;overflow:hidden;z-index:4;">
+        <div class="model-loader" style="position:absolute;inset:0;z-index:7;background:rgba(9,11,16,0.92);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.8rem;opacity:0;visibility:hidden;transition:opacity 0.4s ease, visibility 0.4s;pointer-events:none;">
+          <div style="width:36px;height:36px;border:2px solid rgba(255,255,255,0.15);border-top-color:#F59E0B;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+          <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;color:rgba(255,255,255,0.8);text-transform:uppercase;">STREAMING 3D TELEMETRY MESH...</div>
+        </div>
+        <model-viewer
+          id="quarryViewer"
+          data-src="/models/quarry-sand.glb"
+          alt="Gippsland Sand Quarry 3D Terrain Model"
+          camera-controls
+          auto-rotate
+          rotation-per-second="6deg"
+          camera-orbit="-45deg 75deg 130%"
+          field-of-view="32deg"
+          shadow-intensity="1.4"
+          exposure="1.2"
+          loading="eager"
+          reveal="auto"
+          style="width:100%;height:100%;background:transparent;">
+        </model-viewer>
+        <svg id="quarryMeshOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;"></svg>
+
+        <div id="quarryMetricsPanel" style="position:absolute;top:1rem;left:1rem;z-index:6;background:rgba(12,16,24,0.85);backdrop-filter:blur(12px);border:1px solid rgba(245,158,11,0.4);border-radius:12px;padding:0.9rem 1.1rem;color:#fbfbfd;max-width:250px;">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#FBBF24;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;box-shadow:0 0 8px #F59E0B;"></span>
+            GIPPSLAND QUARRY TELEMETRY
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.4rem;">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">EXTRACTION RATE</div>
+              <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#F59E0B;">185 T/h</div>
+            </div>
+            <div>
+              <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">MOISTURE RATIO</div>
+              <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#38BDF8;">4.2 %</div>
+            </div>
+            <div>
+              <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">DUST PM10</div>
+              <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#34D399;">12 µg/m³</div>
+            </div>
+            <div>
+              <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">PIT STABILITY</div>
+              <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#A855F7;">99.8 %</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quarry-issue-popup" style="position:absolute;bottom:16%;right:10%;z-index:6;background:rgba(245,158,11,0.15);backdrop-filter:blur(10px);border:1px solid rgba(245,158,11,0.6);border-radius:10px;padding:0.7rem 0.9rem;max-width:220px;color:#fff;box-shadow:0 0 16px rgba(245,158,11,0.25);">
+          <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;color:#FDE68A;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:0.3rem;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;animation:dotBlink 1.1s ease-in-out infinite;"></span>
+            SLOPE SENSOR · REAL-TIME VOLUMETRICS
+          </div>
+          <div style="font-size:0.68rem;margin-top:0.3rem;line-height:1.4;color:rgba(255,255,255,0.85);">
+            LiDAR terrain mesh stream active. Automated pit excavation volume updated +420 m³.
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Living Room 3D Model -->
+      <div id="livingroomModelWrap" style="display:none;position:absolute;inset:0;width:100%;height:100%;background:#090b10;overflow:hidden;z-index:4;">
+        <div class="model-loader" style="position:absolute;inset:0;z-index:7;background:rgba(9,11,16,0.92);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.8rem;opacity:0;visibility:hidden;transition:opacity 0.4s ease, visibility 0.4s;pointer-events:none;">
+          <div style="width:36px;height:36px;border:2px solid rgba(255,255,255,0.15);border-top-color:#F59E0B;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+          <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.18em;color:rgba(255,255,255,0.8);text-transform:uppercase;">STREAMING 3D TELEMETRY MESH...</div>
+        </div>
+        <model-viewer
+          id="livingroomViewer"
+          data-src="/living_room_interior_free.glb"
+          alt="Smart Living Room Interior 3D Model"
+          camera-controls
+          auto-rotate
+          rotation-per-second="8deg"
+          camera-orbit="40deg 68deg 120%"
+          field-of-view="30deg"
+          shadow-intensity="1.5"
+          exposure="1.2"
+          loading="eager"
+          reveal="auto"
+          style="width:100%;height:100%;background:transparent;">
+        </model-viewer>
+       <svg id="livingroomMeshOverlay" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;"></svg>
+
+       <div id="livingroomMetricsPanel" style="position:absolute;top:1rem;left:1rem;z-index:6;background:rgba(12,16,24,0.85);backdrop-filter:blur(12px);border:1px solid rgba(245,158,11,0.4);border-radius:12px;padding:0.9rem 1.1rem;color:#fbfbfd;max-width:250px;">
+         <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:#FBBF24;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem;">
+           <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;box-shadow:0 0 8px #F59E0B;"></span>
+           SMART HOME TELEMETRY
+         </div>
+         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:0.4rem;">
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">COMFORT INDEX</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#FBBF24;">96 %</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">SETPOINT</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#38BDF8;">22.5 °C</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">AIR PURIFIER</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#34D399;">120 CADR</div>
+           </div>
+           <div>
+             <div style="font-family:var(--mono);font-size:0.5rem;color:rgba(255,255,255,0.5);">POWER DRAW</div>
+             <div style="font-size:1.1rem;font-weight:600;font-family:var(--display);color:#C084FC;">340 W</div>
+           </div>
+         </div>
+       </div>
+
+       <div class="livingroom-issue-popup" style="position:absolute;bottom:16%;right:10%;z-index:6;background:rgba(245,158,11,0.15);backdrop-filter:blur(10px);border:1px solid rgba(245,158,11,0.6);border-radius:10px;padding:0.7rem 0.9rem;max-width:220px;color:#fff;box-shadow:0 0 16px rgba(245,158,11,0.25);">
+         <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;color:#FDE68A;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:0.3rem;">
+           <span style="width:6px;height:6px;border-radius:50%;background:#F59E0B;animation:dotBlink 1.1s ease-in-out infinite;"></span>
+           SMART ECO LOOP · ACTIVE
+         </div>
+         <div style="font-size:0.68rem;margin-top:0.3rem;line-height:1.4;color:rgba(255,255,255,0.85);">
+           Radiant cooling loop active. Energy consumption reduced by 18% while maintaining comfort index.
+         </div>
+       </div>
+     </div>
+   </div>
+   <button type="button" class="fac-see-more" id="facSeeMore" data-hover>
+     See More
+     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+   </button>
+
+   <div class="facPanel" id="facHeatmap">
+     <div class="fp-head"><i data-lucide="flame" class="w-3 h-3"></i> Movement Heatmap</div>
+     <svg viewBox="0 0 220 120" class="fp-heatmap" role="img" aria-label="Top-down heatmap of the retail floor showing high foot traffic near checkout, medium near produce, and lower traffic near dairy and the entrance">
+       <defs>
+         <radialGradient id="facHeatHigh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"/><stop offset="100%" stop-color="#ef4444" stop-opacity="0"/></radialGradient>
+         <radialGradient id="facHeatMed" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f97316" stop-opacity="0.7"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></radialGradient>
+         <radialGradient id="facHeatLow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#eab308" stop-opacity="0.55"/><stop offset="100%" stop-color="#eab308" stop-opacity="0"/></radialGradient>
+       </defs>
+       <rect x="3" y="3" width="214" height="114" rx="8" fill="none" stroke="#fff" stroke-opacity="0.12"/>
+       <ellipse cx="70" cy="88" rx="42" ry="24" fill="url(#facHeatHigh)"/>
+       <ellipse cx="152" cy="28" rx="34" ry="20" fill="url(#facHeatMed)"/>
+       <ellipse cx="30" cy="28" rx="24" ry="17" fill="url(#facHeatLow)"/>
+       <ellipse cx="182" cy="88" rx="22" ry="16" fill="url(#facHeatLow)"/>
+       <text x="70" y="91" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" fill="#fff" opacity="0.9">CHECKOUT</text>
+       <text x="152" y="32" text-anchor="middle" font-size="7" font-family="JetBrains Mono,monospace" fill="#fff" opacity="0.8">PRODUCE</text>
+       <text x="30" y="32" text-anchor="middle" font-size="6.5" font-family="JetBrains Mono,monospace" fill="#fff" opacity="0.65">DAIRY</text>
+       <text x="182" y="91" text-anchor="middle" font-size="6.5" font-family="JetBrains Mono,monospace" fill="#fff" opacity="0.65">ENTRANCE</text>
+     </svg>
+     <div class="fp-legend"><span><i class="fp-dot" style="background:#ef4444"></i>High</span><span><i class="fp-dot" style="background:#f97316"></i>Med</span><span><i class="fp-dot" style="background:#eab308"></i>Low</span></div>
+     <p class="fp-insight">68% of foot traffic concentrates near checkout during peak hours.</p>
+   </div>
+
+   <div class="facPanel" id="facProcess">
+     <div class="fp-head"><i data-lucide="timer" class="w-3 h-3"></i> Process Cycle Analysis</div>
+     <div class="fp-bars">
+       <div class="fp-bar-row"><span class="fp-bar-label">Reactor · Cook</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:65%;background:#3b82f6"></div></div><span class="fp-bar-val">42m</span></div>
+       <div class="fp-bar-row"><span class="fp-bar-label">Vat Mixer · Blend</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:100%;background:#ef4444"></div></div><span class="fp-bar-val">65m</span></div>
+       <div class="fp-bar-row"><span class="fp-bar-label">Cool Tower</span><div class="fp-bar-track"><div class="fp-bar-fill" style="width:43%;background:#22c55e"></div></div><span class="fp-bar-val">28m</span></div>
+     </div>
+     <p class="fp-insight"><b>Bottleneck:</b> the Vat Mixer blend cycle — stagger batch starts to cut total cycle time ~18%.</p>
+   </div>
+
+   <!-- Phase C: Live Movement Intelligence — revealed once the card has opened. Driven by the
+        scene's own live walker simulation (dwell tracked in JS below), not scripted content:
+        the ring/trail track whichever piece the walker is actually near right now, and the two
+        flags lock onto whichever pieces really have the highest / lowest accumulated dwell time. -->
+   <svg class="fac-move-overlay" id="facMoveOverlay" xmlns="http://www.w3.org/2000/svg"></svg>
+   <!-- scroll-driven analytics deck; cards built by shared/fac-deck.js -->
+   <div id="facDeck"></div>
+ </div>
+</div>
+
+<!-- ================= NETWORK ================= -->
+<section id="network" data-sec="NETWORK">
+  <div class="reveal net-grid">
+    <div class="net-copy">
+      <p class="eyebrow" data-scramble>THE NETWORK</p>
+      <h2>A network that heals itself.</h2>
+      <p>Every SURDS sensor joins an intelligent mesh. Nodes find each other, route around failures and keep reporting. No single point of failure. No silent gaps.</p>
+      <div class="net-tags">
+        <span>Self-forming</span><span>Self-healing</span><span>Edge-native</span>
+      </div>
+      <p class="net-hint" id="netHint">Move your cursor into the mesh. Break a node. Watch it route around you.</p>
+    </div>
+    <div class="meshBox">
+      <span class="k">LIVE · MESH SIM</span>
+      <canvas id="mesh"></canvas>
+      <p class="mesh-status">NODES <b id="meshNodes">42</b> · LINKS <b id="meshLinks">000</b> · <span id="meshMsg">ALL PATHS NOMINAL</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SENSORS ================= -->
+<section id="sensors" data-sec="SENSORS">
+  <div class="reveal">
+    <p class="eyebrow" data-scramble>HARDWARE</p>
+    <h2>Built to see what you can't.</h2>
+    <p>Five sensor classes, one mesh. Every reading is timestamped, geo-tagged to its zone and streamed straight into the same engine you just watched think.</p>
+    <div class="sensor-grid">
+      <div class="sensor-card">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0Z"/></svg>
+        <h4>Thermal</h4>
+        <p class="spec">±0.1°C · −40 to 125°C</p>
+        <div class="tags"><span>IP67</span><span>Mesh</span><span>5yr battery</span></div>
+      </div>
+      <div class="sensor-card">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2.69s-5.5 6.16-5.5 10.31a5.5 5.5 0 0 0 11 0C17.5 8.85 12 2.69 12 2.69Z"/></svg>
+        <h4>Humidity</h4>
+        <p class="spec">±2% RH · 0–100% RH</p>
+        <div class="tags"><span>IP67</span><span>Mesh</span></div>
+      </div>
+      <div class="sensor-card">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12h3l2-7 4 14 3-10 2 3h6"/></svg>
+        <h4>Vibration</h4>
+        <p class="spec">0.5–2000 Hz · 3-axis</p>
+        <div class="tags"><span>Magnetic mount</span><span>Mesh</span></div>
+      </div>
+      <div class="sensor-card">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>
+        <h4>Current / Power</h4>
+        <p class="spec">Non-invasive CT · ±1% accuracy</p>
+        <div class="tags"><span>Clamp-on</span><span>Mesh</span></div>
+      </div>
+      <div class="sensor-card">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <h4>Air Quality</h4>
+        <p class="spec">CO₂ · VOC · PM2.5</p>
+        <div class="tags"><span>IP54</span><span>Mesh</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROOF ================= -->
+<section id="proof" data-sec="PROOF">
+  <div class="reveal">
+    <p class="eyebrow" data-scramble>PROVEN IN THE FIELD</p>
+    <div class="proof-row">
+      <div>
+        <span class="p-k">Incubation</span>
+        <p>IIT Kharagpur</p>
+        <p class="p-sub">Incubated and built within India's oldest IIT.</p>
+      </div>
+      <div>
+        <span class="p-k">Data centers</span>
+        <p>PARAM Shakti</p>
+        <p class="p-sub">Supercomputing facility, IIT Kharagpur.</p>
+      </div>
+      <div>
+        <span class="p-k">Clean rooms</span>
+        <p>Electronics Dept. Clean Room</p>
+        <p class="p-sub">IIT Kharagpur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section id="cta" data-sec="ENGAGE">
+  <div class="cta-inner reveal">
+    <p class="eyebrow" data-scramble>ENGAGE</p>
+    <h2>Bring intelligence<br>to your facility.</h2>
+    <p class="cta-sub">A scoped pilot on your site first. Production second. Tell us what failure costs you.</p>
+    <!-- Posts to Web3Forms. action/method are real, so the form still works
+         with JS disabled; the script below intercepts it to submit in place. -->
+    <form class="cta-form" id="ctaForm" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="1293e495-bc7c-4f7a-a6b2-d31d69fbed42">
+      <input type="hidden" name="subject" value="New enquiry from surds.co.in">
+      <input type="hidden" name="from_name" value="SURDS Tech Solutions">
+      <!-- honeypot: bots fill it, people never see it -->
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
+      <div class="cta-grid">
+        <label class="fld"><span>Name</span>
+          <input type="text" name="name" required autocomplete="name" placeholder="Your name"></label>
+        <label class="fld"><span>Email</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="you@company.com"></label>
+      </div>
+      <label class="fld"><span>What does failure cost you?</span>
+        <textarea name="message" required rows="4" placeholder="The site, the process, and what going down actually costs."></textarea></label>
+      <div class="cta-actions">
+        <button class="btn-primary" id="magnetBtn" type="submit" data-hover>Schedule a consultation <span>→</span></button>
+        <a class="btn-secondary" href="mailto:automate@surds.co.in" data-hover>automate@surds.co.in</a>
+      </div>
+      <p class="cta-status" id="ctaStatus" role="status" aria-live="polite"></p>
+    </form>
+    <div class="cta-meta">
+      <span>Response in 2 business days</span>
+      <span>NDA on request</span>
+      <span>Pilot-first engagement</span>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <div class="fl">SURDS</div>
+      <p>Intelligence for environments that can't afford to fail.</p>
+    </div>
+    <div class="foot-cols">
+      <div>
+        <h5>Company</h5>
+        <a href="#statement" data-hover>About</a>
+        <a href="#facility" data-hover>Live Facility</a>
+        <a href="#industriesWrap" data-hover>Industries</a>
+        <a href="#network" data-hover>Network</a>
+        <a href="#sensors" data-hover>Sensors</a>
+        <a href="#cta" data-hover>Contact</a>
+      </div>
+      <div>
+        <h5>Industries</h5>
+        <a href="#industriesWrap" data-hover>Buildings &amp; HVAC</a>
+        <a href="#industriesWrap" data-hover>Data Centers</a>
+        <a href="#industriesWrap" data-hover>Clean Rooms</a>
+        <a href="#industriesWrap" data-hover>Drones</a>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <a href="#" data-hover>Privacy Policy</a>
+        <a href="#" data-hover>Terms of Service</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-legal">
+    <span>© 2026 SURDS Tech Solutions. All rights reserved.</span>
+    <button id="replay" data-hover>Replay intro</button>
+  </div>
+</footer>
+
 <script>
-lucide.createIcons();
+(function(){
+  "use strict";
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = matchMedia("(pointer:fine)").matches;
+  const root = document.documentElement;
+
+  /* debug: ?debug in the URL (or localStorage.surds-debug=1) skips the ~6.5s
+     loader animation entirely so you land straight on the ready page while iterating */
+  const DEBUG = /(?:^|[?&])debug(?:=1)?(?:&|$)/.test(location.search) || localStorage.getItem("surds-debug") === "1";
+  if (DEBUG) console.log("[surds debug] loader skipped — add ?debug to the URL or localStorage.setItem('surds-debug','1')");
+
+  if (!DEBUG) document.body.classList.add("loading");
+
+  document.getElementById("themeToggle").addEventListener("click", ()=>{
+    root.setAttribute("data-theme", root.getAttribute("data-theme")==="light" ? "dark" : "light");
+  });
+
+  const SQRT2 = "1.4142135623730950488016887242096980785696718753769480731766797379907324784621";
+
+  /* ============ scramble decode ============ */
+  const GLYPHS = "0123456789√∆≠±≈/<>[]#";
+  function scramble(el, finalText, dur){
+    if (reduced){ el.textContent = finalText; return; }
+    dur = dur || 800;
+    const start = performance.now();
+    (function tick(now){
+      const p = Math.min((now-start)/dur, 1);
+      const solid = Math.floor(p * finalText.length);
+      let out = finalText.slice(0, solid);
+      for (let i=solid;i<finalText.length;i++){
+        out += finalText[i]===" " ? " " : GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      }
+      el.textContent = out;
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+  }
+
+  /* ============ LOADER: √2 unfolds into SURDS ============ */
+  const loader = document.getElementById("loader");
+  const ldWrap = document.getElementById("ldWrap");
+  const streamInner = document.getElementById("streamInner");
+  const streamBox = document.getElementById("stream");
+  const slotEls = [...document.querySelectorAll("#slots b")];
+  const WORD = "SURDS";
+  let ldTimers = [], ldRafs = [], finished = false;
+  const at = (ms,fn)=>ldTimers.push(setTimeout(fn,ms));
+
+  function runLoader(){
+    if (reduced){
+      ldWrap.classList.add("draw","final","radOut","slots","condense");
+      slotEls.forEach((b,i)=>{ b.textContent = WORD[i]; b.classList.add("set"); });
+      setTimeout(finishLoader, 900);
+      return;
+    }
+    at(120,  ()=> ldWrap.classList.add("draw"));
+    at(1000, ()=> ldWrap.classList.add("showTwo"));
+    at(1850, ()=>{
+      ldWrap.classList.add("streaming");
+      const t0 = performance.now(), STREAM_MS = 1800;
+      let idx = 0;
+      (function feed(now){
+        if (finished) return;
+        const p = Math.min((now-t0)/STREAM_MS, 1);
+        const targetLen = Math.floor(2 + Math.pow(p,1.6)*(SQRT2.length-2));
+        while (idx < targetLen){ streamInner.textContent += SQRT2[idx]; idx++; }
+        const over = streamInner.scrollWidth - streamBox.clientWidth;
+        streamInner.style.transform = over > 0 ? `translateX(${-over}px)` : "none";
+        if (p < 1) ldRafs.push(requestAnimationFrame(feed));
+      })(t0);
+    });
+    at(3850, ()=>{
+      ldWrap.classList.add("condense","slots");
+      slotEls.forEach((b,i)=>{
+        const iv = setInterval(()=>{ b.textContent = SQRT2[2+Math.floor(Math.random()*(SQRT2.length-2))]; }, 34);
+        ldTimers.push(iv);
+        at(500 + i*130, ()=>{ clearInterval(iv); b.textContent = WORD[i]; b.classList.add("set"); });
+      });
+    });
+    at(5400, ()=> ldWrap.classList.add("radOut"));
+    at(5550, ()=>{
+      /* FLIP: measure, flip layout, invert, release. One continuous motion. */
+      const slotsEl = document.getElementById("slots");
+      const first = slotsEl.getBoundingClientRect();
+      ldWrap.classList.add("final");
+      const last = slotsEl.getBoundingClientRect();
+      slotsEl.style.transformOrigin = "top left";
+      slotsEl.style.transition = "none";
+      slotsEl.style.transform =
+        `translate(${first.left-last.left}px, ${first.top-last.top}px)`+
+        ` scale(${first.width/last.width}, ${first.height/last.height})`;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        slotsEl.style.transition = "transform 1s cubic-bezier(0.22,0.8,0.24,1)";
+        slotsEl.style.transform = "none";
+      }));
+    });
+    at(6650, finishLoader);
+  }
+  function finishLoader(){
+    if (finished) return;
+    finished = true;
+    ldTimers.forEach(t=>{ clearTimeout(t); clearInterval(t); });
+    ldRafs.forEach(r=>cancelAnimationFrame(r));
+    ldWrap.classList.add("draw","condense","slots","radOut","final");
+    slotEls.forEach((b,i)=>{ b.textContent = WORD[i]; b.classList.add("set"); });
+    setTimeout(()=>{
+      loader.classList.add("done");
+      document.body.classList.remove("loading");
+      document.body.classList.add("ready");
+      setTimeout(()=>{ loader.style.display = "none"; }, 1000);
+    }, 250);
+  }
+  document.getElementById("skipIntro").addEventListener("click", finishLoader);
+  window.addEventListener("click", function(e){
+    if (!finished && e.target.id !== "skipIntro") finishLoader();
+  });
+  window.addEventListener("keydown", function(e){
+    if (!finished) finishLoader();
+  });
+  document.getElementById("replay").addEventListener("click", ()=>{ scrollTo(0,0); location.reload(); });
+  if (DEBUG){
+    loader.style.display = "none";
+    document.body.classList.add("ready");
+  } else {
+    runLoader();
+  }
+
+  /* ============ hero particle grid ============ */
+  (function heroDots(){
+    const cv = document.getElementById("heroDots");
+    const hero = document.getElementById("hero");
+    const ctx = cv.getContext("2d");
+    let W,H,dots=[],px=-9999,py=-9999,running=false;
+    const GAP = 34, R = 130, PUSH = 14;
+    function build(){
+      W = cv.width = hero.clientWidth * devicePixelRatio;
+      H = cv.height = hero.clientHeight * devicePixelRatio;
+      cv.style.width = hero.clientWidth+"px";
+      cv.style.height = hero.clientHeight+"px";
+      dots = [];
+      const g = GAP*devicePixelRatio;
+      for (let x=g/2;x<W;x+=g) for (let y=g/2;y<H;y+=g) dots.push({x,y,ox:x,oy:y});
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      const rgb = getComputedStyle(root).getPropertyValue("--dot").trim();
+      const r = R*devicePixelRatio, push = PUSH*devicePixelRatio;
+      let alive = false;
+      for (const d of dots){
+        const dx = d.ox-px, dy = d.oy-py;
+        const dist = Math.hypot(dx,dy);
+        let tx = d.ox, ty = d.oy, a = 0.14;
+        if (dist < r){
+          const f = (1-dist/r);
+          tx = d.ox + (dx/(dist||1))*f*push;
+          ty = d.oy + (dy/(dist||1))*f*push;
+          a = 0.14 + f*0.5;
+        }
+        d.x += (tx-d.x)*0.14; d.y += (ty-d.y)*0.14;
+        if (Math.abs(d.x-tx)>0.1||Math.abs(d.y-ty)>0.1) alive = true;
+        ctx.fillStyle = `rgba(${rgb},${a})`;
+        ctx.fillRect(d.x-0.75*devicePixelRatio, d.y-0.75*devicePixelRatio, 1.5*devicePixelRatio, 1.5*devicePixelRatio);
+      }
+      if (alive || px > -999) requestAnimationFrame(draw);
+      else running = false;
+    }
+    function wake(){ if (!running){ running = true; requestAnimationFrame(draw); } }
+    build(); wake();
+    addEventListener("resize", ()=>{ build(); wake(); });
+    if (finePointer && !reduced){
+      hero.addEventListener("mousemove", e=>{
+        const rct = hero.getBoundingClientRect();
+        px = (e.clientX-rct.left)*devicePixelRatio;
+        py = (e.clientY-rct.top)*devicePixelRatio;
+        wake();
+      });
+      hero.addEventListener("mouseleave", ()=>{ px = -9999; py = -9999; wake(); });
+    }
+    document.getElementById("themeToggle").addEventListener("click", wake);
+  })();
+
+  /* ============ INTRO BACKDROP + BURN TRANSITION ============ */
+  (function introBurn(){
+    const backdrop = document.getElementById("introBackdrop");
+    const glow1 = document.getElementById("burnGlow1");
+    const glow2 = document.getElementById("burnGlow2");
+    const hero = document.getElementById("hero");
+    const statement = document.getElementById("statement");
+    const heading = statement ? statement.querySelector("h2") : null;
+    const facility = document.getElementById("facilityWrap");
+    const themeToggleBtn = document.getElementById("themeToggle");
+    if (!backdrop || !hero || !statement || !heading || !facility) return;
+
+    const OP = { dark:[0.05,1], light:[0.09,1] };
+
+    if (reduced){
+      backdrop.style.visibility = "visible";
+      const setStatic = ()=>{ backdrop.style.opacity = OP[root.getAttribute("data-theme")==="dark" ? "dark" : "light"][0]; };
+      setStatic();
+      themeToggleBtn.addEventListener("click", setStatic);
+      return;
+    }
+
+    const RAMP_END = 0.82; /* backdrop fades back out from here to Facility */
+    const SHIFT_END = 0.35; /* rightward drift finishes well before the centre of the scroll */
+    let shown = false, ticking = false;
+
+    function bell(p, center, width){
+      const f = Math.max(0, 1 - Math.abs(p-center)/width);
+      return f*f;
+    }
+
+    function update(){
+      ticking = false;
+      const heroTop = hero.offsetTop, stmtTop = statement.offsetTop;
+      const total = (stmtTop + statement.offsetHeight) - heroTop;
+      const p = Math.min(Math.max((scrollY - heroTop)/total, 0), 1);
+
+      if (p <= 0 || p >= 1){
+        if (shown){ shown = false; backdrop.style.visibility = "hidden"; }
+      } else if (!shown){
+        shown = true; backdrop.style.visibility = "visible";
+      }
+
+      /* opacity reaches full by halfway to where the "Your infrastructure is
+         already talking" heading sits centred in the viewport — well before you
+         actually get there — then holds at full until it fades out for Facility. */
+      const headingDocY = heading.getBoundingClientRect().top + scrollY;
+      const headingCenterY = headingDocY + heading.offsetHeight/2 - innerHeight/2;
+      const opP = Math.min(Math.max(scrollY / (headingCenterY/2), 0), 1);
+      const [minOp, maxOp] = OP[root.getAttribute("data-theme")==="dark" ? "dark" : "light"];
+      const op = p <= RAMP_END
+        ? minOp + (maxOp-minOp) * opP
+        : maxOp * (1 - (p-RAMP_END)/(1-RAMP_END));
+      backdrop.style.opacity = op.toFixed(3);
+
+      /* linear from the very first pixel of scroll: the city drifts rightward,
+         finishing well before the centre of the scroll (SHIFT_END), well ahead of
+         where opacity finishes. No card to hand off to anymore — this is just the
+         backdrop's own entrance. */
+      const shiftP = Math.min(p / SHIFT_END, 1);
+      const shiftX = innerWidth * 0.16 * shiftP;
+      backdrop.style.transform = shiftX ? `translateX(${shiftX.toFixed(1)}px)` : "none";
+
+      const seam1P = Math.min(Math.max((stmtTop - heroTop)/total, 0), 1);
+      glow1.style.top = (stmtTop - scrollY) + "px";
+      glow1.style.opacity = (0.85 * bell(p, seam1P, 0.22)).toFixed(3);
+      glow2.style.top = (facility.offsetTop - scrollY) + "px";
+      glow2.style.opacity = (0.85 * bell(p, 0.97, 0.14)).toFixed(3);
+    }
+
+    function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(update); } }
+    addEventListener("scroll", onScroll, {passive:true});
+    addEventListener("resize", onScroll);
+    themeToggleBtn.addEventListener("click", onScroll);
+    update();
+  })();
+
+  /* ==================================================
+     INDUSTRIES: continuous 3D scroll flow (v4 system)
+  ================================================== */
+  const IND = [
+    { name:"Buildings & HVAC", c1:"#4D9BFF", c2:"#1D4ED8",
+      today:"HVAC runs on schedules, not reality. Most of the energy goes to empty rooms.",
+      todayCap:"Comfort by guesswork.",
+      withS:"Climate that senses occupancy and weather, then acts first.",
+      withCap:"Comfort by evidence.",
+      stat:"40%", statlbl:"of building energy is HVAC", link:"Explore Buildings" },
+    { name:"Data Centers", c1:"#9B7BFF", c2:"#5B21B6",
+      today:"Cooling is sized for the worst case. Hot spots surface after the alert.",
+      todayCap:"Uptime by margin.",
+      withS:"Rack-level thermal intelligence. Cooling that moves before heat does.",
+      withCap:"Uptime by design.",
+      stat:"~40%", statlbl:"of facility power is cooling", link:"Explore Data Centers" },
+    { name:"Clean Rooms", c1:"#2DD4BF", c2:"#0F766E",
+      today:"Contamination shows up at inspection, after the batch is at risk.",
+      todayCap:"Found too late.",
+      withS:"Excursions predicted before they happen. Compliance, continuously verified.",
+      withCap:"Prevented, not found.",
+      stat:"ISO 5-8", statlbl:"environments verified live", link:"Explore Clean Rooms" },
+    { name:"Drones", c1:"#22D3EE", c2:"#0E7490",
+      today:"Inspection means scaffolding, shutdowns and people at height.",
+      todayCap:"Slow, costly, risky.",
+      withS:"Autonomous aerial sensing. Assets inspected while they run.",
+      withCap:"Eyes anywhere, on demand.",
+      stat:"Zero", statlbl:"shutdown inspections", link:"Explore Drones" },
+    { name:"Manufacturing", c1:"#FBBF24", c2:"#B45309",
+      today:"Downtime announces itself. Defects surface at the end of the line.",
+      todayCap:"Measured after the fact.",
+      withS:"Machines that report their own condition. Losses become forecasts.",
+      withCap:"Known in advance.",
+      stat:"OEE", statlbl:"from the shop floor up", link:"Explore Manufacturing" },
+    { name:"Energy & Utilities", c1:"#34D399", c2:"#047857",
+      today:"Grid assets age silently. Inspected on rotation, not condition.",
+      todayCap:"The edge is a blind spot.",
+      withS:"Asset health at the edge. Infrastructure that acts on its own state.",
+      withCap:"The edge is the advantage.",
+      stat:"Edge", statlbl:"generation to storage", link:"Explore Energy" },
+    { name:"Healthcare & Labs", c1:"#FB7185", c2:"#BE123C",
+      today:"Critical spaces are checked on rounds. Between checks, nobody is watching.",
+      todayCap:"Compliance as a snapshot.",
+      withS:"Air, cold chain and environment verified around the clock.",
+      withCap:"Compliance as a state.",
+      stat:"24/7", statlbl:"verification, always on", link:"Explore Healthcare" }
+  ];
+  const N = IND.length;
+  const isMobile = ()=> innerWidth <= 900;
+
+  const slidesEl = document.getElementById("slides");
+  const ghostsEl = document.getElementById("ghosts");
+  const railEl = document.getElementById("indRail");
+  const spot = document.getElementById("spot");
+  const slides = [], ghosts = [];
+  IND.forEach((d,i)=>{
+    const g = document.createElement("div");
+    g.className = "ghost";
+    g.style.setProperty("--gc", d.c1);
+    g.textContent = d.name.split(" &")[0];
+    ghostsEl.appendChild(g); ghosts.push(g);
+
+    const s = document.createElement("div");
+    s.className = "ind-slide";
+    s.innerHTML = `
+      <div class="cards">
+        <div class="cardWrap" data-side="l">
+          <div class="card today">
+            <span class="k">The problem</span>
+            <h4>${d.today}</h4>
+            <div><div class="stat">${d.stat}</div><div class="statlbl">${d.statlbl}</div></div>
+          </div>
+          <p class="caption">${d.todayCap}</p>
+        </div>
+        <div class="cardWrap" data-side="r">
+          <div class="card with" style="--c1:${d.c1};--c2:${d.c2}">
+            <span class="k">With SURDS</span>
+            <h4>${d.withS}</h4>
+            <a class="pill" href="#cta" data-hover>${d.link} ↗</a>
+          </div>
+          <p class="caption">${d.withCap}</p>
+        </div>
+      </div>`;
+    slidesEl.appendChild(s); slides.push(s);
+
+    const b = document.createElement("button");
+    b.style.setProperty("--acc", d.c1);
+    b.setAttribute("data-hover","");
+    b.innerHTML = `<span class="label">${d.name}</span><span class="tick"></span>`;
+    b.addEventListener("click", ()=>scrollToIndustry(i));
+    railEl.appendChild(b);
+  });
+  const railBtns = [...railEl.children];
+  const nameEl = document.getElementById("indName");
+  const nextEl = document.getElementById("indNext");
+
+  const wrap = document.getElementById("industriesWrap");
+  const sticky = document.getElementById("industriesSticky");
+  const spacer = document.getElementById("indSpacer");
+  const per = ()=> isMobile() ? 0.95 : 1.1;
+  function sizeSpacer(){ spacer.style.height = (N*per()*innerHeight)+"px"; }
+  sizeSpacer();
+  addEventListener("resize", sizeSpacer);
+
+  let target = 0, shown = -0.0001, tiltX = 0, tiltY = 0, activeIdx = -1;
+  let spotX = innerWidth/2, spotY = innerHeight/2, spotTX = spotX, spotTY = spotY;
+
+  addEventListener("scroll", ()=>{
+    const total = wrap.offsetHeight - innerHeight;
+    const p = Math.min(Math.max(-wrap.getBoundingClientRect().top/total, 0), 1);
+    target = p * (N - 1);
+  }, {passive:true});
+
+  if (finePointer && !reduced){
+    sticky.addEventListener("mousemove", e=>{
+      const r = sticky.getBoundingClientRect();
+      tiltY = ((e.clientX-r.left)/r.width - 0.5) * 6;
+      tiltX = -((e.clientY-r.top)/r.height - 0.5) * 5;
+      spotTX = e.clientX - r.left;
+      spotTY = e.clientY - r.top;
+    });
+    sticky.addEventListener("mouseleave", ()=>{ tiltX = 0; tiltY = 0; });
+  }
+
+  function hexToRgba(hex,a){
+    const h = hex.replace("#","");
+    return `rgba(${parseInt(h.substr(0,2),16)},${parseInt(h.substr(2,2),16)},${parseInt(h.substr(4,2),16)},${a})`;
+  }
+  function mixToBg(hex,pct){
+    const h = hex.replace("#","");
+    const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);
+    const dark = root.getAttribute("data-theme")==="dark";
+    const B = dark?[0,0,0]:[251,251,253];
+    const m=(a,i)=>Math.round(a*pct+B[i]*(1-pct));
+    return `rgb(${m(r,0)},${m(g,1)},${m(b,2)})`;
+  }
+
+  function setActive(idx){
+    if (idx === activeIdx) return;
+    activeIdx = idx;
+    railBtns.forEach((b,j)=>b.classList.toggle("on", j===idx));
+    scramble(nameEl, IND[idx].name, 460);
+    nextEl.textContent = idx < N-1 ? "Next: "+IND[idx+1].name : "Next: talk to us";
+    spot.style.background = `radial-gradient(closest-side, ${hexToRgba(IND[idx].c1, root.getAttribute("data-theme")==="dark"?0.2:0.16)}, transparent 70%)`;
+    const gh = ghosts[idx];
+    gh.classList.remove("pop"); void gh.offsetWidth; gh.classList.add("pop");
+  }
+
+  function renderFlow(){
+    shown += (target - shown) * (reduced ? 1 : 0.085);
+    spotX += (spotTX - spotX)*0.06;
+    spotY += (spotTY - spotY)*0.06;
+
+    const idx = Math.round(Math.min(Math.max(shown,0), N-1));
+    setActive(idx);
+    sticky.style.backgroundColor = mixToBg(IND[idx].c1, root.getAttribute("data-theme")==="dark"?0.10:0.09);
+    spot.style.transform = `translate(${spotX}px, ${spotY}px) translate(-50%,-50%)`;
+
+    const mob = isMobile();
+    for (let i=0;i<N;i++){
+      const local = shown - i;
+      const a = Math.abs(local);
+      const slide = slides[i], ghost = ghosts[i];
+      if (a > 1.15){
+        slide.style.visibility = "hidden";
+        ghost.style.opacity = 0;
+        continue;
+      }
+      slide.style.visibility = "visible";
+      const vis = Math.max(1 - a, 0);
+      const op = Math.pow(vis, 1.3);
+      ghost.style.opacity = op * (mob ? 0.28 : 0.4);
+      ghost.style.transform =
+        `translate(calc(-50% + ${(-local*(mob?26:36))}vw + ${tiltY*-0.9}vw), calc(-50% + ${tiltX*0.9}vh))`;
+
+      slide.querySelectorAll(".cardWrap").forEach(w=>{
+        const side = w.dataset.side === "l" ? 1 : -1;
+        const baseY = mob ? side*5 : side*13;
+        const rotY = baseY + local * (mob ? -18 : -42) + tiltY;
+        const rotX = local * (mob ? 3 : 6) + tiltX;
+        const ty = local * (mob ? -10 : -16);
+        const tz = -a * (mob ? 90 : 180);
+        w.style.opacity = op;
+        w.style.transform =
+          `perspective(1400px) translateY(${ty}vh) translateZ(${tz}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        w.style.pointerEvents = a < 0.35 ? "auto" : "none";
+      });
+    }
+    requestAnimationFrame(renderFlow);
+  }
+  function scrollToIndustry(i){
+    const total = wrap.offsetHeight - innerHeight;
+    const p = N>1 ? i/(N-1) : 0;
+    window.scrollTo({top: wrap.offsetTop + p*total + 2, behavior: reduced ? "auto":"smooth"});
+  }
+  requestAnimationFrame(renderFlow);
+
+  if (!finePointer){
+    let t0 = performance.now();
+    (function drift(now){
+      const t = (now-t0)/1000;
+      spotTX = innerWidth*(0.5 + 0.3*Math.sin(t*0.4));
+      spotTY = innerHeight*(0.45 + 0.22*Math.cos(t*0.3));
+      requestAnimationFrame(drift);
+    })(t0);
+  }
+
+  /* ==================================================
+     SELF-HEALING MESH SIMULATION
+     Nodes drift. Links form to nearest neighbors.
+     Faults happen (or your cursor causes them).
+     The mesh reroutes around every failure, live.
+  ================================================== */
+  (function mesh(){
+    const cv = document.getElementById("mesh");
+    const box = cv.parentElement;
+    const ctx = cv.getContext("2d");
+    const msgEl = document.getElementById("meshMsg");
+    const linkEl = document.getElementById("meshLinks");
+    const nodeEl = document.getElementById("meshNodes");
+    const NN = 40, K = 3;
+    let W,H,nodes=[],links=[],heals=[],mx=-9999,my=-9999;
+    let faultNode = -1, faultT = 0;
+
+    function size(){
+      W = cv.width = box.clientWidth*devicePixelRatio;
+      H = cv.height = (cv.clientHeight||360)*devicePixelRatio;
+      build();
+    }
+    function build(){
+      nodes = [];
+      for (let i=0;i<NN;i++){
+        nodes.push({
+          x: (0.08+0.84*Math.random())*W,
+          y: (0.1+0.8*Math.random())*H,
+          ph: Math.random()*Math.PI*2,
+          amp: (4+Math.random()*7)*devicePixelRatio,
+          down: 0
+        });
+      }
+      links = [];
+      const seen = new Set();
+      nodes.forEach((n,i)=>{
+        const near = nodes.map((m,j)=>({j,d:(m.x-n.x)**2+(m.y-n.y)**2}))
+          .filter(o=>o.j!==i).sort((a,b)=>a.d-b.d).slice(0,K);
+        near.forEach(o=>{
+          const key = i<o.j ? i+"-"+o.j : o.j+"-"+i;
+          if (!seen.has(key)){ seen.add(key); links.push([i,o.j]); }
+        });
+      });
+      nodeEl.textContent = NN;
+      linkEl.textContent = String(links.length).padStart(3,"0");
+    }
+    function neighbors(i){
+      const out = [];
+      links.forEach(l=>{ if (l[0]===i) out.push(l[1]); else if (l[1]===i) out.push(l[0]); });
+      return out;
+    }
+    function fail(i){
+      if (nodes[i].down > 0) return;
+      nodes[i].down = 1;
+      const nb = neighbors(i).filter(j=>nodes[j].down===0);
+      /* heal: bridge the stranded neighbors around the dead node */
+      for (let a=0;a<nb.length-1;a++){
+        heals.push({a:nb[a], b:nb[a+1], t:0, via:i});
+      }
+      msgEl.textContent = "NODE "+String(i).padStart(2,"0")+" DOWN · REROUTING";
+      msgEl.style.color = "#F25C54";
+    }
+    setInterval(()=>{
+      if (reduced) return;
+      const alive = nodes.map((n,i)=>i).filter(i=>nodes[i].down===0);
+      if (alive.length > NN*0.7) fail(alive[Math.floor(Math.random()*alive.length)]);
+    }, 2600);
+
+    if (finePointer && !reduced){
+      cv.addEventListener("mousemove", e=>{
+        const r = cv.getBoundingClientRect();
+        mx = (e.clientX-r.left)*devicePixelRatio;
+        my = (e.clientY-r.top)*devicePixelRatio;
+      });
+      cv.addEventListener("mouseleave", ()=>{ mx = -9999; my = -9999; });
+    }
+
+    function draw(now){
+      ctx.clearRect(0,0,W,H);
+      const t = now/1000;
+      const fgc = getComputedStyle(root).getPropertyValue("--fgrgb").trim();
+      const dpr = devicePixelRatio;
+
+      /* drift + cursor faults + recovery */
+      let anyDown = false;
+      nodes.forEach((n,i)=>{
+        n.cx = n.x + Math.sin(t*0.5+n.ph)*n.amp;
+        n.cy = n.y + Math.cos(t*0.4+n.ph)*n.amp;
+        if (mx > -999 && Math.hypot(n.cx-mx, n.cy-my) < 60*dpr) fail(i);
+        if (n.down > 0){
+          n.down += 0.008;
+          if (n.down > 2.2 && Math.hypot(n.cx-mx, n.cy-my) > 80*dpr){
+            n.down = 0;
+            heals = heals.filter(h=>h.via!==i);
+          } else anyDown = true;
+        }
+      });
+      if (!anyDown && msgEl.textContent !== "ALL PATHS NOMINAL"){
+        msgEl.textContent = "ALL PATHS NOMINAL";
+        msgEl.style.color = "";
+      }
+
+      /* base links */
+      ctx.lineWidth = 1*dpr;
+      links.forEach(l=>{
+        const a = nodes[l[0]], b = nodes[l[1]];
+        const dead = a.down>0 || b.down>0;
+        ctx.strokeStyle = dead ? `rgba(242,92,84,0.12)` : `rgba(${fgc},0.16)`;
+        ctx.beginPath(); ctx.moveTo(a.cx,a.cy); ctx.lineTo(b.cx,b.cy); ctx.stroke();
+      });
+
+      /* healing links: animated green reroutes */
+      ctx.lineWidth = 1.4*dpr;
+      heals.forEach(h=>{
+        h.t = Math.min(h.t + 0.03, 1);
+        const a = nodes[h.a], b = nodes[h.b];
+        ctx.strokeStyle = "rgba(52,211,153,0.85)";
+        ctx.setLineDash([5*dpr, 5*dpr]);
+        ctx.lineDashOffset = -now/30;
+        ctx.beginPath();
+        ctx.moveTo(a.cx, a.cy);
+        ctx.lineTo(a.cx + (b.cx-a.cx)*h.t, a.cy + (b.cy-a.cy)*h.t);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      /* nodes */
+      nodes.forEach((n,i)=>{
+        if (n.down > 0){
+          ctx.strokeStyle = "rgba(242,92,84,0.9)";
+          ctx.lineWidth = 1.2*dpr;
+          const pr = (Math.sin(t*6)+1.6)*3*dpr;
+          ctx.beginPath(); ctx.arc(n.cx,n.cy,pr,0,7); ctx.stroke();
+          ctx.fillStyle = "rgba(242,92,84,0.9)";
+        } else {
+          ctx.fillStyle = `rgba(${fgc},0.85)`;
+        }
+        ctx.beginPath(); ctx.arc(n.cx,n.cy,1.8*dpr,0,7); ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+    size();
+    addEventListener("resize", size);
+    if (!reduced) requestAnimationFrame(draw);
+    else { /* static render */ requestAnimationFrame(function once(n){ draw(n); }); }
+  })();
+
+  /* ==================================================
+     CALIBRATION TARGET
+     A raw signal drifts. The SURDS signal is pushed by
+     the world (your cursor) and always returns to true.
+  ================================================== */
+  (function calib(){
+    const cv = document.getElementById("calib");
+    if (!cv) return;
+    const box = cv.parentElement;
+    const ctx = cv.getContext("2d");
+    const devEl = document.getElementById("calDev");
+    const stateEl = document.getElementById("calState");
+    let W,H,cx,cy,R,mx=-9999,my=-9999;
+    const s = {x:0,y:0,vx:0,vy:0};
+    const rawPush = {x:0,y:0};
+    const trail = [];
+    let disturbed = false, flashUntil = 0;
+
+    function size(){
+      W = cv.width = box.clientWidth*devicePixelRatio;
+      H = cv.height = (cv.clientHeight||360)*devicePixelRatio;
+      cx = W/2; cy = H/2; R = Math.min(W,H)*0.36;
+      s.x = cx; s.y = cy;
+    }
+    size();
+    addEventListener("resize", size);
+
+    if (finePointer && !reduced){
+      cv.addEventListener("mousemove", e=>{
+        const r = cv.getBoundingClientRect();
+        mx = (e.clientX-r.left)*devicePixelRatio;
+        my = (e.clientY-r.top)*devicePixelRatio;
+      });
+      cv.addEventListener("mouseleave", ()=>{ mx = -9999; my = -9999; });
+    } else if (!reduced){
+      const hint = document.getElementById("calHint");
+      if (hint) hint.textContent = "AUTO-DISTURBANCE ACTIVE";
+      /* touch: the world disturbs it on its own */
+      setInterval(()=>{
+        const a = Math.random()*Math.PI*2, f = (10+Math.random()*8)*devicePixelRatio;
+        s.vx += Math.cos(a)*f; s.vy += Math.sin(a)*f;
+        rawPush.x += Math.cos(a)*f*2.4; rawPush.y += Math.sin(a)*f*2.4;
+        disturbed = true;
+      }, 3200);
+    }
+
+    function draw(now){
+      ctx.clearRect(0,0,W,H);
+      const t = now/1000;
+      const fgc = getComputedStyle(root).getPropertyValue("--fgrgb").trim();
+      const dpr = devicePixelRatio;
+
+      /* rings + crosshair */
+      ctx.strokeStyle = `rgba(${fgc},0.16)`;
+      ctx.lineWidth = 1*dpr;
+      [1,0.66,0.33].forEach(k=>{ ctx.beginPath(); ctx.arc(cx,cy,R*k,0,7); ctx.stroke(); });
+      ctx.strokeStyle = `rgba(${fgc},0.09)`;
+      ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+      ctx.fillStyle = `rgba(${fgc},0.5)`;
+      ctx.beginPath(); ctx.arc(cx,cy,1.4*dpr,0,7); ctx.fill();
+
+      /* RAW: wanders, and the world's pushes stick to it (but stay in frame) */
+      rawPush.x *= 0.996; rawPush.y *= 0.996;
+      const pm = Math.hypot(rawPush.x, rawPush.y), pmax = R*0.85;
+      if (pm > pmax){ rawPush.x *= pmax/pm; rawPush.y *= pmax/pm; }
+      const rx = cx + (Math.sin(t*0.7)*0.5 + Math.sin(t*0.23+1.7)*0.5)*R*0.5 + rawPush.x;
+      const ry = cy + (Math.cos(t*0.5+0.6)*0.5 + Math.sin(t*0.31)*0.5)*R*0.45 + rawPush.y;
+
+      /* cursor is the disturbance: pushes both signals */
+      if (mx > -999){
+        const dsx = s.x-mx, dsy = s.y-my;
+        const ds = Math.hypot(dsx,dsy);
+        if (ds < 110*dpr){
+          const f = (1-ds/(110*dpr))*2.6*dpr;
+          s.vx += (dsx/(ds||1))*f; s.vy += (dsy/(ds||1))*f;
+          disturbed = true;
+        }
+        const drx = rx-mx, dry = ry-my;
+        const dr = Math.hypot(drx,dry);
+        if (dr < 110*dpr){
+          const f = (1-dr/(110*dpr))*3.4*dpr;
+          rawPush.x += (drx/(dr||1))*f; rawPush.y += (dry/(dr||1))*f;
+        }
+      }
+
+      /* SURDS: spring back to true, always */
+      s.vx += (cx-s.x)*0.014; s.vy += (cy-s.y)*0.014;
+      s.vx *= 0.88; s.vy *= 0.88;
+      s.x += s.vx; s.y += s.vy;
+
+      trail.push({x:s.x,y:s.y});
+      if (trail.length > 16) trail.shift();
+
+      /* raw dot */
+      ctx.fillStyle = `rgba(${fgc},0.35)`;
+      ctx.beginPath(); ctx.arc(rx,ry,3*dpr,0,7); ctx.fill();
+      ctx.fillStyle = `rgba(${fgc},0.4)`;
+      ctx.font = `${8.5*dpr}px JetBrains Mono, monospace`;
+      ctx.fillText("RAW", rx+8*dpr, ry-6*dpr);
+
+      /* surds trail + dot */
+      ctx.strokeStyle = "rgba(77,155,255,0.35)";
+      ctx.lineWidth = 1.2*dpr;
+      ctx.beginPath();
+      trail.forEach((p,i)=>{ i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y); });
+      ctx.stroke();
+      const glow = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,14*dpr);
+      glow.addColorStop(0,"rgba(77,155,255,0.4)");
+      glow.addColorStop(1,"rgba(77,155,255,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(s.x,s.y,14*dpr,0,7); ctx.fill();
+      ctx.fillStyle = "#4D9BFF";
+      ctx.beginPath(); ctx.arc(s.x,s.y,4*dpr,0,7); ctx.fill();
+      ctx.fillStyle = "rgba(77,155,255,0.9)";
+      ctx.fillText("SURDS", s.x+9*dpr, s.y+13*dpr);
+
+      /* state readout */
+      const dev = Math.hypot(s.x-cx,s.y-cy)/R;
+      devEl.textContent = dev.toFixed(3);
+      if (dev < 0.06){
+        if (disturbed){ flashUntil = now+1500; disturbed = false; }
+        if (now < flashUntil){
+          stateEl.textContent = "PREDICTED · CORRECTED";
+          stateEl.style.color = "#34D399";
+        } else {
+          stateEl.textContent = "LOCKED";
+          stateEl.style.color = "#34D399";
+        }
+      } else {
+        stateEl.textContent = "CORRECTING";
+        stateEl.style.color = "#FBBF24";
+      }
+
+      if (!reduced) requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  /* ==================================================
+     THERMAL TRAIL + CROSSHAIR + HUD
+     (the site senses you, the way SURDS sensors would)
+  ================================================== */
+  const heatCv = document.getElementById("heat");
+  const hctx = heatCv.getContext("2d");
+  let heatPts = [];
+  function sizeHeat(){
+    heatCv.width = innerWidth*devicePixelRatio;
+    heatCv.height = innerHeight*devicePixelRatio;
+  }
+  sizeHeat();
+  addEventListener("resize", sizeHeat);
+  function heatColor(k, dark){ /* k: 1 hottest -> 0 cold */
+    if (dark){
+      if (k > 0.8) return [255,255,255];
+      if (k > 0.6) return [255,214,112];
+      if (k > 0.4) return [255,138,66];
+      if (k > 0.2) return [244,84,84];
+      return [120,80,200];
+    }
+    if (k > 0.8) return [255,120,40];
+    if (k > 0.6) return [255,160,60];
+    if (k > 0.4) return [244,100,70];
+    if (k > 0.2) return [214,70,90];
+    return [110,70,190];
+  }
+
+  if (!reduced && finePointer){
+    document.body.classList.add("has-cursor");
+    const xhH = document.getElementById("xhH");
+    const xhV = document.getElementById("xhV");
+    const xhDot = document.getElementById("xhDot");
+    const lock = document.getElementById("lock");
+    const lockDim = document.getElementById("lockDim");
+    let mx = innerWidth/2, my = innerHeight/2, dx = mx, dy = my, lx = mx, ly = my;
+    let lockEl = null;
+    const L = {x:0,y:0,w:0,h:0,init:false};
+
+    addEventListener("mousemove", e=>{
+      mx = e.clientX; my = e.clientY;
+      /* deposit heat where you move: the trail of your presence */
+      if (document.body.classList.contains("ready") &&
+          Math.hypot(mx-lx, my-ly) > 7){
+        heatPts.push({x:mx*devicePixelRatio, y:my*devicePixelRatio, t:performance.now()});
+        if (heatPts.length > 200) heatPts.shift();
+        lx = mx; ly = my;
+      }
+    });
+
+    (function loop(now){
+      dx += (mx-dx)*0.22; dy += (my-dy)*0.22;
+      xhH.style.transform = `translateY(${my}px)`;
+      xhV.style.transform = `translateX(${mx}px)`;
+      xhDot.style.transform = `translate(${dx-17}px, ${dy-17}px)`;
+
+      /* thermal render */
+      hctx.clearRect(0,0,heatCv.width,heatCv.height);
+      const LIFE = 1300;
+      const darkTheme = root.getAttribute("data-theme")==="dark";
+      heatPts = heatPts.filter(p=> now - p.t < LIFE);
+      for (const p of heatPts){
+        const age = (now - p.t)/LIFE;         /* 0 fresh -> 1 gone */
+        const k = 1 - age;
+        const [r,g,b] = heatColor(k, darkTheme);
+        const rad = (13 + age*30)*devicePixelRatio;
+        const grad = hctx.createRadialGradient(p.x,p.y,0,p.x,p.y,rad);
+        grad.addColorStop(0, `rgba(${r},${g},${b},${(k*k*0.4).toFixed(3)})`);
+        grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        hctx.fillStyle = grad;
+        hctx.beginPath(); hctx.arc(p.x,p.y,rad,0,7); hctx.fill();
+      }
+
+      /* target lock */
+      if (lockEl){
+        const r = lockEl.getBoundingClientRect();
+        const pad = 7;
+        const tx = r.left-pad, ty = r.top-pad, tw = r.width+pad*2, th = r.height+pad*2;
+        if (!L.init){ L.x=tx; L.y=ty; L.w=tw; L.h=th; L.init=true; }
+        L.x += (tx-L.x)*0.3; L.y += (ty-L.y)*0.3;
+        L.w += (tw-L.w)*0.3; L.h += (th-L.h)*0.3;
+        lock.style.transform = `translate(${L.x}px,${L.y}px)`;
+        lock.style.width = L.w+"px";
+        lock.style.height = L.h+"px";
+        lockDim.textContent = Math.round(L.w)+"×"+Math.round(L.h);
+      }
+
+      requestAnimationFrame(loop);
+    })(performance.now());
+
+    document.addEventListener("mouseover", e=>{
+      const el = e.target.closest("[data-hover], a, button");
+      if (el && !loader.contains(el)){
+        lockEl = el; L.init = false;
+        document.body.classList.add("locked");
+      }
+    });
+    document.addEventListener("mouseout", e=>{
+      const el = e.target.closest("[data-hover], a, button");
+      if (el && el === lockEl){
+        lockEl = null;
+        document.body.classList.remove("locked");
+      }
+    });
+
+    const mag = document.getElementById("magnetBtn");
+    if (mag){
+      mag.addEventListener("mousemove", e=>{
+        const r = mag.getBoundingClientRect();
+        mag.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*0.16}px, ${(e.clientY-(r.top+r.height/2))*0.26}px)`;
+      });
+      mag.addEventListener("mouseleave", ()=>{ mag.style.transform = ""; });
+    }
+  }
+
+  /* LiDAR ping: every click emits a ranging pulse */
+  if (!reduced && finePointer){
+    addEventListener("pointerdown", e=>{
+      if (!document.body.classList.contains("ready")) return;
+      const p = document.createElement("div");
+      p.className = "ping";
+      p.style.left = e.clientX+"px";
+      p.style.top = e.clientY+"px";
+      document.body.appendChild(p);
+      p.addEventListener("animationend", ()=>p.remove());
+    });
+  }
+
+  /* proximity sensing: nav links wake as you approach them */
+  if (!reduced && finePointer){
+    const pls = [...document.querySelectorAll(".nav-links a")];
+    let pmx = -9999, pmy = -9999, pQueued = false;
+    addEventListener("mousemove", e=>{
+      pmx = e.clientX; pmy = e.clientY;
+      if (pQueued) return;
+      pQueued = true;
+      requestAnimationFrame(()=>{
+        pQueued = false;
+        pls.forEach(a=>{
+          const r = a.getBoundingClientRect();
+          const d = Math.hypot(pmx-(r.left+r.width/2), pmy-(r.top+r.height/2));
+          const f = Math.max(0, 1 - d/240);
+          a.style.opacity = (0.55 + 0.45*f).toFixed(2);
+        });
+      });
+    });
+  }
+
+  /* ============ reveals + scramble ============ */
+  const io = new IntersectionObserver(es=>{
+    es.forEach(en=>{
+      if (!en.isIntersecting) return;
+      en.target.classList.add("in");
+      const sc = en.target.querySelector("[data-scramble]") ||
+                 (en.target.matches("[data-scramble]") ? en.target : null);
+      if (sc) scramble(sc, sc.getAttribute("data-final") || sc.textContent, 700);
+      io.unobserve(en.target);
+    });
+  },{threshold:0.22});
+  document.querySelectorAll(".reveal, .eyebrow[data-scramble]").forEach(el=>{
+    const sc = el.matches("[data-scramble]") ? el : el.querySelector("[data-scramble]");
+    if (sc) sc.setAttribute("data-final", sc.textContent);
+    io.observe(el);
+  });
+})();
 </script>
-<script src="/shared/iso-core.js"></script>
-<script src="/shared/iso-pieces-retail.js"></script>
-<script src="/shared/iso-pieces-industrial.js"></script>
-<script src="/shared/iso-pieces-chemical.js"></script>
-<script src="/shared/iso-theme.js"></script>
-<script src="/shared/iso-walkers.js"></script>
-<script src="/shared/iso-sensors.js"></script>
-<script src="/shared/iso-render.js"></script>
-<script src="/views/main/main.js"></script>
+
+<!-- ================= LIVE FACILITY ENGINE (reused from the consumer-side isometric demo) ================= -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="/shared/iso-core.js?v=5"></script>
+<script src="/shared/iso-pieces-retail.js?v=5"></script>
+<script src="/shared/iso-pieces-industrial.js?v=5"></script>
+<script src="/shared/iso-pieces-chemical.js?v=5"></script>
+<script src="/shared/iso-theme.js?v=5"></script>
+<script src="/shared/iso-walkers.js?v=5"></script>
+<script src="/shared/iso-sensors.js?v=5"></script>
+<script src="/shared/iso-render.js?v=5"></script>
+<script src="/shared/dash-charts.js?v=1"></script>
+<script src="/shared/fac-deck.js?v=1"></script>
+<script src="/shared/pool-cars.js?v=1"></script>
+<script src="/shared/fac-move.js?v=6"></script>
+<script>
+  function onScroll(){} /* switchLayout() calls this; the scroll-driven camera isn't used in this static preview */
+  document.documentElement.setAttribute('data-facility', currentTheme);
+  if (window.lucide) lucide.createIcons();
+
+  /* ===== LAYERED RENDERING =========================================================
+     The detailed fixtures never move, so they're drawn ONCE per layout into #canvas
+     (static layer). Only the walkers and the "busy fixture" glow are redrawn each frame
+     into #canvasDyn (dynamic layer). Parsing the heavy fixture geometry once instead of
+     ~30x/second is what keeps the scene smooth however detailed the fixtures get.
+     (Sensors render nothing here — their opacity stays 0 — so nothing else is dynamic.) */
+  var canvasDyn = document.getElementById('canvasDyn');
+
+  /* zoom the scene in a little so the fixtures read bigger inside the card. FacMove reads
+     the live getScreenCTM(), so tightening the viewBox stays perfectly in sync. */
+  (function zoomScene(){
+    var vb=(canvas.getAttribute('viewBox')||'').split(/\s+/).map(Number);
+    if(vb.length!==4||vb.some(isNaN))return;
+    var z=0.88, nw=vb[2]*z, nh=vb[3]*z, nx=vb[0]+(vb[2]-nw)*0.5, ny=vb[1]+(vb[3]-nh)*0.52;
+    canvas.setAttribute('viewBox', nx.toFixed(1)+' '+ny.toFixed(1)+' '+nw.toFixed(1)+' '+nh.toFixed(1));
+  })();
+  function syncDynView(){ canvasDyn.setAttribute('viewBox', canvas.getAttribute('viewBox')); }
+
+  /* the static layer draws each fixture in its REAL visited state (register screen lights
+     up green, fridge handles glow, etc. — plus the generic spotlight for fixtures without
+     a bespoke reaction), exactly like the old full render. It's rebuilt only when the set
+     of currently-visited fixtures changes (a customer arrives at / leaves one — a few
+     times a second at most), so the "light up the moment they stop" detail is back without
+     the per-frame cost. */
+  function staticSceneSVG(){
+    var items=[];
+    for(var i=0;i<pieces.length;i++){var p=pieces[i],vis=isVisited(p.id);
+      var svg='<g>'+PIECES[p.type].gen(p.gx,p.gy,p.rot,p.text,vis)+(vis?visitGlow(p.type,p.gx,p.gy,(PIECES[p.type].h||1)):'')+'</g>';
+      items.push({k:p.gx+p.gy, svg:svg});}
+    items.sort(function(a,b){return a.k-b.k});
+    var out='';for(var j=0;j<items.length;j++)out+=items[j].svg;return out;
+  }
+  function renderStatic(){
+    canvas.innerHTML='<defs>'+gradientDefs()+'</defs>'+floorSVG()+staticSceneSVG()+processBadgesSVG();
+  }
+  function visitKey(){var v=[];for(var i=0;i<pieces.length;i++)if(isVisited(pieces[i].id))v.push(pieces[i].id);return v.join(',');}
+
+  /* fading movement trail behind each customer (in their own colour) so you can read the
+     paths they trace across the floor. In the open "See More" view FacMove paints its own
+     richer trails, so these step aside there to avoid doubling up. */
+  var trailHist={}, TRAIL_LEN=26, TRAIL_COL=['#ffa85a','#5ad1ff','#ff6fd8','#8aff6f'];
+  function pushTrails(){
+    for(var w=0;w<walkers.length;w++){var wk=walkers[w],h=trailHist[wk.id]||(trailHist[wk.id]=[]),last=h[h.length-1];
+      if(!last||Math.hypot(wk.cx-last.gx,wk.cy-last.gy)>0.16){h.push({gx:wk.cx,gy:wk.cy});if(h.length>TRAIL_LEN)h.shift();}}
+  }
+  function trailsSVG(){
+    var s='';
+    for(var w=0;w<walkers.length;w++){var h=trailHist[walkers[w].id];if(!h||h.length<2)continue;var col=TRAIL_COL[w%TRAIL_COL.length];
+      for(var i=1;i<h.length;i++){var A=[isoX(h[i-1].gx,h[i-1].gy),isoY(h[i-1].gx,h[i-1].gy)],B=[isoX(h[i].gx,h[i].gy),isoY(h[i].gx,h[i].gy)];
+        s+=ln(A,B,col,2.3,'opacity="'+((i/h.length)*0.7).toFixed(2)+'" stroke-linecap="round"');}}
+    return s;
+  }
+  function renderDyn(){
+    var out=window.__facOpen?'':trailsSVG();   /* trails sit under the walkers */
+    var items=[];
+    for(var w=0;w<walkers.length;w++){var wk=walkers[w];items.push({k:wk.cx+wk.cy,svg:walkerSVG(wk)});}
+    items.sort(function(a,b){return a.k-b.k});
+    for(var j=0;j<items.length;j++)out+=items[j].svg;
+    canvasDyn.innerHTML=out;
+  }
+  var lastVisitKey='';
+  syncDynView(); renderStatic(); renderDyn();
+
+  var facilityLoopActive = false;
+  function startFacilityLoop(){
+    if (facilityLoopActive) return;
+    facilityLoopActive = true;
+    var RENDER_INTERVAL = 40, lastRender = 0;   /* 25fps throttle saves main thread CPU */
+    function tick(now){
+      if (!document.body.classList.contains('fac-in-view') || document.hidden){
+        facilityLoopActive = false;
+        return; /* Stop main thread RAF loop completely when off-screen or hidden */
+      }
+      if (now - lastRender >= RENDER_INTERVAL){
+        updateWalkers();
+        var vk=visitKey(); if(vk!==lastVisitKey){lastVisitKey=vk; renderStatic();}  /* a fixture lights up the instant a customer stops at it */
+        pushTrails();
+        renderDyn();
+        if (window.FacMove) FacMove.tick(RENDER_INTERVAL / 1000);
+        lastRender = now;
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && document.body.classList.contains('fac-in-view')) {
+      startFacilityLoop();
+    }
+  });
+
+  /* crossfade the card out/in around a theme switch, then rebuild the static fixture layer once */
+  var switchTimer = null, pendingTheme = null, userSelectedTheme = false;
+  function smoothSwitchLayout(theme, isUserClick){
+    if (isUserClick) userSelectedTheme = true;
+    var canvasWrap = document.getElementById('facCanvasWrap');
+    var poolWrap = document.getElementById('poolModelWrap');
+    var quarryWrap = document.getElementById('quarryModelWrap');
+    var livingroomWrap = document.getElementById('livingroomModelWrap');
+    if (theme === currentTheme || theme === pendingTheme) return;
+    if (switchTimer) clearTimeout(switchTimer);
+    pendingTheme = theme;
+    canvasWrap.style.transition = 'opacity .3s ease';
+    canvasWrap.style.opacity = '0.2';
+    switchTimer = setTimeout(function(){
+      var modelMap = {
+        pool: { wrap: poolWrap, id: 'poolViewer', anim: startPoolSite },
+        quarry: { wrap: quarryWrap, id: 'quarryViewer', anim: startQuarryMeshAnimation },
+        livingroom: { wrap: livingroomWrap, id: 'livingroomViewer', anim: startLivingroomMeshAnimation }
+      };
+
+      Object.keys(modelMap).forEach(function(k){
+        if (modelMap[k].wrap) modelMap[k].wrap.style.display = (k === theme) ? 'block' : 'none';
+      });
+      /* the site traffic holds a rAF loop; stop it as soon as it is off screen */
+      if (theme !== 'pool' && window.PoolCars) window.PoolCars.pause();
+
+      var is3D = !!modelMap[theme];
+      document.getElementById('canvas').style.display = is3D ? 'none' : 'block';
+      document.getElementById('canvasDyn').style.display = is3D ? 'none' : 'block';
+
+      /* the overlay and the deck are siblings of the theme wraps, so they are
+         drawn over every card - wipe them or the previous facility's heatmap
+         and cards bleed into the next one */
+      if (window.FacMove && FacMove.clear) FacMove.clear();
+      else if (window.FacDeck) FacDeck.reset();
+
+      currentTheme = theme;
+      pendingTheme = null;
+      canvasWrap.style.opacity = '1';
+
+      if (is3D) {
+        var info = modelMap[theme];
+        var viewer = document.getElementById(info.id);
+        if (viewer) {
+          var loader = info.wrap ? info.wrap.querySelector('.model-loader') : null;
+          var dataSrc = viewer.getAttribute('data-src');
+
+          function hideLoader(){
+            if (loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; }
+          }
+          function showLoader(){
+            if (loader) { loader.style.opacity = '1'; loader.style.visibility = 'visible'; }
+          }
+
+          if (dataSrc && !viewer.getAttribute('src')) {
+            showLoader();
+            viewer.addEventListener('load', hideLoader, { once: true });
+            viewer.addEventListener('error', hideLoader, { once: true });
+            viewer.setAttribute('loading', 'eager');
+            viewer.setAttribute('reveal', 'auto');
+            viewer.setAttribute('src', dataSrc);
+          } else {
+            hideLoader();
+          }
+        }
+        if (info.anim) info.anim();
+      } else {
+        switchLayout(theme);
+        renderStatic();
+        renderDyn();
+      }
+
+      var tabs = document.querySelectorAll('.layout-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.toggle('active', tabs[i].getAttribute('data-theme') === theme);
+      }
+      updateFacPanel();
+      switchTimer = null;
+    }, 300);
+  }
+  /* Submit the enquiry without leaving the page. The form's own action still
+     works if this never runs, so a JS failure degrades to a normal POST rather
+     than a dead button. */
+  (function(){
+    var form = document.getElementById('ctaForm');
+    if (!form) return;
+    var status = document.getElementById('ctaStatus');
+    var btn = form.querySelector('button[type="submit"]');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var label = btn.innerHTML;
+      btn.disabled = true;
+      status.className = 'cta-status';
+      status.textContent = 'Sending…';
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      }).then(function(r){ return r.json(); }).then(function(d){
+        if (d.success) {
+          form.reset();
+          status.className = 'cta-status ok';
+          status.textContent = 'Sent. We reply within two business days.';
+        } else {
+          throw new Error(d.message || 'rejected');
+        }
+      }).catch(function(){
+        status.className = 'cta-status err';
+        status.innerHTML = 'Could not send. Email <a href="mailto:automate@surds.co.in" style="color:inherit">automate@surds.co.in</a> instead.';
+      }).then(function(){
+        btn.disabled = false; btn.innerHTML = label;
+      });
+    });
+  })();
+
+  window.smoothSwitchLayout = smoothSwitchLayout;
+
+  /* Dashboard readouts, both read off real state: the site count is however
+     many facility tabs exist, the channel is whichever one is selected. */
+  function updateFacPanel(){
+    var tabs = document.querySelectorAll('.layout-tab');
+    var sites = document.getElementById('facStatSites');
+    var chan = document.getElementById('facStatChannel');
+    if (sites) sites.textContent = tabs.length;
+    if (chan) {
+      var active = document.querySelector('.layout-tab.active');
+      chan.textContent = active ? active.textContent.trim() : '\u2014';
+    }
+  }
+  (function facClockTick(){
+    var el = document.getElementById('facClock');
+    if (el) {
+      var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; };
+      el.textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    }
+    setTimeout(facClockTick, 1000);
+  })();
+  updateFacPanel();
+
+  /* Arrow keys step through the whole facility view — retail, steel, chemical,
+     pool, quarry, living room — in the same left-to-right order as the tabs.
+     Only while the card is expanded, so you can move across every facility's
+     card and its own view without ever leaving the expanded card. */
+  window.addEventListener('keydown', function(e){
+    if (!window.__facOpen) return;
+    var dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!dir) return;
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.layout-tab'));
+    var idx = tabs.findIndex(function(t){ return t.classList.contains('active'); });
+    var next = Math.min(tabs.length - 1, Math.max(0, idx + dir));
+    if (next === idx) return;
+    e.preventDefault();
+    smoothSwitchLayout(tabs[next].getAttribute('data-theme'), true);
+  });
+
+
+  var quarryMeshRaf = null;
+  function startQuarryMeshAnimation(){
+    if (quarryMeshRaf) cancelAnimationFrame(quarryMeshRaf);
+    var svg = document.getElementById('quarryMeshOverlay');
+    if (!svg) return;
+    var nodes = [
+      {x: 20, y: 30, label: "Node Q1 · Pit North Rim LiDAR"},
+      {x: 80, y: 25, label: "Node Q2 · Excavator Volumetric Telemetry"},
+      {x: 75, y: 75, label: "Node Q3 · Conveyor Weighbridge"},
+      {x: 25, y: 80, label: "Node Q4 · Dust & Moisture Monitor"}
+    ];
+    var links = [[0,1], [1,2], [2,3], [3,0], [0,2]];
+    function drawMesh(t){
+      if (currentTheme !== 'quarry') return;
+      var w = svg.clientWidth || 800, h = svg.clientHeight || 500;
+      var out = '';
+      var time = t * 0.002;
+      links.forEach(function(lk, idx){
+        var n1 = nodes[lk[0]], n2 = nodes[lk[1]];
+        var x1 = (n1.x / 100) * w, y1 = (n1.y / 100) * h;
+        var x2 = (n2.x / 100) * w, y2 = (n2.y / 100) * h;
+        var pulse = (Math.sin(time*2.2 + idx) + 1) / 2;
+        out += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="rgba(245,158,11,'+(0.25+pulse*0.5).toFixed(2)+')" stroke-width="1.8" stroke-dasharray="6,4" />';
+      });
+      nodes.forEach(function(n, i){
+        var nx = (n.x / 100) * w, ny = (n.y / 100) * h;
+        var r = 5 + Math.sin(time*3 + i)*2;
+        var col = '#F59E0B';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+(r+4)+'" fill="none" stroke="'+col+'" stroke-opacity="0.3" />';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+r+'" fill="'+col+'" />';
+        out += '<text x="'+(nx+10)+'" y="'+(ny+4)+'" fill="#fbfbfd" font-family="JetBrains Mono, monospace" font-size="9" opacity="0.85">'+n.label+'</text>';
+      });
+      svg.innerHTML = out;
+      quarryMeshRaf = requestAnimationFrame(drawMesh);
+    }
+    quarryMeshRaf = requestAnimationFrame(drawMesh);
+  }
+
+
+  var poolMeshRaf = null;
+  /* Cars driving the real site. The road graph was clicked onto this very
+     model in road-editor.html, so the traffic follows the actual roads in the
+     scan rather than a grid drawn next to it. The model streams in lazily, so
+     wait for its load event before starting. */
+  function startPoolSite(){
+    /* The scripted telemetry-mesh overlay is not started here: it drew into the
+       same SVG the traffic uses, so the two fought over innerHTML each frame and
+       its node graph read as stray trails across the site. Real cars replace it. */
+    var stale = document.getElementById('poolMeshOverlay');
+    if (stale) stale.innerHTML = '';
+    var viewer = document.getElementById('poolViewer');
+    var overlay = document.getElementById('poolCarsOverlay');
+    if (!viewer || !overlay || !window.PoolCars) return;
+    var go = function(){
+      PoolCars.start({ viewer: viewer, overlay: overlay, nav: '/models/pool-road.json' });
+    };
+    if (viewer.loaded) go(); else viewer.addEventListener('load', go, { once: true });
+  }
+
+  function startPoolMeshAnimation(){
+    if (poolMeshRaf) cancelAnimationFrame(poolMeshRaf);
+    var svg = document.getElementById('poolMeshOverlay');
+    if (!svg) return;
+    var nodes = [
+      {x: 20, y: 30, label: "Node 01 · Pump House"},
+      {x: 75, y: 25, label: "Node 02 · Filtration Vault"},
+      {x: 85, y: 70, label: "Node 03 · Solar Collector"},
+      {x: 50, y: 80, label: "Node 04 · Main Pool Center"},
+      {x: 18, y: 72, label: "Node 05 · Kids Pool Bay"}
+    ];
+    var links = [[0,1], [1,2], [2,3], [3,4], [4,0], [1,3]];
+    function drawMesh(t){
+      if (currentTheme !== 'pool') return;
+      var w = svg.clientWidth || 800, h = svg.clientHeight || 500;
+      var out = '';
+      var time = t * 0.002;
+      links.forEach(function(lk, idx){
+        var n1 = nodes[lk[0]], n2 = nodes[lk[1]];
+        var x1 = (n1.x / 100) * w, y1 = (n1.y / 100) * h;
+        var x2 = (n2.x / 100) * w, y2 = (n2.y / 100) * h;
+        var pulse = (Math.sin(time*2 + idx) + 1) / 2;
+        out += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="rgba(52,211,153,'+(0.25+pulse*0.45).toFixed(2)+')" stroke-width="1.8" stroke-dasharray="6,4" />';
+      });
+      nodes.forEach(function(n, i){
+        var nx = (n.x / 100) * w, ny = (n.y / 100) * h;
+        var r = 5 + Math.sin(time*3 + i)*2;
+        var isAlert = (i === 0);
+        var col = isAlert ? '#EF4444' : '#34D399';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+(r+4)+'" fill="none" stroke="'+col+'" stroke-opacity="0.3" />';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+r+'" fill="'+col+'" />';
+        out += '<text x="'+(nx+10)+'" y="'+(ny+4)+'" fill="#fbfbfd" font-family="JetBrains Mono, monospace" font-size="9" opacity="0.85">'+n.label+'</text>';
+      });
+      svg.innerHTML = out;
+      poolMeshRaf = requestAnimationFrame(drawMesh);
+    }
+    poolMeshRaf = requestAnimationFrame(drawMesh);
+  }
+
+
+
+
+  var livingroomMeshRaf = null;
+  function startLivingroomMeshAnimation(){
+    if (livingroomMeshRaf) cancelAnimationFrame(livingroomMeshRaf);
+    var svg = document.getElementById('livingroomMeshOverlay');
+    if (!svg) return;
+    var nodes = [
+      {x: 22, y: 35, label: "Node L1 · Sofa Zone Occupancy"},
+      {x: 76, y: 32, label: "Node L2 · TV Console Dissipation"},
+      {x: 72, y: 74, label: "Node L3 · Smart Air Purifier CADR"},
+      {x: 26, y: 78, label: "Node L4 · Radiant Floor Loop"}
+    ];
+    var links = [[0,1], [1,2], [2,3], [3,0], [1,3]];
+    function drawMesh(t){
+      if (currentTheme !== 'livingroom') return;
+      var w = svg.clientWidth || 800, h = svg.clientHeight || 500;
+      var out = '', time = t * 0.002;
+      links.forEach(function(lk, idx){
+        var n1 = nodes[lk[0]], n2 = nodes[lk[1]];
+        var x1 = (n1.x / 100) * w, y1 = (n1.y / 100) * h;
+        var x2 = (n2.x / 100) * w, y2 = (n2.y / 100) * h;
+        var pulse = (Math.sin(time*2.2 + idx) + 1) / 2;
+        out += '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="rgba(245,158,11,'+(0.25+pulse*0.5).toFixed(2)+')" stroke-width="1.8" stroke-dasharray="6,4" />';
+      });
+      nodes.forEach(function(n, i){
+        var nx = (n.x / 100) * w, ny = (n.y / 100) * h;
+        var r = 5 + Math.sin(time*3 + i)*2;
+        var col = '#F59E0B';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+(r+4)+'" fill="none" stroke="'+col+'" stroke-opacity="0.3" />';
+        out += '<circle cx="'+nx+'" cy="'+ny+'" r="'+r+'" fill="'+col+'" />';
+        out += '<text x="'+(nx+10)+'" y="'+(ny+4)+'" fill="#fbfbfd" font-family="JetBrains Mono, monospace" font-size="9" opacity="0.85">'+n.label+'</text>';
+      });
+      svg.innerHTML = out;
+      livingroomMeshRaf = requestAnimationFrame(drawMesh);
+    }
+    livingroomMeshRaf = requestAnimationFrame(drawMesh);
+  }
+
+  /* ==================================================
+     LIVE FACILITY: card rests in the grid while scrolled past (tabs auto-advance
+     for a preview), and only funnel-expands into the floating trapezoid banner
+     when the visitor deliberately clicks the card or its "See More" button.
+  ================================================== */
+  (function facilityInteraction(){
+    var FAC_THEMES = ['retail','industrial','chemical'];
+
+    /* banner target: a contained card roughly on the scale of the Network section's
+       mesh box, not a fullscreen takeover — right-anchored so the copy stays clear */
+    function bannerRect(){
+      var margin = 24;
+      return { top: margin, left: margin, width: innerWidth - margin * 2, height: innerHeight - margin * 2 };
+    }
+
+    var facWrap = document.getElementById('facilityWrap');
+    var facSlot = document.querySelector('.facViz-slot');
+    var facViz = document.getElementById('facVizReal');
+    var facBackdrop = document.getElementById('facVizBackdrop');
+    var facBase = document.getElementById('facVizBase');
+    var facSpacer = document.getElementById('facSpacer');
+    var facHeatmapEl = document.getElementById('facHeatmap');
+    var facProcessEl = document.getElementById('facProcess');
+    var seeMoreBtn = document.getElementById('facSeeMore');
+    var closeBtn = document.getElementById('facClose');
+    if (!facWrap || !facSlot || !facViz) return;
+
+    var isOpen = false;
+    /* while the card is open the page scroll is trapped: wheel/touch advances the
+       post-open movement narrative (openP: 0..1) instead of scrolling the page, and the
+       background only scrolls again once the narrative is complete or the visitor exits */
+    var openP = 0;
+    var WHEEL_SPAN = 3000;      /* accumulated wheel/touch delta (px) to play 0..1 */
+    var touchLastY = 0;
+    var lockedScrollbarPad = '';
+
+    function setFacVizRect(top, left, width, height, radius, clip){
+      facViz.style.top = top + 'px';
+      facViz.style.left = left + 'px';
+      facViz.style.width = width + 'px';
+      facViz.style.height = height + 'px';
+      facViz.style.borderRadius = radius + 'px';
+      facViz.style.clipPath = clip;
+      facViz.style.webkitClipPath = clip;
+    }
+    /* glowing base plate: a soft, blurred platform a little wider than the card,
+       centered on its bottom edge — as if the trapezoid is floating just above it */
+    function setBase(top, left, width, height){
+      var w = width * 1.16;
+      var h = Math.max(70, height * 0.22);
+      facBase.style.width = w + 'px';
+      facBase.style.height = h + 'px';
+      facBase.style.left = (left - (w - width) / 2) + 'px';
+      facBase.style.top = (top + height - h / 2) + 'px';
+    }
+    function setDim(amount, interactive){
+      facBackdrop.style.opacity = String(amount);
+      facBase.style.opacity = String(amount);
+      facBackdrop.style.pointerEvents = interactive ? 'auto' : 'none';
+    }
+    function setPanelsEligible(on){
+      facHeatmapEl.classList.toggle('panel-eligible', on);
+      facProcessEl.classList.toggle('panel-eligible', on);
+    }
+    function syncRestingRect(){
+      var slotRect = facSlot.getBoundingClientRect();
+      setFacVizRect(slotRect.top, slotRect.left, slotRect.width, slotRect.height, 20, 'none');
+    }
+
+    var closeTimeout = null;
+    function openCard(){
+      if (isOpen || innerWidth <= 900) return;
+      if (closeTimeout) clearTimeout(closeTimeout);
+      isOpen = true;
+      window.__facOpen = true;
+      openP = 0;
+      lockScroll();                 /* lock first so bannerRect() measures the final width */
+      bindOpenListeners(true);
+      facViz.classList.add('is-animating');
+      facViz.classList.add('is-open');
+      var b = bannerRect();
+      /* a clean rounded rectangle (not a trapezoid) so the movement-intel copy in the
+         bottom-left is never clipped by an angled edge — the text stays perfectly aligned */
+      setFacVizRect(b.top, b.left, b.width, b.height, 22, 'none');
+      setBase(b.top, b.left, b.width, b.height);
+      setDim(1, true);
+      setPanelsEligible(false);
+      FacMove.onOpen();
+      FacMove.onScrollOpen(0);
+    }
+    function closeCard(){
+      if (!isOpen) return;
+      isOpen = false;
+      window.__facOpen = false;
+      bindOpenListeners(false);
+      unlockScroll();
+      facViz.classList.add('is-animating');
+      facViz.classList.remove('is-open');
+      syncRestingRect();
+      setDim(0, false);
+      setPanelsEligible(true);
+      FacMove.onClose();
+      if (closeTimeout) clearTimeout(closeTimeout);
+      closeTimeout = setTimeout(function(){
+        if (!isOpen) facViz.classList.remove('is-animating');
+      }, 620);
+    }
+
+    /* ---- scroll trap while the card is open ---------------------------------
+       Lock the page and route wheel/touch/keys into the narrative. It stays locked
+       until the narrative is fully played (openP === 1, then one more scroll down),
+       or the visitor clicks outside the frame / the close button. */
+    function lockScroll(){
+      var sbw = innerWidth - document.documentElement.clientWidth;
+      lockedScrollbarPad = document.documentElement.style.paddingRight;
+      if (sbw > 0) document.documentElement.style.paddingRight = sbw + 'px';
+      document.documentElement.style.overflow = 'hidden';
+    }
+    function unlockScroll(){
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.paddingRight = lockedScrollbarPad;
+    }
+    /* returns true if the gesture was consumed by the narrative, false to release the
+       page (only ever released by finishing downward — up just clamps at the start) */
+    function advanceNarrative(delta){
+      if (delta > 0 && openP >= 1) return false;
+      openP = Math.min(Math.max(openP + delta / WHEEL_SPAN, 0), 1);
+      FacMove.onScrollOpen(openP);
+      return true;
+    }
+    function onOpenWheel(e){
+      if (!isOpen) return;
+      var dy = e.deltaY;
+      if (e.deltaMode === 1) dy *= 16;            /* lines -> px  */
+      else if (e.deltaMode === 2) dy *= innerHeight; /* pages -> px */
+      if (advanceNarrative(dy)) e.preventDefault();
+      else closeCard();  /* narrative finished: hand scrolling back to the page */
+    }
+    function onOpenTouchStart(e){
+      if (!isOpen || !e.touches.length) return;
+      touchLastY = e.touches[0].clientY;
+    }
+    function onOpenTouchMove(e){
+      if (!isOpen || !e.touches.length) return;
+      var y = e.touches[0].clientY, delta = touchLastY - y;  /* swipe up => advance */
+      touchLastY = y;
+      if (advanceNarrative(delta)) e.preventDefault();
+      else closeCard();
+    }
+    function onOpenKey(e){
+      if (!isOpen) return;
+      if (e.key === 'Escape'){ closeCard(); return; }
+      var dir = ({ ArrowDown:1, PageDown:1, ' ':1, Spacebar:1, ArrowUp:-1, PageUp:-1 })[e.key];
+      if (!dir) return;
+      if (advanceNarrative(dir * WHEEL_SPAN * 0.5)) e.preventDefault();
+      else closeCard();
+    }
+    /* only bound while open, so normal page scrolling stays fully passive/unaffected
+       (the non-passive wheel/touch handlers would otherwise slow scrolling everywhere) */
+    function bindOpenListeners(on){
+      var fn = (on ? window.addEventListener : window.removeEventListener).bind(window);
+      fn('wheel', onOpenWheel, {passive:false});
+      fn('touchstart', onOpenTouchStart, {passive:true});
+      fn('touchmove', onOpenTouchMove, {passive:false});
+      fn('keydown', onOpenKey);
+    }
+
+    facViz.addEventListener('click', function(){ openCard(); });
+    seeMoreBtn.addEventListener('click', function(e){ e.stopPropagation(); openCard(); });
+    closeBtn.addEventListener('click', function(e){ e.stopPropagation(); closeCard(); });
+    facBackdrop.addEventListener('click', closeCard);
+
+    function onFacScroll(){
+      var rect = facWrap.getBoundingClientRect();
+      var inView = rect.bottom >= 0 && rect.top <= innerHeight;
+      document.body.classList.toggle('fac-in-view', inView);
+
+      if (!inView){
+        facViz.style.opacity = '0';
+        facViz.style.pointerEvents = 'none';
+        if (isOpen) closeCard();
+        return;
+      }
+      if (!facilityLoopActive) startFacilityLoop();
+      facViz.style.opacity = '1';
+      facViz.style.pointerEvents = 'auto';
+
+      if (isOpen){
+        if (innerWidth <= 900){ closeCard(); return; }
+        /* scroll is trapped while open, so this only fires on resize — keep the banner
+           and its overlay pinned to the (possibly new) viewport geometry */
+        var b = bannerRect();
+        setFacVizRect(b.top, b.left, b.width, b.height, 22, 'none');
+        setBase(b.top, b.left, b.width, b.height);
+        FacMove.onScrollOpen(openP);
+        return;
+      }
+      if (innerWidth <= 900) return;
+
+      syncRestingRect();
+      setPanelsEligible(true);
+
+      /* gentle auto-advance through the facility tabs as the card scrolls
+         past, unless the user has explicitly chosen a facility tab */
+      if (userSelectedTheme) return;
+      var total = facWrap.offsetHeight - innerHeight;
+      if (total <= 0) return;
+      var p = Math.min(Math.max(-rect.top / total, 0), 1);
+      var idx = Math.min(FAC_THEMES.length - 1, Math.floor(p * FAC_THEMES.length));
+      if (FAC_THEMES[idx] !== currentTheme) smoothSwitchLayout(FAC_THEMES[idx]);
+    }
+    /* coalesce to at most once per animation frame — 'scroll' can fire much more often
+       than that on some devices, and this handler does layout reads + style writes */
+    var scrollScheduled = false;
+    function scheduleFacScroll(){
+      if (scrollScheduled) return;
+      scrollScheduled = true;
+      requestAnimationFrame(function(){ scrollScheduled = false; onFacScroll(); });
+    }
+    addEventListener('scroll', scheduleFacScroll, {passive:true});
+    addEventListener('resize', scheduleFacScroll);
+    onFacScroll();
+  })();
+</script>
 </body>
 </html>

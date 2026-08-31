@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airflow — retail card</title>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:rgba(16,21,29,.94); --line:rgba(255,255,255,.14);
+    --fg:#eef4f8; --dim:#93a0b0; --accent:#7ad8ff;
+    --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+    /* the engine reads these */
+    --card-neutral:#141418; --card-neutral-fg:#fbfbfd;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;
+       height:100vh;overflow:hidden;}
+
+  /* the same box the live card gives the scene, so what you tune here transfers */
+  #facVizReal{
+    position:absolute;top:3vh;left:360px;right:3vw;bottom:3vh;
+    background:#0e1219;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  }
+  #facCanvasWrap{position:absolute;inset:0;}
+  #canvas,#canvasDyn{position:absolute;inset:0;width:100%;height:100%;}
+  #facMoveOverlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:7;opacity:1;}
+  #facDeck{display:none;}
+
+  #panel{
+    position:absolute;top:12px;left:12px;z-index:10;width:334px;max-height:calc(100vh - 24px);
+    overflow:auto;background:var(--panel);backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:14px;padding:14px 15px;
+  }
+  h1{font-size:.84rem;font-weight:600;}
+  .sub{font-family:var(--mono);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px;}
+  .hint{font-size:.7rem;line-height:1.5;color:var(--dim);margin:9px 0 2px;}
+  .hint b{color:var(--fg);font-weight:600;}
+  .grp{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);}
+  .grp>.t{font-family:var(--mono);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;}
+  label.f{display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);}
+  label.f b{color:var(--fg);font-size:.7rem;font-weight:600;letter-spacing:0;font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%;margin:4px 0 8px;accent-color:var(--accent);}
+  .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  button{
+    font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--fg);background:rgba(255,255,255,.07);border:1px solid var(--line);
+    border-radius:7px;padding:6px 9px;cursor:pointer;transition:.18s;
+  }
+  button:hover{background:rgba(255,255,255,.16);border-color:var(--accent);}
+  button.on{background:var(--accent);color:#06212b;border-color:var(--accent);font-weight:700;}
+  button.primary{background:var(--accent);color:#06212b;border-color:var(--accent);font-weight:700;}
+  #out{width:100%;height:86px;background:#05080c;border:1px solid var(--line);border-radius:8px;
+    color:#9fe8ff;font-family:var(--mono);font-size:.52rem;padding:7px;resize:vertical;margin-top:8px;}
+  #status{margin-top:7px;font-family:var(--mono);font-size:.53rem;color:var(--accent);min-height:1.1em;}
+</style>
+</head>
+<body>
+
+<div id="panel">
+  <h1>Airflow</h1>
+  <p class="sub">Retail card &middot; ceiling supply</p>
+  <p class="hint">
+    Real supply air <b>clings to the ceiling</b> before it drops — that is the
+    Coanda effect, and it is what makes this read as air rather than plumbing.
+    <b>Cling</b> is the control that matters most: lower values hug the ceiling
+    longer before the jet falls.
+  </p>
+
+  <div class="grp"><div class="t">Shape</div>
+    <label class="f">Ceiling height <b id="vCeil">0.44</b></label>
+    <input type="range" id="ceilingFrac" min="0.15" max="0.75" step="0.01" value="0.44">
+    <label class="f">Throw along ceiling <b id="vThrow">1.15×</b></label>
+    <input type="range" id="throwMul" min="0.2" max="3" step="0.05" value="1.15">
+    <label class="f">Cling (lower = hugs longer) <b id="vCling">0.30</b></label>
+    <input type="range" id="cling" min="0.02" max="0.9" step="0.02" value="0.30">
+    <label class="f">Floor sweep <b id="vSpread">30</b></label>
+    <input type="range" id="spread" min="5" max="120" step="1" value="30">
+  </div>
+
+  <div class="grp"><div class="t">Motion</div>
+    <label class="f">Particles per stream <b id="vPart">15</b></label>
+    <input type="range" id="particles" min="3" max="40" step="1" value="15">
+    <label class="f">Speed <b id="vSpeed">0.13</b></label>
+    <input type="range" id="speed" min="0.02" max="0.5" step="0.01" value="0.13">
+    <label class="f">Turbulence <b id="vTurb">1.00×</b></label>
+    <input type="range" id="turbulence" min="0" max="3" step="0.05" value="1">
+    <label class="f">Opacity <b id="vOp">1.00×</b></label>
+    <input type="range" id="opacity" min="0.1" max="2" step="0.05" value="1">
+    <label class="f">Supply points <b id="vStreams">4</b></label>
+    <input type="range" id="streams" min="1" max="8" step="1" value="4">
+  </div>
+
+  <div class="row">
+    <button id="loopBtn" class="on">Return air</button>
+    <button id="diffBtn" class="on">Diffusers</button>
+  </div>
+
+  <div class="row">
+    <button class="primary" id="copy">Copy settings</button>
+    <button id="reset">Reset</button>
+  </div>
+  <textarea id="out" readonly spellcheck="false"></textarea>
+  <div id="status">Starting…</div>
+</div>
+
+<!-- the same element ids the engine and FacMove look for on the live page -->
+<div class="facViz" id="facVizReal">
+  <div id="facCanvasWrap">
+    <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
+    <svg id="canvasDyn" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <svg id="facMoveOverlay" class="fac-move-overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+  <div id="facDeck"></div>
+</div>
+
+<script src="/shared/iso-core.js?v=5"></script>
+<script src="/shared/iso-pieces-retail.js?v=5"></script>
+<script src="/shared/iso-pieces-industrial.js?v=5"></script>
+<script src="/shared/iso-pieces-chemical.js?v=5"></script>
+<script src="/shared/iso-theme.js?v=5"></script>
+<script src="/shared/iso-walkers.js?v=5"></script>
+<script src="/shared/iso-sensors.js?v=5"></script>
+<script src="/shared/iso-render.js?v=5"></script>
+<script src="/shared/fac-move.js?v=7"></script>
+<script>
+(function(){
+  var statusEl = document.getElementById('status');
+  var out = document.getElementById('out');
+  function say(m){ statusEl.textContent = m; }
+
+  loadDefault();
+  render();
+
+  /* Hold the reveal wide open so the air is always on, and let FacMove build
+     trails as usual - the supply points follow wherever the shoppers actually
+     spend their time, so it needs the walkers running. */
+  FacMove.onOpen();
+  FacMove.air({ forced: 1 });
+
+  var STEP = 40, last = 0;
+  requestAnimationFrame(function tick(now){
+    requestAnimationFrame(tick);
+    if (now - last < STEP) return;
+    last = now;
+    updateWalkers();
+    render();
+    FacMove.tick(STEP / 1000);
+  });
+
+  var KEYS = ['ceilingFrac','throwMul','cling','spread','particles','speed','turbulence','opacity','streams'];
+  var LABEL = { ceilingFrac:['vCeil',2,''], throwMul:['vThrow',2,'×'], cling:['vCling',2,''],
+                spread:['vSpread',0,''], particles:['vPart',0,''], speed:['vSpeed',2,''],
+                turbulence:['vTurb',2,'×'], opacity:['vOp',2,'×'], streams:['vStreams',0,''] };
+  var state = {};
+
+  function apply(){
+    FacMove.air(state);
+    KEYS.forEach(function(k){
+      var l = LABEL[k];
+      document.getElementById(l[0]).textContent = (+state[k]).toFixed(l[1]) + l[2];
+    });
+    var o = {};
+    KEYS.forEach(function(k){ o[k] = state[k]; });
+    o.showLoop = state.showLoop; o.showDiffuser = state.showDiffuser;
+    out.value = JSON.stringify(o);
+  }
+
+  KEYS.forEach(function(k){
+    var el = document.getElementById(k);
+    state[k] = parseFloat(el.value);
+    el.addEventListener('input', function(){ state[k] = parseFloat(this.value); apply(); });
+  });
+  state.showLoop = true; state.showDiffuser = true;
+
+  document.getElementById('loopBtn').onclick = function(){
+    state.showLoop = !state.showLoop;
+    this.classList.toggle('on', state.showLoop); apply();
+  };
+  document.getElementById('diffBtn').onclick = function(){
+    state.showDiffuser = !state.showDiffuser;
+    this.classList.toggle('on', state.showDiffuser); apply();
+  };
+  document.getElementById('reset').onclick = function(){
+    var d = { ceilingFrac:0.44, throwMul:1.15, cling:0.30, spread:30,
+              particles:15, speed:0.13, turbulence:1, opacity:1, streams:4 };
+    KEYS.forEach(function(k){ state[k] = d[k]; document.getElementById(k).value = d[k]; });
+    state.showLoop = state.showDiffuser = true;
+    document.getElementById('loopBtn').classList.add('on');
+    document.getElementById('diffBtn').classList.add('on');
+    apply(); say('Reset to the current live values.');
+  };
+  document.getElementById('copy').onclick = function(){
+    apply(); out.select();
+    navigator.clipboard.writeText(out.value).then(
+      function(){ say('Copied — paste it back to me.'); },
+      function(){ document.execCommand('copy'); say('Copied.'); });
+  };
+
+  apply();
+  say('Running. Air follows wherever the shoppers dwell.');
+})();
+</script>
+</body>
+</html>

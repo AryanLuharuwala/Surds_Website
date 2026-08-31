@@ -1,0 +1,116 @@
+{
+  "contributions": [
+    {
+      "at": "2026-08-24T14:00:31Z",
+      "author": "AryanLuharuwala",
+      "branch": "main",
+      "email": "aryanluharuwala@gmail.com",
+      "host": "fedora",
+      "parent": "4aca894",
+      "redacted": {},
+      "sessions": [
+        {
+          "chunk": null,
+          "commands": [],
+          "files": [],
+          "id": "5cc2af26-5173-4375-acd0-1dcfb61adc67",
+          "messages": 0,
+          "prompts": [],
+          "skipped_bytes": 47487044,
+          "title": null,
+          "user_messages": 0
+        },
+        {
+          "chunk": "sessions/e952dfcf-54fa-4004-ba08-23655494022c/00001.jsonl.gz",
+          "commands": [
+            "ls -la && echo \"---MODELS---\" && ls -la models/ 2>/dev/null | head -50 && echo \"---VIEWS---\" && find views -type f | he\u2026",
+            "wc -l views/main/index.html merge-preview1.html 2>/dev/null && grep -rn \"engineer intelligence\" --include=*.html --incl\u2026",
+            "grep -rni \"physical world\" --include=*.html --include=*.js . 2>/dev/null | grep -v node_modules | head -20",
+            "grep -rn \"carbon\" -i --include=*.html --include=*.js --include=*.json . 2>/dev/null | grep -v node_modules | head -20 &\u2026",
+            "git status --short views/main/index.html && git diff --stat views/main/index.html",
+            "find . -iname \"*carbon*\" 2>/dev/null | grep -v node_modules",
+            "grep -n \"heroDots\\|hero-scroll\\|hero-statement\\|#hero\\b\" views/main/main.js views/main/main.css | head -60",
+            "sed -n '1,80p' shared/store3d.js",
+            "grep -rn \"heroDots\\|hero-scroll\\|hero-statement\" --include=*.js --include=*.css . 2>/dev/null | grep -v node_modules",
+            "wc -l views/main/main.js views/main/main.css",
+            "grep -n \"heroDots\\|hero-scroll\\|hero-statement\\|<style\\|<script\" views/main/index.html | head -60",
+            "grep -n \"IntersectionObserver\\|addEventListener(\\\"scroll\\|scrollY\\|getBoundingClientRect\\|requestAnimationFrame\" views/\u2026",
+            "sed -n '12,45p' views/main/index.html",
+            "grep -n \"const IND\\|c1:\\|c1 *:\" views/main/index.html | head -20",
+            "ls -la models/*.glb models/*.png 2>/dev/null; du -h cartoon_lowpoly_small_city_free_pack.glb; cat vercel.json; sed -n '\u2026"
+          ],
+          "files": [
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_final.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_fonts.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_hero.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_open.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_pidbox.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_pidbox2.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_removed.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/check_shift.py",
+            "/tmp/claude-3256/-home-boom-Desktop-SideProjs-Websites-Surds-hvac/e952dfcf-54fa-4004-ba08-23655494022c/scratchpad/minimal_repro.py",
+            "dev-server.py",
+            "shared/fac-deck.js",
+            "shared/fonts.css",
+            "vercel.json",
+            "views/main/index.html"
+          ],
+          "id": "e952dfcf-54fa-4004-ba08-23655494022c",
+          "messages": 711,
+          "prompts": [
+            "lets frame the content of the website better, the first part, we engineer intelligence for the physical world looks a little empty, as we scroll, i want a burn effect of the next parts to come, a tra\u2026",
+            "<local-command-stdout>Set model to claude-sonnet-5</local-command-stdout>",
+            "no spec needed, build it directly"
+          ],
+          "skipped_bytes": 0,
+          "title": "Add scroll animations and carbon backdrop to website",
+          "user_messages": 11
+        }
+      ]
+    }
+  ],
+  "origin_repo_root": "/home/boom/Desktop/SideProjs/Websites/Surds.hvac",
+  "repo_roots": [
+    "/home/boom/Desktop/SideProjs/Websites/Surds.hvac"
+  ],
+  "sessions": {
+    "5cc2af26-5173-4375-acd0-1dcfb61adc67": {
+      "chunks": [],
+      "cwd": "/home/boom/Desktop/SideProjs/Websites/Surds.hvac",
+      "messages": 0,
+      "project_dir": "-home-boom-Desktop-SideProjs-Websites-Surds-hvac",
+      "prompts": [],
+      "rel": ".",
+      "skipped_bytes": 47487044,
+      "user_messages": 0
+    },
+    "e952dfcf-54fa-4004-ba08-23655494022c": {
+      "branch": "main",
+      "chunks": [
+        {
+          "at": "2026-08-24T14:00:31Z",
+          "author": "AryanLuharuwala",
+          "bytes": 7011148,
+          "file": "sessions/e952dfcf-54fa-4004-ba08-23655494022c/00001.jsonl.gz",
+          "gz_bytes": 4103087,
+          "parent": "4aca894"
+        }
+      ],
+      "cwd": "/home/boom/Desktop/SideProjs/Websites/Surds.hvac",
+      "first_ts": "2026-07-27T13:37:41.322Z",
+      "last_ts": "2026-07-27T17:24:44.700Z",
+      "messages": 711,
+      "project_dir": "-home-boom-Desktop-SideProjs-Websites-Surds-hvac",
+      "prompts": [
+        "lets frame the content of the website better, the first part, we engineer intelligence for the physical world looks a little empty, as we scroll, i want a burn effect of the next parts to come, a tra\u2026",
+        "<local-command-stdout>Set model to claude-sonnet-5</local-command-stdout>",
+        "no spec needed, build it directly"
+      ],
+      "rel": ".",
+      "skipped_bytes": 0,
+      "title": "Add scroll animations and carbon backdrop to website",
+      "user_messages": 11
+    }
+  },
+  "version": 1
+}

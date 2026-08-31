@@ -1,0 +1,35 @@
+# Source assets, not web assets. The repo carries 1.8 GB of raw 3D sources
+# (.max/.c4d/.3ds/.blend/.usdz/.7z and the uncompressed originals the web GLBs
+# were derived from). Only the optimised GLBs the pages actually reference
+# belong on the CDN.
+*.blend
+*.blend1
+*.max
+*.c4d
+*.3ds
+*.usdz
+*.7z
+*.zip
+models/iramk4/
+models/quarry_raw/
+mbks-swimming-pool-kuching-sarawak-oss/
+starry-night-off-shoulder-look/
+
+# large GLBs no page loads
+gippsland_quarry_sand.glb
+lady_in_black_dress.glb
+models/iramk4.glb
+appartement.glb
+tienda_22.glb
+90s_retro_office_pack.glb
+models/isometric-office.glb
+models/quarry-sand-*.glb
+
+# build/analysis tooling and scratch
+tools/
+*.py
+*.npy
+logs/
+node_modules/
+.git/
+*.step

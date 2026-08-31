@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road path editor — MBKS pool</title>
+<script type="module" src="https://unpkg.com/@google/model-viewer@4/dist/model-viewer.min.js"></script>
+<style>
+  :root{
+    --bg:#0b0e13; --panel:rgba(16,21,29,.94); --line:rgba(255,255,255,.14);
+    --fg:#eef4f8; --dim:#93a0b0; --accent:#5ad1ff;
+    --mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;height:100vh;overflow:hidden;}
+  model-viewer{width:100%;height:100%;background:#0b0e13;--poster-color:transparent;}
+  #stage{position:absolute;inset:0;}
+  #overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;}
+
+  #panel{
+    position:absolute;top:12px;left:12px;z-index:10;width:322px;max-height:calc(100vh - 24px);
+    display:flex;flex-direction:column;background:var(--panel);backdrop-filter:blur(14px);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  }
+  .pad{padding:13px 15px;}
+  h1{font-size:.84rem;font-weight:600;}
+  .sub{font-family:var(--mono);font-size:.53rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:2px;}
+  .hint{font-size:.71rem;line-height:1.55;color:var(--dim);}
+  .hint b{color:var(--fg);font-weight:600;}
+  kbd{
+    font-family:var(--mono);font-size:.62rem;background:rgba(255,255,255,.1);
+    border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--fg);
+  }
+  .row{display:flex;gap:6px;flex-wrap:wrap;}
+  button{
+    font-family:var(--mono);font-size:.55rem;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--fg);background:rgba(255,255,255,.07);border:1px solid var(--line);
+    border-radius:7px;padding:7px 10px;cursor:pointer;transition:.18s;
+  }
+  button:hover:not(:disabled){background:rgba(255,255,255,.16);border-color:var(--accent);}
+  button.primary{background:var(--accent);color:#06212b;border-color:var(--accent);font-weight:700;}
+  button.warn:hover{border-color:#f87171;color:#f87171;}
+  button:disabled{opacity:.3;cursor:default;}
+  button.on{background:var(--accent);color:#06212b;border-color:var(--accent);font-weight:700;}
+
+  .scroll{overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .path{
+    display:flex;align-items:center;gap:8px;padding:8px 15px;border-bottom:1px solid rgba(255,255,255,.06);
+    cursor:pointer;font-size:.72rem;
+  }
+  .path:hover{background:rgba(255,255,255,.05);}
+  .path.active{background:rgba(90,209,255,.12);}
+  .chip{width:11px;height:11px;border-radius:3px;flex:0 0 11px;}
+  .path .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .path .ct{font-family:var(--mono);font-size:.58rem;color:var(--dim);}
+  .path .x{font-family:var(--mono);font-size:.7rem;color:var(--dim);padding:0 2px;}
+  .path .x:hover{color:#f87171;}
+
+  label.field{display:block;font-family:var(--mono);font-size:.49rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:11px;}
+  input[type=range]{width:100%;margin-top:4px;accent-color:var(--accent);}
+  .val{color:var(--fg);font-family:var(--mono);font-size:.7rem;}
+  #out,#inp{width:100%;height:96px;background:#05080c;border:1px solid var(--line);border-radius:8px;
+       color:#9fe8ff;font-family:var(--mono);font-size:.53rem;padding:7px;resize:vertical;margin-top:9px;}
+  #inp{color:#eef4f8;height:66px;}
+  #status{margin-top:8px;font-family:var(--mono);font-size:.54rem;color:var(--accent);min-height:1.1em;}
+
+  .dot{
+    width:12px;height:12px;border-radius:50%;border:2px solid #06212b;cursor:pointer;
+    box-shadow:0 0 0 2px rgba(0,0,0,.35);
+  }
+  .dot.head{width:15px;height:15px;}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <model-viewer id="mv" src="/models/swimming-pool.glb" alt="MBKS pool site"
+    camera-controls touch-action="pan-y" camera-orbit="45deg 60deg 105%"
+    field-of-view="32deg" exposure="1.15" shadow-intensity="0.8" loading="eager" reveal="auto">
+  </model-viewer>
+  <svg id="overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<div id="panel">
+  <div class="pad">
+    <h1>Road path editor</h1>
+    <p class="sub">MBKS pool &middot; draw one road at a time</p>
+  </div>
+
+  <div class="pad" style="padding-top:0">
+    <p class="hint">
+      <b>Click the road</b> to lay points along one carriageway. Press
+      <kbd>Enter</kbd> or <b>End path</b> to lift the pen and start the next
+      road &mdash; paths stay separate, so nothing loops back on itself.
+      <br><br>
+      Right-drag orbits. <kbd>Z</kbd> undoes a point. Click any dot to delete it.
+    </p>
+    <div class="row" style="margin-top:11px">
+      <button class="primary" id="end">End path &crarr;</button>
+      <button id="undo">Undo</button>
+      <button id="snap" class="on">Snap: on</button>
+    </div>
+  </div>
+
+  <div class="scroll" id="list"></div>
+
+  <div class="pad">
+    <label class="field">Road width <span class="val" id="wv">6.0</span> m</label>
+    <input type="range" id="width" min="2" max="30" step="0.5" value="6">
+    <label class="field">Lanes each way <span class="val" id="lv">1</span></label>
+    <input type="range" id="lanes" min="1" max="3" step="1" value="1">
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="copy">Copy JSON</button>
+      <button id="save">Download</button>
+      <button class="warn" id="clear">Clear all</button>
+    </div>
+    <textarea id="out" readonly spellcheck="false"></textarea>
+    <label class="field">Load paths &mdash; paste a previous export here</label>
+    <textarea id="inp" spellcheck="false" placeholder='{"strokes":[…]}'></textarea>
+    <div class="row" style="margin-top:7px">
+      <button id="load">Load JSON</button>
+      <button id="restore">Restore last</button>
+    </div>
+    <div id="status">Loading model…</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var PALETTE = ['#5ad1ff','#ff8a3a','#8aff6f','#ff6fd8','#ffd166','#b28dff','#ff6b4a','#4ade80'];
+  var SNAP_PX = 16;                 // screen distance that counts as "the same point"
+
+  var mv = document.getElementById('mv');
+  var overlay = document.getElementById('overlay');
+  var listEl = document.getElementById('list');
+  var out = document.getElementById('out');
+  var statusEl = document.getElementById('status');
+
+  var paths = [];                   // [{id,name,pts:[{uid,x,y,z}]}]
+  var active = -1;                  // index of the path being drawn, -1 = none open
+  var uid = 0, pid = 0;
+  var snap = true;
+
+  function say(m){ statusEl.textContent = m; }
+  function colorOf(i){ return PALETTE[i % PALETTE.length]; }
+
+  mv.addEventListener('load', function(){
+    var saved = null; try { saved = localStorage.getItem(STORE); } catch (e) {}
+    if (saved && !paths.length && importPayload(JSON.parse(saved), 'Restored your last session')) { draw(); return; }
+    say('Model loaded — click the road to start path 1.');
+    draw();
+  });
+  mv.addEventListener('error', function(){ say('Model failed to load.'); });
+
+  /* Orbiting ends in a click too, so only a press that barely moved counts. */
+  var down = null;
+  mv.addEventListener('pointerdown', function(e){ down = {x:e.clientX,y:e.clientY,b:e.button}; });
+  mv.addEventListener('pointerup', function(e){
+    if (!down) return;
+    var moved = Math.hypot(e.clientX-down.x, e.clientY-down.y), left = down.b === 0;
+    down = null;
+    if (left && moved <= 5) addPoint(e.clientX, e.clientY);
+  });
+
+  window.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'Enter'){ e.preventDefault(); endPath(); }
+    else if (e.key === 'z' || e.key === 'Z'){ e.preventDefault(); undo(); }
+  });
+
+  function addPoint(cx, cy){
+    var hit = mv.positionAndNormalFromPoint(cx, cy);
+    if (!hit){ say('Missed the model — click on a surface.'); return; }
+    var p = hit.position;
+
+    /* Snapping to a point that already exists is how a deliberate junction gets
+       made: both paths then share one coordinate exactly, instead of relying on
+       a tolerance later to guess that they were meant to meet. */
+    if (snap){
+      var near = nearestExisting(cx, cy);
+      if (near){ p = { x: near.x, y: near.y, z: near.z }; say('Snapped to an existing point — junction.'); }
+    }
+
+    if (active < 0){
+      paths.push({ id: ++pid, name: 'Road ' + (paths.length + 1), pts: [] });
+      active = paths.length - 1;
+    }
+    paths[active].pts.push({ uid: ++uid, x:+p.x.toFixed(4), y:+p.y.toFixed(4), z:+p.z.toFixed(4) });
+    if (!snap || statusEl.textContent.indexOf('Snapped') !== 0){
+      say('Path ' + (active+1) + ' — ' + paths[active].pts.length + ' points');
+    }
+    sync();
+  }
+
+  function nearestExisting(cx, cy){
+    var r = mv.getBoundingClientRect(), best = null, bd = SNAP_PX;
+    for (var i = 0; i < paths.length; i++){
+      for (var j = 0; j < paths[i].pts.length; j++){
+        if (i === active && j === paths[i].pts.length - 1) continue;   // not the point we just laid
+        var h = mv.queryHotspot('hotspot-rp' + paths[i].pts[j].uid);
+        if (!h || !h.canvasPosition) continue;
+        var d = Math.hypot(h.canvasPosition.x + r.left - cx, h.canvasPosition.y + r.top - cy);
+        if (d < bd){ bd = d; best = paths[i].pts[j]; }
+      }
+    }
+    return best;
+  }
+
+  function endPath(){
+    if (active < 0){ say('No path open.'); return; }
+    if (paths[active].pts.length < 2){
+      paths.splice(active,1);
+      say('Dropped a path with fewer than two points.');
+    } else {
+      say('Path ' + (active+1) + ' closed with ' + paths[active].pts.length + ' points. Click to start the next.');
+    }
+    active = -1;
+    sync();
+  }
+
+  function undo(){
+    if (active < 0 || !paths[active].pts.length){
+      // step back into the previous path so undo keeps working after a pen-up
+      if (paths.length){ active = paths.length - 1; }
+      else { say('Nothing to undo.'); return; }
+    }
+    paths[active].pts.pop();
+    if (!paths[active].pts.length){ paths.splice(active,1); active = -1; }
+    sync(); say('Undid a point.');
+  }
+
+  /* One hotspot per point, keyed by a stable uid so adding or deleting one does
+     not disturb the rest. model-viewer keeps each welded to its spot on the mesh. */
+  function sync(){
+    var want = {};
+    paths.forEach(function(pa, pi){
+      pa.pts.forEach(function(pt, j){
+        want['hotspot-rp' + pt.uid] = { pt: pt, pi: pi, j: j, last: j === pa.pts.length - 1 };
+      });
+    });
+    [].slice.call(mv.querySelectorAll('[slot^="hotspot-rp"]')).forEach(function(n){
+      if (!want[n.slot]) n.remove(); else n.dataset._keep = '1';
+    });
+    Object.keys(want).forEach(function(slot){
+      var w = want[slot];
+      var el = mv.querySelector('[slot="' + slot + '"]');
+      if (!el){
+        el = document.createElement('button');
+        el.slot = slot;
+        el.dataset.position = w.pt.x + 'm ' + w.pt.y + 'm ' + w.pt.z + 'm';
+        el.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          removePoint(w.pt.uid);
+        });
+        mv.appendChild(el);
+      }
+      el.className = 'dot' + (w.last ? ' head' : '');
+      el.style.background = colorOf(w.pi);
+      el.title = paths[w.pi].name + ' — point ' + (w.j+1);
+    });
+    renderList(); draw(); emit(); persist();
+  }
+
+  function removePoint(u){
+    for (var i = 0; i < paths.length; i++){
+      var k = paths[i].pts.findIndex(function(p){ return p.uid === u; });
+      if (k >= 0){
+        paths[i].pts.splice(k,1);
+        if (!paths[i].pts.length){ paths.splice(i,1); if (active >= paths.length) active = -1; }
+        sync(); say('Deleted a point.'); return;
+      }
+    }
+  }
+
+  function renderList(){
+    if (!paths.length){ listEl.innerHTML = '<div class="pad hint">No paths yet.</div>'; return; }
+    listEl.innerHTML = paths.map(function(pa,i){
+      return '<div class="path' + (i===active?' active':'') + '" data-i="' + i + '">' +
+        '<span class="chip" style="background:' + colorOf(i) + '"></span>' +
+        '<span class="nm">' + pa.name + (i===active?' — drawing':'') + '</span>' +
+        '<span class="ct">' + pa.pts.length + '</span>' +
+        '<span class="x" data-del="' + i + '">&times;</span></div>';
+    }).join('');
+    [].slice.call(listEl.querySelectorAll('.path')).forEach(function(row){
+      row.addEventListener('click', function(e){
+        var del = e.target.getAttribute('data-del');
+        if (del !== null){ paths.splice(+del,1); active = -1; sync(); return; }
+        active = +row.getAttribute('data-i');
+        say('Continuing ' + paths[active].name + '.');
+        sync();
+      });
+    });
+  }
+
+  /* Draw each path in its own colour, and mark where two different paths cross
+     so the junctions are visible before anything is exported. */
+  function draw(){
+    var r = mv.getBoundingClientRect();
+    overlay.setAttribute('viewBox', '0 0 ' + r.width + ' ' + r.height);
+    var body = '', screens = [];
+    paths.forEach(function(pa, i){
+      var pts = [];
+      for (var j = 0; j < pa.pts.length; j++){
+        var h = mv.queryHotspot('hotspot-rp' + pa.pts[j].uid);
+        if (!h || !h.canvasPosition){ pts = null; break; }
+        pts.push(h.canvasPosition);
+      }
+      screens.push(pts);
+      if (!pts || pts.length < 2) return;
+      var d = pts.map(function(p,k){ return (k?'L':'M') + p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+      body += '<path d="' + d + '" fill="none" stroke="' + colorOf(i) + '" stroke-width="8" opacity=".18" stroke-linecap="round" stroke-linejoin="round"/>' +
+              '<path d="' + d + '" fill="none" stroke="' + colorOf(i) + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"' +
+              (i===active?'':' opacity=".85"') + '/>';
+    });
+    for (var a = 0; a < screens.length; a++){
+      for (var b = a+1; b < screens.length; b++){
+        var A = screens[a], B = screens[b];
+        if (!A || !B) continue;
+        for (var m = 0; m+1 < A.length; m++){
+          for (var n = 0; n+1 < B.length; n++){
+            var x = segX(A[m],A[m+1],B[n],B[n+1]);
+            if (x) body += '<circle cx="' + x.x.toFixed(1) + '" cy="' + x.y.toFixed(1) +
+                           '" r="6" fill="none" stroke="#fff" stroke-width="2"/>';
+          }
+        }
+      }
+    }
+    overlay.innerHTML = body;
+  }
+  function segX(p1,p2,p3,p4){
+    var d = (p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x);
+    if (Math.abs(d) < 1e-9) return null;
+    var t = ((p1.x-p3.x)*(p3.y-p4.y)-(p1.y-p3.y)*(p3.x-p4.x))/d;
+    var u = ((p1.x-p3.x)*(p1.y-p2.y)-(p1.y-p3.y)*(p1.x-p2.x))/d;
+    if (t<0||t>1||u<0||u>1) return null;
+    return { x: p1.x + t*(p2.x-p1.x), y: p1.y + t*(p2.y-p1.y) };
+  }
+  mv.addEventListener('camera-change', draw);
+  window.addEventListener('resize', draw);
+
+  function emit(){
+    var payload = {
+      model: '/models/swimming-pool.glb',
+      space: 'model',
+      width: parseFloat(document.getElementById('width').value),
+      lanes: parseInt(document.getElementById('lanes').value,10),
+      /* explicit paths: the builder no longer has to guess where one road ended
+         and the next began */
+      strokes: paths.map(function(pa){
+        return { name: pa.name, points: pa.pts.map(function(p){ return {x:p.x,y:p.y,z:p.z}; }) };
+      })
+    };
+    out.value = JSON.stringify(payload);
+    return payload;
+  }
+
+  /* Reloading the page must not cost the drawing. Everything is mirrored to
+     localStorage on each change and offered back on load, so adding a connector
+     to an existing set never means starting over. */
+  var STORE = 'surds.roadEditor.paths';
+  function persist(){
+    try { localStorage.setItem(STORE, JSON.stringify(emit())); } catch (e) {}
+  }
+  function importPayload(obj, label){
+    if (!obj) return false;
+    var src = obj.strokes || (obj.points ? [{ name:'Road 1', points: obj.points }] : null);
+    if (!src || !src.length) { say('No paths in that JSON.'); return false; }
+    paths = src.map(function(st, i){
+      return { id: ++pid, name: st.name || ('Road ' + (i+1)),
+               pts: (st.points||[]).map(function(q){
+                 return { uid: ++uid, x:+q.x, y:+q.y, z:+q.z };
+               }) };
+    }).filter(function(pa){ return pa.pts.length; });
+    active = -1;
+    if (obj.width) { document.getElementById('width').value = obj.width;
+                     document.getElementById('wv').textContent = (+obj.width).toFixed(1); }
+    if (obj.lanes) { document.getElementById('lanes').value = obj.lanes;
+                     document.getElementById('lv').textContent = obj.lanes; }
+    sync();
+    var n = paths.reduce(function(t,pa){ return t + pa.pts.length; }, 0);
+    say(label + ': ' + paths.length + ' paths, ' + n + ' points. Click to add connectors.');
+    return true;
+  }
+  document.getElementById('load').onclick = function(){
+    var raw = document.getElementById('inp').value.trim();
+    if (!raw) { say('Paste an export into the box first.'); return; }
+    var obj; try { obj = JSON.parse(raw); } catch (e) { say('That is not valid JSON.'); return; }
+    importPayload(obj, 'Loaded');
+  };
+  document.getElementById('restore').onclick = function(){
+    var raw = null; try { raw = localStorage.getItem(STORE); } catch (e) {}
+    if (!raw) { say('Nothing saved yet.'); return; }
+    importPayload(JSON.parse(raw), 'Restored');
+  };
+
+  document.getElementById('end').onclick = endPath;
+  document.getElementById('undo').onclick = undo;
+  document.getElementById('snap').onclick = function(){
+    snap = !snap; this.textContent = 'Snap: ' + (snap?'on':'off');
+    this.classList.toggle('on', snap);
+  };
+  document.getElementById('clear').onclick = function(){
+    if (!paths.length) return;
+    paths = []; active = -1; sync(); say('Cleared.');
+  };
+  ['width','lanes'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', function(){
+      document.getElementById(id==='width'?'wv':'lv').textContent =
+        id==='width' ? parseFloat(this.value).toFixed(1) : this.value;
+      emit();
+    });
+  });
+  document.getElementById('copy').onclick = function(){
+    emit(); out.select();
+    navigator.clipboard.writeText(out.value).then(
+      function(){ say('JSON copied — paste it back to me.'); },
+      function(){ document.execCommand('copy'); say('JSON copied.'); });
+  };
+  document.getElementById('save').onclick = function(){
+    var blob = new Blob([JSON.stringify(emit(),null,2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'pool-road.json'; a.click();
+    say('Downloaded pool-road.json');
+  };
+
+  sync();
+})();
+</script>
+</body>
+</html>

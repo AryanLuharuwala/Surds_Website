@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/views/main/index.html" },
+    { "source": "/", "destination": "/views/home/index.html" },
+    { "source": "/classic", "destination": "/views/main/index.html" },
     { "source": "/enterprise", "destination": "/views/enterprise/index.html" },
     { "source": "/card-tour", "destination": "/views/card-tour/index.html" },
     { "source": "/survey", "destination": "/survey.html" }

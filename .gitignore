@@ -38,3 +38,6 @@ tienda_22.glb
 cartoon_lowpoly_small_city_free_pack.glb
 models/iramk4.glb
 models/isometric-office.glb
+
+# raw 46 MB Sketchfab export; the site loads models/isometric-office-web.glb
+isometric_office.glb

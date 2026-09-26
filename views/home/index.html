@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SURDS | Intelligence for the physical world</title>
+<meta name="description" content="SURDS builds wireless sensing, an offline-first edge gateway and a live facility platform for spaces that can't afford to fail: cold storage, buildings and HVAC, data centers, clean rooms and more. Incubated at IIT Kharagpur.">
+<link rel="icon" href="/shared/favicon.svg">
+<link rel="stylesheet" href="/shared/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300..800;1,6..12,300..800&display=swap">
+<link rel="preload" href="/shared/fonts/nunito-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/views/home/home.css?v=1">
+<link rel="preload" href="/views/home/office-bg.webp" as="image">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="SURDS home"><span class="mark">√</span>SURDS<span class="live" aria-hidden="true"></span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#hardware">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#demo">Live demo</a>
+      <a href="#solutions">Solutions</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#company">Company</a>
+    </nav>
+    <div class="nav-r">
+      <a class="btn btn-ghost survey-link" href="/survey">Survey</a>
+      <a class="btn btn-ink" href="#contact">Book a pilot</a>
+      <button id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section id="hero" aria-label="Introduction">
+  <div class="hero-art" aria-hidden="true"><img src="/views/home/office-bg.webp" alt="" width="1971" height="1256" fetchpriority="high"></div>
+  <div class="hero-copy"><div class="wrap">
+    <p class="hero-meta"><span>SURDS Tech Solutions</span><span>Incubated at IIT Kharagpur</span></p>
+    <h1 class="hero-h">We engineer intelligence for the physical world.</h1>
+    <p class="hero-sub">Sensors, an on-site hub and a live dashboard for rooms that can't afford to fail.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-ink" href="#contact">Book a pilot <span class="ar">→</span></a>
+      <a class="btn btn-ghost" href="#hardware">See the hardware</a>
+    </div>
+  </div></div>
+  <div class="hero-spacer"></div>
+  <div class="hero-foot">
+    <div class="wrap">
+      <div><b>IIT Kharagpur</b><span>Incubated and built</span></div>
+      <div><b>PARAM Shakti</b><span>Deployed in supercomputing</span></div>
+      <div><b>5 sensor classes</b><span>One wireless mesh</span></div>
+      <div><b>99.98%</b><span>Mesh uptime</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HARDWARE ================= -->
+<section id="hardware" aria-label="The hardware">
+ <div id="hwWrap">
+  <div id="hwSticky">
+    <div class="hw-copy">
+      <span class="kicker"><em>01</em>The hardware</span>
+      <h2 class="h2">Built by us. <span class="dim">Made for the room.</span></h2>
+      <div class="hw-tabs" role="tablist">
+        <button type="button" class="on" data-step="0" role="tab">Gateway</button>
+        <button type="button" data-step="1" role="tab">Probe node</button>
+        <button type="button" data-step="2" role="tab">Together</button>
+      </div>
+      <div class="hw-panels">
+        <div class="hw-panel on" data-panel="0">
+          <h3>The hub <span class="dim-s">· SURDS Gateway</span></h3>
+          <p>Decides on site. Keeps saving when the internet drops.</p>
+          <div class="specs">
+            <div><b>2 antennas</b><span>Reaches sensors far away</span></div>
+            <div><b>Memory card + clock</b><span>Nothing lost when offline</span></div>
+            <div><b>Backup battery</b><span>Keeps running in a power cut</span></div>
+            <div><b>4 status lights</b><span>Power · sensors · internet · alert</span></div>
+          </div>
+        </div>
+        <div class="hw-panel" data-panel="1">
+          <h3>The sensor <span class="dim-s">· Multi-probe node</span></h3>
+          <p>Four steel probes on one battery-powered box.</p>
+          <div class="specs">
+            <div><b>4 probes</b><span>Four spots measured at once</span></div>
+            <div><b>±0.1 °C</b><span>Very precise, −40 to 125 °C</span></div>
+            <div><b>Steel tips</b><span>Safe for food and medicine</span></div>
+            <div><b>Battery powered</b><span>No plug needed</span></div>
+          </div>
+        </div>
+        <div class="hw-panel" data-panel="2">
+          <h3>Set up in a day</h3>
+          <p>Sensors find the hub on their own. Live the same day.</p>
+          <div class="specs">
+            <div><b>5 sensor types</b><span>Temperature, humidity, vibration, power, air</span></div>
+            <div><b>Self-healing</b><span>If one sensor fails, the rest carry on</span></div>
+            <div><b>Works offline</b><span>Decisions happen on site</span></div>
+            <div><b>99.98%</b><span>Network uptime</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <canvas id="hwCanvas" aria-label="Interactive 3D model of SURDS hardware"></canvas>
+    <div id="hwLabels" aria-hidden="true"></div>
+    <div class="hw-hint"><i></i>Drag to rotate · hover a part</div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="sec" id="how" aria-label="How it works">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><span class="kicker"><em>02</em>How it works</span><h2 class="h2">From sensor to your phone <span class="dim">in under a second.</span></h2></div>
+      <p class="lead rv d1">Cut the internet with the switch below. Nothing gets lost.</p>
+    </div>
+    <div class="pipe rv" id="pipe">
+      <svg class="flow-svg" id="pipeSvg" aria-hidden="true"></svg>
+      <div class="node" data-i="0">
+        <div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="12" y="14" width="24" height="16" rx="3"/><path d="M16 30v8M22 30v10M28 30v7M34 30v9"/><circle cx="31" cy="19" r="1.6" fill="currentColor"/></svg></div>
+        <h3>Sensor</h3><span class="st" data-st>Sampling</span>
+      </div>
+      <div class="node" data-i="1">
+        <div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 22h28l-2 14a4 4 0 0 1-4 3H16a4 4 0 0 1-4-3z"/><path d="M16 22 13 8M32 22l3-14"/><path d="M19 33h.01M23 33h.01M27 33h.01M31 33h.01" stroke-width="3"/></svg></div>
+        <h3>Hub, on site</h3><span class="st" data-st>Checking readings</span>
+      </div>
+      <div class="node" data-i="2">
+        <div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M34 36H15a9 9 0 1 1 2.4-17.7A11 11 0 0 1 38 24a6 6 0 0 1-4 12z"/></svg></div>
+        <h3>Cloud copy</h3><span class="st" data-st>Synced</span>
+      </div>
+      <div class="node" data-i="3">
+        <div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="15" y="7" width="18" height="34" rx="4"/><path d="M22 36h4"/><circle cx="33" cy="11" r="5" fill="var(--danger)" stroke="none"/></svg></div>
+        <h3>Your phone</h3><span class="st" data-st>Up to date</span>
+      </div>
+    </div>
+    <div class="pipe-ctl rv">
+      <label class="switch"><input type="checkbox" id="netSwitch" checked><span class="tr"></span><span id="netLabel">Internet connected</span></label>
+      <p class="pipe-msg" id="pipeMsg">Readings delivered: <b id="pipeCount">0</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LIVE DEMO: the cold room ================= -->
+<section class="sec" id="demo" aria-label="Live demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><span class="kicker"><em>03</em>Try it yourself</span><h2 class="h2">Keep the vaccines safe.</h2></div>
+      <p class="lead rv d1">It must stay between 2 and 8 °C. Open the door or stop the cooler and see what happens.</p>
+    </div>
+    <div class="cold rv">
+      <div class="cold-stage">
+        <div class="cold-head">
+          <div><span class="cold-name">Cold Room 1</span><span class="cold-state" id="coldState">Safe</span></div>
+          <span class="cold-avg">Average <b id="coldAvg">3.8 °C</b></span>
+        </div>
+        <svg id="coldSvg" viewBox="0 0 800 440" role="img" aria-label="Cutaway of a cold room with a door, shelves of vaccines, a cooling unit and four probes">
+          <defs>
+            <linearGradient id="cWall" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#EAF1F6"/><stop offset="1" stop-color="#DCE6EE"/></linearGradient>
+            <linearGradient id="cWarm" x1="0" x2="1"><stop offset="0" stop-color="#F59E0B" stop-opacity=".5"/><stop offset="1" stop-color="#F59E0B" stop-opacity="0"/></linearGradient>
+          </defs>
+          <rect x="40" y="30" width="720" height="360" rx="4" fill="url(#cWall)" stroke="#C9D5DF"/>
+          <polygon points="40,390 760,390 800,432 0,432" fill="#CBD6DF"/>
+          <rect id="coldTint" x="40" y="30" width="720" height="360" fill="#F59E0B" opacity="0"/>
+          <!-- door -->
+          <rect x="62" y="120" width="120" height="270" fill="#B7C5D1"/>
+          <g id="warmAir" opacity="0">
+            <rect x="62" y="120" width="260" height="270" fill="url(#cWarm)"/>
+            <path class="wave" d="M80 180 q20 -12 40 0 t40 0 t40 0 t40 0" />
+            <path class="wave" d="M80 250 q20 -12 40 0 t40 0 t40 0 t40 0 t40 0" />
+            <path class="wave" d="M80 320 q20 -12 40 0 t40 0 t40 0" />
+          </g>
+          <g id="door"><rect x="62" y="120" width="120" height="270" fill="#F4F7FA" stroke="#9FB0BE"/><rect x="160" y="245" width="8" height="34" rx="3" fill="#7D8E9C"/></g>
+          <!-- shelves -->
+          <g fill="none" stroke="#8C9BA8" stroke-width="3">
+            <path d="M250 150 H560 M250 240 H560 M250 330 H560"/><path d="M250 110 V390 M560 110 V390"/>
+          </g>
+          <g fill="#FFFFFF" stroke="#9FB0BE">
+            <rect x="265" y="118" width="54" height="32" rx="2"/><rect x="325" y="124" width="46" height="26" rx="2"/><rect x="380" y="116" width="60" height="34" rx="2"/><rect x="450" y="122" width="50" height="28" rx="2"/>
+            <rect x="268" y="206" width="48" height="34" rx="2"/><rect x="324" y="212" width="58" height="28" rx="2"/><rect x="392" y="204" width="52" height="36" rx="2"/><rect x="452" y="210" width="56" height="30" rx="2"/>
+            <rect x="262" y="298" width="62" height="32" rx="2"/><rect x="332" y="302" width="50" height="28" rx="2"/><rect x="392" y="296" width="58" height="34" rx="2"/><rect x="460" y="300" width="52" height="30" rx="2"/>
+          </g>
+          <g font-family="Nunito Sans, sans-serif" font-size="10" fill="#6B7C8A" text-anchor="middle">
+            <text x="292" y="138">VACCINE</text><text x="410" y="137">VACCINE</text><text x="355" y="229">VACCINE</text><text x="480" y="228">VACCINE</text><text x="293" y="318">VACCINE</text><text x="421" y="317">VACCINE</text>
+          </g>
+          <!-- cooler -->
+          <g id="cooler">
+            <rect x="600" y="52" width="140" height="78" rx="6" fill="#F4F7FA" stroke="#9FB0BE"/>
+            <g id="fan" transform="translate(640 91)"><circle r="26" fill="#E3EAF0" stroke="#9FB0BE"/><g class="blades"><path d="M0 -22 C10 -12 6 -4 0 0 C-6 -4 -10 -12 0 -22 M22 0 C12 10 4 6 0 0 C4 -6 12 -10 22 0 M0 22 C-10 12 -6 4 0 0 C6 4 10 12 0 22 M-22 0 C-12 -10 -4 -6 0 0 C-4 6 -12 10 -22 0" fill="#8C9BA8"/></g></g>
+            <circle id="coolerLed" cx="712" cy="72" r="5" fill="#10B981"/>
+            <text x="700" y="112" font-family="Nunito Sans, sans-serif" font-size="11" fill="#6B7C8A" text-anchor="middle">Cooler</text>
+          </g>
+          <g id="coldAir" stroke="#38BDF8" stroke-width="2" fill="none" stroke-dasharray="6 8" opacity=".8">
+            <path d="M600 110 C540 140 520 170 470 180"/><path d="M620 132 C600 200 560 260 520 280"/>
+          </g>
+          <!-- probes (positions: A door, B top shelf, C rear shelf, D by the cooler) -->
+          <g id="probes"></g>
+        </svg>
+        <div class="cold-ctl">
+          <button type="button" class="btn btn-ghost sm" data-ev="door" aria-pressed="false">Open the door</button>
+          <button type="button" class="btn btn-ghost sm" data-ev="comp" aria-pressed="false">Switch off the cooler</button>
+          <button type="button" class="btn btn-ghost sm" data-ev="reset">Reset</button>
+          <span class="cold-note">Simulated data</span>
+        </div>
+      </div>
+      <div class="phone" aria-label="Messages SURDS sends">
+        <div class="phone-in">
+          <div class="ph-top"><span id="phClock">9:41</span><span>SURDS Alerts</span></div>
+          <div class="ph-msgs" id="phMsgs" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOLUTIONS: 3D card flow ================= -->
+<section id="solutions" aria-label="Solutions">
+ <div id="solWrap">
+  <div id="solSticky">
+    <div id="solSpot"></div>
+    <div class="sol-head"><span class="kicker"><em>04</em>Solutions</span><h2 class="h2">Where SURDS works</h2></div>
+    <div id="ghosts"></div>
+    <div id="slides"></div>
+    <div class="ind-name"><div class="nm" id="indName"></div><div class="nx" id="indNext"></div></div>
+    <div class="rail" id="rail"></div>
+  </div>
+  <div id="solSpacer"></div>
+ </div>
+</section>
+
+<!-- ================= PRIVACY: the office in 3D ================= -->
+<section class="sec" id="privacy" aria-label="Privacy">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><span class="kicker"><em>05</em>No cameras</span><h2 class="h2">We count people. We never see faces.</h2></div>
+      <p class="lead rv d1">Body heat, not video. Empty rooms get their AC switched off. Drag to look around.</p>
+    </div>
+  </div>
+    <div class="therm-box rv">
+      <div class="therm-bar">
+        <div class="seg" role="tablist" aria-label="View">
+          <button type="button" data-view="heat" class="on" role="tab">Heat view</button>
+          <button type="button" data-view="normal" role="tab">Normal view</button>
+        </div>
+        <div class="therm-actions">
+          <button type="button" class="btn btn-ghost sm" id="addPerson">Someone walks in</button>
+          <button type="button" class="btn btn-ghost sm" id="clearPeople">Everyone goes home</button>
+        </div>
+      </div>
+      <div class="office3d heat" id="office3d">
+        <div class="o-loading" id="oLoading">Loading the office…</div>
+      </div>
+      <div class="therm-foot">
+        <p id="thermSummary">Loading the office…</p>
+        <div class="therm-save"><span>AC energy saved right now</span><b id="thermSave">0%</b></div>
+      </div>
+    </div>
+</section>
+
+<!-- ================= COMPANY / PROOF ================= -->
+<section class="sec" id="company" aria-label="Company">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><span class="kicker"><em>06</em>Proven in the field</span><h2 class="h2">Your infrastructure is <span class="dim">already talking.</span></h2></div>
+    </div>
+    <div class="proofvis">
+      <div class="pv rv">
+        <svg class="donut" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="48" fill="none" stroke="var(--line)" stroke-width="14"/><circle class="arc" cx="60" cy="60" r="48" fill="none" stroke="var(--acc)" stroke-width="14" stroke-dasharray="301.6" stroke-dashoffset="301.6" transform="rotate(-90 60 60)" data-pct="40"/><text x="60" y="67" text-anchor="middle">40%</text></svg>
+        <p>of a building's energy goes to HVAC</p>
+      </div>
+      <div class="pv rv d1">
+        <div class="pv-big" data-count="99.98" data-dec="2" data-suf="%">0</div>
+        <div class="uptime" id="uptime" aria-label="Mesh uptime over the last 90 days"></div>
+        <p>mesh uptime, last 90 days</p>
+      </div>
+      <div class="pv rv d2">
+        <div class="sensors5">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0Z"/></svg>Heat</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2.69s-5.5 6.16-5.5 10.31a5.5 5.5 0 0 0 11 0C17.5 8.85 12 2.69 12 2.69Z"/></svg>Humidity</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12h3l2-7 4 14 3-10 2 3h6"/></svg>Vibration</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z"/></svg>Power</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 8h11a3 3 0 1 0-3-3M3 16h15a3 3 0 1 1-3 3M3 12h17"/></svg>Air</span>
+        </div>
+        <p>sensor types on one wireless mesh</p>
+      </div>
+      <div class="pv rv d3">
+        <div class="iso" aria-label="ISO clean room classes 5 to 8 verified"><i>1</i><i>2</i><i>3</i><i>4</i><i class="on">5</i><i class="on">6</i><i class="on">7</i><i class="on">8</i><i>9</i></div>
+        <p>clean room classes verified live</p>
+      </div>
+    </div>
+    <div class="places">
+      <div class="card place spot rv"><div class="ic">Incubation</div><div><b>IIT Kharagpur</b><span>Incubated within India's oldest IIT.</span></div></div>
+      <div class="card place spot rv d1"><div class="ic">Data centers</div><div><b>PARAM Shakti</b><span>Supercomputing facility, IIT Kharagpur.</span></div></div>
+      <div class="card place spot rv d2"><div class="ic">Clean rooms</div><div><b>Electronics Dept. Clean Room</b><span>IIT Kharagpur.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="sec" id="contact" aria-label="Contact">
+  <div class="wrap">
+    <div class="cta rv">
+      <div>
+        <span class="kicker"><em>07</em>Start a pilot</span>
+        <h2 class="h2">Bring intelligence <span class="dim">to your facility.</span></h2>
+        <p class="lead">A small pilot on your site first. Then we scale.</p>
+        <div class="cta-list">
+          <div><i>✓</i>Response in 2 business days</div>
+          <div><i>✓</i>NDA on request</div>
+          <div><i>✓</i>Pilot-first engagement</div>
+        </div>
+        <a class="survey-cta" href="/survey"><div><b>Not sure where it hurts?</b><span>Take the 90-second readiness check.</span></div><span class="ar">→</span></a>
+      </div>
+      <!-- Posts to Web3Forms; action/method are real so it still works without JS -->
+      <form class="form" id="ctaForm" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="1293e495-bc7c-4f7a-a6b2-d31d69fbed42">
+        <input type="hidden" name="subject" value="New enquiry from surds.co.in">
+        <input type="hidden" name="from_name" value="SURDS Tech Solutions">
+        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
+        <div class="two">
+          <label class="fld"><span>Name</span><input type="text" name="name" required autocomplete="name" placeholder="Your name"></label>
+          <label class="fld"><span>Email</span><input type="email" name="email" required autocomplete="email" placeholder="you@company.com"></label>
+        </div>
+        <label class="fld"><span>Facility type</span>
+          <select name="facility">
+            <option>Cold storage &amp; pharma</option><option>Buildings &amp; HVAC</option><option>Data center</option>
+            <option>Clean room</option><option>Manufacturing</option><option>Healthcare &amp; labs</option><option>Other</option>
+          </select></label>
+        <label class="fld"><span>What does failure cost you?</span><textarea name="message" required placeholder="The site, the process, and what going down actually costs."></textarea></label>
+        <button class="btn btn-acc" type="submit">Schedule a consultation <span class="ar">→</span></button>
+        <p class="status" id="ctaStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div><a class="logo" href="#top"><span class="mark">√</span>SURDS</a><p>Intelligence for environments that can't afford to fail. Built at IIT Kharagpur.</p></div>
+      <div class="foot-cols">
+        <div><h5>Product</h5><a href="#hardware">Hardware</a><a href="#how">How it works</a><a href="#demo">Live demo</a><a href="/enterprise">Enterprise platform</a><a href="/card-tour">Spatial twin tour</a></div>
+        <div><h5>Company</h5><a href="#company">About</a><a href="#solutions">Solutions</a><a href="/survey">Survey</a><a href="#contact">Contact</a></div>
+        <div><h5>Reach us</h5><a href="mailto:automate@surds.co.in">automate@surds.co.in</a><a href="/classic">Classic site</a></div>
+      </div>
+    </div>
+    <div class="foot-bot"><span>© 2026 SURDS Tech Solutions. All rights reserved.</span><span>Made in India</span></div>
+  </div>
+</footer>
+
+<script src="/views/home/home.js?v=1"></script>
+<script type="module" src="/views/home/hardware.js?v=1"></script>
+</body>
+</html>

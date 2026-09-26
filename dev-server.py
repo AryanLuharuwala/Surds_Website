@@ -20,7 +20,8 @@ import datetime
 import urllib.parse
 
 ROUTES = {
-    "/": "/views/main/index.html",
+    "/": "/views/home/index.html",
+    "/classic": "/views/main/index.html",
     "/enterprise": "/views/enterprise/index.html",
     "/card-tour": "/views/card-tour/index.html",
     "/survey": "/survey.html",
@@ -107,6 +108,11 @@ def store_events(payload):
 
 
 class RewriteHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        # local dev: never let the browser serve a stale page/asset after an edit
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def _json(self, code, obj):
         body = json.dumps(obj).encode("utf-8")
         self.send_response(code)
@@ -130,8 +136,36 @@ class RewriteHandler(http.server.SimpleHTTPRequestHandler):
             return
         self.send_error(404, "Not found")
 
+    # Only the files the website itself loads are served. Everything else in the
+    # repo (.env, scripts, logs, CAD/Blender sources) stays private, which matters
+    # as soon as this server is exposed through a tunnel.
+    PUBLIC_PREFIXES = ("/views/", "/shared/", "/models/", "/surds%20survey/", "/surds survey/")
+    PUBLIC_FILES = ("/survey.html", "/living_room_interior_free.glb", "/favicon.ico")
+
+    def _is_public(self, path):
+        path = urllib.parse.unquote(path)
+        if "/." in path or ".." in path:
+            return False
+        return path in ROUTES or path == "/api/surveys" or path in self.PUBLIC_FILES or path.startswith(self.PUBLIC_PREFIXES)
+
+    def list_directory(self, path):
+        self.send_error(404, "Not found")
+        return None
+
+    def do_HEAD(self):
+        path = self.path.split("?", 1)[0]
+        if not self._is_public(path):
+            self.send_error(404, "Not found")
+            return
+        if path in ROUTES:
+            self.path = ROUTES[path]
+        return super().do_HEAD()
+
     def do_GET(self):
         path = self.path.split("?", 1)[0]
+        if not self._is_public(path):
+            self.send_error(404, "Not found")
+            return
         if path == "/api/surveys":
             self._json(200, {"surveys": survey_list()})
             return
@@ -142,6 +176,9 @@ class RewriteHandler(http.server.SimpleHTTPRequestHandler):
 
 PORT = 8000
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), RewriteHandler) as httpd:
+    # threaded: one slow/keep-alive connection (e.g. a large GLB) must not block every other request
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.daemon_threads = True
+    with socketserver.ThreadingTCPServer(("", PORT), RewriteHandler) as httpd:
         print(f"Serving on http://localhost:{PORT} (routes + /api/surveys + /api/track)")
         httpd.serve_forever()

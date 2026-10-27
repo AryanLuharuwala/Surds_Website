@@ -947,7 +947,7 @@ for g in GROUPS:
 HUB = (HUB[0] * SPREAD, HUB[1] * SPREAD)
 
 # ---------------------------------------------------------------- camera, light, world, render
-# Perspective like the reference: 50 mm, ~38 degrees above the ground, on the diagonal, pulled well back
+# Perspective, 50 mm, 20 degrees above the ground, on the diagonal, pulled well back
 cam_data = bpy.data.cameras.new("SURDS Cam")
 cam_data.type = "PERSP"
 cam_data.lens = 50
@@ -955,10 +955,10 @@ cam_data.sensor_width = 36
 cam_data.clip_end = 800
 cam = bpy.data.objects.new("SURDS Cam", cam_data)
 col.objects.link(cam)
-CAM_ELEV = math.radians(38)
+CAM_ELEV = math.radians(20)   # low across the city (the reference sits at ~38)
 d = Vector((0.707 * math.cos(CAM_ELEV), -0.707 * math.cos(CAM_ELEV), math.sin(CAM_ELEV))).normalized()
 target = Vector((5 * SPREAD, 0, 2))
-CAM_DIST = 195 * SPREAD
+CAM_DIST = 195 * SPREAD / 1.5   # framed so the city reads 50% bigger on screen
 cam.location = target + d * CAM_DIST
 cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
 scene.camera = cam

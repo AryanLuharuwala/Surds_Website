@@ -147,7 +147,8 @@ for n, i in NODES:
     pop(n, route_end[i] - 6, route_end[i])
 
 # ---------------------------------------------------------------- slow push-in
-final = cam.location.copy()                          # slow dolly in along the view line
+final = target + d * (CAM_DIST * 1.12)               # slow dolly in along the view line, stopping short of the
+                                                     # framing distance so the tower and corners stay in shot
 cam.location = target + d * (CAM_DIST * 1.25)
 cam.keyframe_insert("location", frame=1)
 cam.location = final

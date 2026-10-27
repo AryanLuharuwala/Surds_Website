@@ -7,6 +7,9 @@ import bpy, bmesh, math
 from mathutils import Matrix, Quaternion, Vector
 
 HOLD_2D, FALL, HOLD_BP = 24, 36, 30        # frames: sheet upright, sheet falls, blueprint hold
+SHEET_START = 0.3                          # the upright sheet's size; it grows to full size as it falls
+                                           # (small enough that the camera still pulls back while it grows)
+FACE_EL = math.radians(3)                  # camera nearly level with the upright sheet: it reads face-on
 INTRO = HOLD_2D + FALL + HOLD_BP
 F_FALL0 = HOLD_2D + 1
 F_LAND = F_FALL0 + FALL
@@ -89,9 +92,10 @@ key(TREES, "hide_render", 1, True)
 key(TREES, "hide_render", INTRO + 1, False)
 
 # ---------------------------------------------------------------- the 2D plan as a falling sheet
-# The sheet hinges on the city's front corner (nearest the camera). It starts upright, face to the camera,
-# and falls back flat onto the city, accelerating. An empty at the hinge carries it; in that empty's space
-# local Z > 0 is exactly the region the sheet has already swept through.
+# The sheet hinges on the city's front corner (nearest the camera). It starts upright and smaller, face to
+# the camera, and falls back flat onto the city while growing from that fixed corner to full size. An empty
+# at the hinge carries it (rotation + scale about the corner); in that empty's space local Z > 0 is exactly
+# the region the sheet has already swept through.
 h_dir = Vector((d.x, d.y, 0)).normalized()                    # towards the camera, on the ground
 gx = max(abs(v) for v in D["ground"])
 hinge = Vector((math.copysign(gx, h_dir.x), math.copysign(gx, h_dir.y), 0))
@@ -109,6 +113,8 @@ for f in range(1, F_LAND + 1):
     e = t * t * (3 - 2 * t)
     sweep.rotation_quaternion = Quaternion(axis, math.pi / 2 * (1 - e))
     sweep.keyframe_insert("rotation_quaternion", frame=f)
+    sweep.scale = [SHEET_START + (1 - SHEET_START) * e] * 3
+    sweep.keyframe_insert("scale", frame=f)
 for fc in sweep.animation_data.action.fcurves:
     for kp in fc.keyframe_points:
         kp.interpolation = "LINEAR"
@@ -332,9 +338,34 @@ for site in sites:
         var.targets[0].data_path = "scale[2]"
         fc.driver.expression = f"s / {site['s1']:.4f} * {H:.2f}"
 
-# ---------------------------------------------------------------- camera: holds the 3D view; only the sheet moves
-cam.location = target + d * (CAM_DIST * 1.25)   # where the push-in starts
-cam.keyframe_insert("location", frame=1)
+# ---------------------------------------------------------------- camera: level with the upright sheet, rising into 3D
+# as it falls. Starts face-on (so the sheet reads as a flat 2D plan standing up), ends at the 3D view where
+# the push-in begins; it moves with the same easing as the fall.
+iso_loc = target + d * (CAM_DIST * 1.25)
+iso_el = math.asin(d.z)
+reach = hinge.length                                   # hinge corner to the plan's centre at full size
+face_c = hinge + Vector((0, 0, reach * SHEET_START))   # the upright sheet's centre
+face_d = 2 * reach * SHEET_START / (cam.data.sensor_width * 9 / 16) * cam.data.lens * 1.18   # pulls back as the sheet grows
+prev = None
+for f in range(1, F_LAND + 1):
+    t = min(max((f - F_FALL0) / FALL, 0.0), 1.0)
+    e = t * t * (3 - 2 * t)
+    el = FACE_EL + (iso_el - FACE_EL) * e
+    dist = face_d + (CAM_DIST * 1.25 - face_d) * e
+    c = face_c.lerp(target, e)
+    v = h_dir * math.cos(el) + Vector((0, 0, math.sin(el)))
+    cam.location = c + v * dist
+    q = (-v).to_track_quat("-Z", "Y")
+    rot = q.to_euler("XYZ", prev) if prev else q.to_euler()
+    prev = rot
+    cam.rotation_euler = rot
+    cam.keyframe_insert("location", frame=f)
+    cam.keyframe_insert("rotation_euler", frame=f)
+for fc in cam.animation_data.action.fcurves:
+    for kp in fc.keyframe_points:
+        if kp.co.x <= F_LAND:
+            kp.interpolation = "LINEAR"
+cam.location = iso_loc
 
 scene.render.use_motion_blur = True        # the falling sheet smears a little; slow moves stay crisp
 scene.render.motion_blur_shutter = 0.5

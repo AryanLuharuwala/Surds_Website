@@ -14,6 +14,8 @@ if old:
     for ch in list(old.children_recursive):
         bpy.data.collections.remove(ch)
     bpy.data.collections.remove(old)
+for o in list(getattr(bpy.data.collections.get("SURDS Trees"), "objects", [])):   # trees sit outside NAME
+    bpy.data.objects.remove(o, do_unlink=True)
 for cu in [c for c in bpy.data.curves if c.users == 0]:
     bpy.data.curves.remove(cu)
 for me in [m for m in bpy.data.meshes if m.users == 0]:
@@ -761,14 +763,16 @@ def free(x, y, r=1.0):
 # Street trees in even rows along every block edge. With the darkened Poly Haven jacaranda ("Street Tree"
 # in the Tree Library collection, built from source/trees) they are instanced on points; otherwise simple balls.
 tree_spots = []
+tree_rng = random.Random(11)
+TREE_KEEP = 0.6    # share of row spots that get a tree: sparse rows, not a forest
 for i in range(-2, 3):
     for j in range(-2, 3):
         cx, cy = 20 * i, 20 * j
         if (i, j) == (0, 0):
             continue
-        for t in frange(-6.4, 6.5, 3.2):
+        for t in frange(-6.4, 6.5, 6.4):
             for x, y in [(cx + t, cy - 6.6), (cx + t, cy + 6.6), (cx - 6.6, cy + t), (cx + 6.6, cy + t)]:
-                if free(x, y, 1.6):
+                if free(x, y, 1.6) and tree_rng.random() < TREE_KEEP:
                     tree_spots.append((x, y))
 tree_spots = list(dict.fromkeys(tree_spots))
 
@@ -782,6 +786,26 @@ if TREE_TPL is None and os.path.exists(_tree_lib):
     if _lib.name not in scene.collection.children:
         scene.collection.children.link(_lib)
     _lib.objects.link(TREE_TPL)
+# Trees read as flat black silhouettes against the lit ground: every tree material goes matte black,
+# keeping only the leaf alpha cut-outs.
+if TREE_TPL:
+    for m in TREE_TPL.data.materials:
+        nt = m.node_tree
+        alpha = next((n.image for n in nt.nodes if n.type == "TEX_IMAGE" and n.image and "alpha" in n.image.name), None)
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        black = nt.nodes.new("ShaderNodeBsdfDiffuse")
+        black.inputs["Color"].default_value = (0.0, 0.0, 0.0, 1)
+        if alpha:   # leaf cards keep their cut-out shape
+            tex = nt.nodes.new("ShaderNodeTexImage")
+            tex.image = alpha
+            mix = nt.nodes.new("ShaderNodeMixShader")
+            nt.links.new(tex.outputs["Color"], mix.inputs["Fac"])
+            nt.links.new(nt.nodes.new("ShaderNodeBsdfTransparent").outputs[0], mix.inputs[1])
+            nt.links.new(black.outputs[0], mix.inputs[2])
+            nt.links.new(mix.outputs[0], out.inputs["Surface"])
+        else:
+            nt.links.new(black.outputs[0], out.inputs["Surface"])
 bm = bmesh.new()
 if TREE_TPL:
     for x, y in tree_spots:

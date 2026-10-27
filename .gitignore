@@ -41,3 +41,10 @@ models/isometric-office.glb
 
 # raw 46 MB Sketchfab export; the site loads models/isometric-office-web.glb
 isometric_office.glb
+
+# rtx-render output
+out/
+
+# personal Claude Code state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

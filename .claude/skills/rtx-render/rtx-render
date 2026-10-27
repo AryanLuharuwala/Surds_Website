@@ -1,42 +1,47 @@
 #!/usr/bin/env python3
-"""Render a Blender scene on the rtxserver (RTX 4090) as if it rendered locally.
+"""Render a Blender scene on the team's RTX 4090 (rtxserver) as if it rendered locally, through the studio
+at wa.gpunet.in: no ssh.
 
   rtx-render scene.blend [-o OUT] [-s START] [-e END] [-w WORKERS] [--mp4] [--video-only] [--detach]
   rtx-render build.py [--base base.blend] [...same options]
-  rtx-render monitor [JOB]        live progress, keeps syncing frames into the job's out folder
-  rtx-render status               every job: frames done / total
+  rtx-render monitor [JOB]        live progress, keeps downloading frames into the job's out folder
+  rtx-render status               your jobs: frames done / total
   rtx-render cancel [JOB]         stop a job's workers on the server
-  rtx-render clean [JOB]          delete a finished job's files on the server
-  rtx-render clean --cache        drop the server's cached scene uploads
+  rtx-render clean [JOB]          delete a finished job's files on the server (local frames are kept)
+  rtx-render login                save your render token (make one on the studio's Blender render page)
 
-A .blend is packed (textures, fonts, libraries) into one file before upload. Uploads are diffs: the
-server keeps the last upload of each file (keyed by its path inside the git repo, so collaborators share
-it) and rsync sends only what changed. The host is rtxserver on the campus network, else rtx-remote
-(Cloudflare tunnel); RTX_HOST overrides. --video-only encodes the mp4 on the server and downloads only that. A .py is a script that
-builds a scene: it runs here, in a local headless Blender (so its local paths all work), and the scene it
-leaves behind is packed and rendered remotely. Frames are written as PNGs by the scene's own render
-settings and are copied into OUT (default ./out/<name>/) while the job runs. Ctrl-C in the monitor only
-detaches; the job keeps running on the server. Several Blender processes share the frames (each claims
-the next free frame with a placeholder file), so CPU-side work such as Freestyle overlaps on the server's
-32 cores and the GPU stays busy.
+A .blend is packed (textures, fonts, libraries) into one uncompressed file here, before upload, because those
+files live on this machine. Uploads are diffs: the file is cut into chunks along its own block structure and
+only the chunks the server has nowhere are sent (gzip-compressed), so a re-upload after a small edit is a few
+MB. The server keeps the last upload of each file keyed by its path inside the git repo, so collaborators diff
+against each other's uploads. A .py is a script that builds a scene: it runs here, in a local headless Blender
+(so its local paths all work), and the scene it leaves behind is packed and rendered remotely; no Python is
+ever sent to the server. --video-only encodes the mp4 on the server and downloads only that. Frames are
+copied into OUT (default ./out/<name>/) while the job runs. Ctrl-C in the monitor only detaches.
+
+Settings: RTX_URL (default https://wa.gpunet.in), RTX_TOKEN (else ~/.config/rtx-render/token), BLENDER.
 """
 import argparse
+import concurrent.futures
+import getpass
+import gzip
 import hashlib
 import json
 import os
+import re
 import shlex
+import struct
 import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
+import urllib.request
 
-HOST = None          # resolved in main(): RTX_HOST, else rtxserver on campus, else rtx-remote (Cloudflare tunnel)
-REMOTE_BLENDER = "~/blender-install/blender-4.5.6-linux-x64/blender"
-REMOTE_ROOT = "~/tmp/rtx-render"
+URL = os.environ.get("RTX_URL", "https://wa.gpunet.in").rstrip("/") + "/render"
+TOKEN_FILE = os.path.expanduser("~/.config/rtx-render/token")
 LOCAL_BLENDER = os.environ.get("BLENDER", "blender")
 STATE = os.path.expanduser("~/.cache/rtx-render/jobs.json")
-SSH_OPTS = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "-o", "ControlMaster=auto",
-            "-o", "ControlPath=~/.ssh/cm-rtx-render-%r@%h:%p", "-o", "ControlPersist=10m"]
 
 PACK_PY = r"""
 import bpy, json, sys
@@ -48,63 +53,109 @@ s.render.use_file_extension = True
 fmt = s.render.image_settings.file_format
 if fmt in ("FFMPEG", "AVI_JPEG", "AVI_RAW"):          # movie outputs become a PNG sequence
     s.render.image_settings.file_format = "PNG"
-bpy.ops.wm.save_as_mainfile(filepath=out, compress=False, copy=True)   # uncompressed: rsync can diff it
+bpy.ops.wm.save_as_mainfile(filepath=out, compress=False, copy=True)   # uncompressed: the upload can diff it
 print("RTX_SCENE " + json.dumps(dict(start=s.frame_start, end=s.frame_end, step=s.frame_step, fps=s.render.fps,
       ext=s.render.file_extension, res=[s.render.resolution_x, s.render.resolution_y, s.render.resolution_percentage],
       engine=s.render.engine)))
 """
 
-# Cycles picks its device from user preferences, which a background run on the server doesn't have.
-# Workers share one frame range: each claims a frame with an empty placeholder file and skips frames
-# already on disk, so they balance themselves and a rerun in the same job dir resumes.
-REMOTE_DEVICE_PY = r"""
-import bpy
-s = bpy.context.scene
-s.render.use_overwrite = False
-s.render.use_placeholder = True
-if s.render.engine == "CYCLES":
-    prefs = bpy.context.preferences.addons["cycles"].preferences
-    for kind in ("OPTIX", "CUDA"):
-        try:
-            prefs.compute_device_type = kind
-            break
-        except TypeError:
-            pass
-    prefs.get_devices()
-    for d in prefs.devices:
-        d.use = d.type != "CPU"
-    s.cycles.device = "GPU"
-"""
-
 
 # ------------------------------------------------------------------ plumbing
-def resolve_host():
-    """The same box two ways: direct on the campus network, or through the Cloudflare tunnel from anywhere."""
-    if os.environ.get("RTX_HOST"):
-        return os.environ["RTX_HOST"]
-    for host in ("rtxserver", "rtx-remote"):
-        ok = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", host, "true"],
-                            capture_output=True, timeout=40).returncode == 0
-        if ok:
-            return host
-    sys.exit("can't reach the server as rtxserver (campus) or rtx-remote (tunnel); see the skill's access notes")
+def token():
+    t = os.environ.get("RTX_TOKEN")
+    if not t and os.path.exists(TOKEN_FILE):
+        t = open(TOKEN_FILE).read().strip()
+    if not t:
+        sys.exit("no render token: make one on the Blender render page at wa.gpunet.in (Apps), then rtx-render login")
+    return t
 
 
-def ssh(cmd, check=True, capture=True):
-    r = subprocess.run(["ssh", *SSH_OPTS, HOST, cmd], capture_output=capture, text=True)
-    if check and r.returncode != 0:
-        sys.exit(f"ssh {HOST} failed ({r.returncode}): {r.stderr.strip() if capture else ''}")
-    return r.stdout if capture else ""
+def api(method, path, body=None, raw=None, gz=False, stream=False, timeout=120):
+    """One API call; JSON back (or the response, with stream=True)."""
+    headers = {"Authorization": "Bearer " + token(), "User-Agent": "rtx-render/2"}
+    data = None
+    if raw is not None:
+        data = raw
+        headers["Content-Type"] = "application/octet-stream"
+        if gz:
+            headers["Content-Encoding"] = "gzip"
+    elif body is not None:
+        data = json.dumps(body).encode()
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(URL + path, data=data, method=method, headers=headers)
+    for attempt in range(4):
+        try:
+            r = urllib.request.urlopen(req, timeout=timeout)
+            return r if stream else json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            try:
+                msg = json.loads(e.read()).get("error") or e.reason
+            except ValueError:
+                msg = e.reason
+            if e.code in (502, 503, 504) and attempt < 3:
+                time.sleep(2 ** attempt)
+                continue
+            raise SystemExit(f"{method} {path}: {e.code} {msg}")
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if attempt < 3:
+                time.sleep(2 ** attempt)
+                continue
+            raise SystemExit(f"can't reach {URL}: {e}")
+
+
+def safe_name(s):
+    s = re.sub(r"[^A-Za-z0-9._-]+", "-", s).lstrip("._-")[:60]
+    return s or "scene"
 
 
 def cache_key(path):
     """Uploads of the same file share a server-side cache, so the next one is sent as a diff. Inside a git
     repo the key is the repo-relative path, so collaborators diff against each other's uploads too."""
-    name = os.path.splitext(os.path.basename(path))[0]
+    name = safe_name(os.path.splitext(os.path.basename(path))[0])
     r = subprocess.run(["git", "-C", os.path.dirname(path), "rev-parse", "--show-toplevel"],
                        capture_output=True, text=True)
     ident = os.path.relpath(path, r.stdout.strip()) if r.returncode == 0 else path
     return f"{name}-{hashlib.sha1(ident.encode()).hexdigest()[:8]}"
+
+
+def blend_chunks(d):
+    """rtx-blend1 (the studio page cuts the same way): every block of 32 KB or more is a chunk of its own, in
+    pieces of up to 4 MB; the small blocks between are grouped ~64 KB at a time. Blender rewrites its pointers on
+    each save, which touches nearly every small block, but the big ones (packed images, mesh data) come out the
+    same, and block boundaries survive inserted objects. Anything else (a compressed .blend) is cut every 1 MB."""
+    n, piece, cuts = len(d), 4 << 20, {0}
+    hl = bh = 0
+    wide = False
+    if d[:9] == b"BLENDER-v":
+        hl, bh = 12, 24
+    elif d[:13] == b"BLENDER17-01v":
+        hl, bh, wide = 17, 32, True
+    p = 0
+    if hl:
+        p, run = hl, 0
+        while p + bh <= n:
+            code = d[p:p + 4]
+            ln = struct.unpack_from("<Q", d, p + 16)[0] if wide else struct.unpack_from("<i", d, p + 4)[0]
+            if ln < 0 or p + bh + ln > n:
+                break
+            s, e = p + bh, p + bh + ln
+            if ln >= 32768:
+                cuts.add(s)
+                cuts.update(range(s + piece, e, piece))
+                cuts.add(e)
+                run = 0
+            else:
+                run += bh + ln
+                if run >= 65536:
+                    cuts.add(e)
+                    run = 0
+            p = e
+            if code == b"ENDB":
+                break
+    cuts.update(range(p, n, piece if hl else 1 << 20))
+    cuts.add(n)
+    c = sorted(cuts)
+    return [(a, b) for a, b in zip(c, c[1:]) if b > a]
 
 
 def load_state():
@@ -132,7 +183,7 @@ def pick_job(st, name):
 
 
 def fmt_time(s):
-    s = int(max(s, 0))
+    s = int(max(s or 0, 0))
     return f"{s // 3600}h{s // 60 % 60:02d}m" if s >= 3600 else f"{s // 60}m{s % 60:02d}s"
 
 
@@ -161,135 +212,106 @@ def prepare(path, base, workdir):
     return packed, info
 
 
+def upload(packed, key, name):
+    """Send the packed file as a diff; returns the server's scene record."""
+    with open(packed, "rb") as f:
+        data = f.read()
+    parts = blend_chunks(data)
+    chunks = [{"hash": hashlib.sha256(data[a:b]).hexdigest(), "size": b - a} for a, b in parts]
+    st = api("POST", "/uploads", {"key": key, "name": name, "size": len(data),
+                                  "sha256": hashlib.sha256(data).hexdigest(), "chunks": chunks})
+    want = set(st["missing"])
+    todo = []
+    for (a, b), c in zip(parts, chunks):
+        if c["hash"] in want:
+            want.discard(c["hash"])
+            todo.append((a, b, c["hash"]))
+    total = sum(b - a for a, b, _ in todo)
+    sent = [0, 0]
+
+    def one(t):
+        a, b, h = t
+        z = gzip.compress(data[a:b], 6)
+        api("PUT", f"/uploads/{st['upload']}/chunks/{h}", raw=z, gz=True)
+        sent[0] += b - a
+        sent[1] += len(z)
+        sys.stdout.write(f"\x1b[2K\r  sending {sent[1] / 1e6:.1f} MB ... {100 * sent[0] // max(total, 1)}%")
+        sys.stdout.flush()
+
+    with concurrent.futures.ThreadPoolExecutor(4) as ex:
+        list(ex.map(one, todo))
+    if todo:
+        sys.stdout.write("\n")
+    sc = api("POST", f"/uploads/{st['upload']}/finish", timeout=180)
+    have = st.get("have_bytes", 0)
+    print(f"  sent {sent[1] / 1e6:.1f} MB for {len(data) / 1e6:.0f} MB" +
+          (f" ({have / 1e6:.0f} MB already on the server)" if have else " (first upload)"))
+    if sc.get("missing"):
+        print("  warning: not packed, will render without: " + ", ".join(sc["missing"]))
+    return sc
+
+
 def submit(a):
     path = os.path.abspath(a.scene)
     if not os.path.exists(path) or not path.endswith((".blend", ".py")):
         sys.exit("give a .blend or a .py scene script")
+    token()
     name = os.path.splitext(os.path.basename(path))[0]
-    job = f"{name}-{time.strftime('%m%d-%H%M%S')}"
     out = os.path.abspath(a.out or os.path.join("out", name))
     work = tempfile.mkdtemp(prefix="rtx-render-")
     packed, info = prepare(path, a.base, work)
     start = a.start if a.start is not None else info["start"]
     end = a.end if a.end is not None else info["end"]
-    step = info["step"] or 1
-    frames = list(range(start, end + 1, step))
     size = os.path.getsize(packed) / 1e6
+    total = len(range(start, end + 1, info["step"] or 1))
     print(f"scene: {info['engine']}, {info['res'][0]}x{info['res'][1]} @ {info['res'][2]}%, "
-          f"frames {start}-{end} ({len(frames)}), packed {size:.0f} MB")
-
-    rdir = f"{REMOTE_ROOT}/{job}"
-    free = int(ssh("df -Pk ~ | tail -1 | awk '{print $4}'").strip() or 0) / 1e6
-    if free < 2 + size / 1000:
-        sys.exit(f"only {free:.1f} GB free on {HOST}; clean up first (rtx-render clean)")
-    # The server keeps the last upload of each scene; rsync sends only the parts that changed against it
-    # (textures, meshes and packed files mostly match) and the job gets a hard link to the result.
-    cached = f"{REMOTE_ROOT}/cache/{cache_key(path)}.blend"
-    ssh(f"mkdir -p {rdir}/frames {rdir}/logs {REMOTE_ROOT}/cache")
-    print(f"uploading to {HOST}:{rdir} (diff against the last upload) ...")
-    r = subprocess.run(["rsync", "-az", "--no-whole-file", "--stats", "-e", "ssh " + " ".join(SSH_OPTS), packed,
-                        f"{HOST}:{cached.replace('~/', '')}"], capture_output=True, text=True)
-    if r.returncode != 0:
-        sys.exit("upload failed: " + r.stderr.strip())
-    stat = {k.strip(): v.split()[0].replace(",", "") for k, _, v in
-            (l.partition(":") for l in r.stdout.splitlines() if ":" in l) if v.strip()}
-    sent = int(stat.get("Total bytes sent", 0)) / 1e6
-    matched = int(stat.get("Matched data", 0)) / 1e6
-    print(f"  sent {sent:.1f} MB of {size:.0f} MB" + (f" ({matched:.0f} MB already on the server)" if matched else " (first upload)"))
-    ssh(f"ln -f {cached} {rdir}/scene.blend")
-
-    w = max(1, a.workers)
-    lines = ["#!/bin/bash", f"cd {rdir}", ": > pids"]
-    with open(os.path.join(work, "device.py"), "w") as f:
-        f.write(REMOTE_DEVICE_PY)
-    subprocess.run(["rsync", "-a", "-e", "ssh " + " ".join(SSH_OPTS), os.path.join(work, "device.py"),
-                    f"{HOST}:{rdir.replace('~/', '')}/device.py"], check=True)
-    for k in range(min(w, len(frames))):      # staggered starts so their first placeholder claims don't collide
-        lines.append(f"{REMOTE_BLENDER} -b scene.blend -P device.py -s {start} -e {end} -j {step} -a "
-                     f"> logs/w{k + 1}.log 2>&1 & echo $! >> pids; sleep 2")
-    lines.append("wait")
-    if a.video_only:                          # encode on the server; only the video comes back
-        digits = 4
-        lines.append(f"ffmpeg -y -loglevel error -framerate {info['fps']} -start_number {start} "
-                     f"-i frames/f_%0{digits}d{info['ext']} -c:v libx264 -crf 18 -pix_fmt yuv420p "
-                     f"-movflags +faststart video.mp4 > logs/ffmpeg.log 2>&1")
-    lines.append("date +%s > done")
-    script = "\n".join(lines) + "\n"
-    ssh(f"cat > {rdir}/run.sh <<'RTXEOF'\n{script}RTXEOF\nchmod +x {rdir}/run.sh; date +%s > {rdir}/started")
-    # The detached launch can keep the ssh session open (it sometimes never returns), so fire it with a
-    # timeout and then confirm the workers really started.
-    try:
-        subprocess.run(["ssh", "-o", "ControlPath=none", "-o", "BatchMode=yes", HOST,
-                        f"cd {rdir} && (setsid nohup ./run.sh > logs/run.log 2>&1 < /dev/null &)"],
-                       stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
-    except subprocess.TimeoutExpired:
-        pass
-    time.sleep(3)
-    if not ssh(f"cat {rdir}/pids 2>/dev/null").strip():
-        sys.exit(f"workers did not start; see ssh {HOST} 'cat {rdir}/logs/run.log'")
-
+          f"frames {start}-{end} ({total}), packed {size:.0f} MB")
+    print(f"uploading to {URL} (diff against the last upload) ...")
+    sc = upload(packed, cache_key(path), safe_name(name))
+    os.unlink(packed)
+    j = api("POST", "/jobs", {"scene": sc["scene"], "start": start, "end": end, "workers": max(1, a.workers),
+                              "output": "video" if a.video_only else "frames"})
     st = load_state()
-    st[job] = dict(job=job, host=HOST, rdir=rdir, out=out, total=len(frames), ext=info["ext"],
-                   fps=info["fps"], workers=w, created=time.time(), source=path, video_only=a.video_only)
+    st[j["id"]] = dict(job=j["id"], out=out, total=j["total"], ext=j["ext"], fps=j["fps"], workers=j["workers"],
+                       created=time.time(), source=path, video_only=a.video_only)
     save_state(st)
     os.makedirs(out, exist_ok=True)
-    print(f"job {job} started with {w} workers -> " +
-          (f"video lands in {out}.mp4" if a.video_only else f"frames land in {out}"))
+    print(f"job {j['id']} queued with {j['workers']} worker(s) -> " +
+          (f"video lands in {out}.mp4" if a.video_only else f"frames land in {out}") +
+          f"\n  watch it at {URL.rsplit('/render', 1)[0]}/#apps/render")
     if a.detach:
-        print(f"monitor with: rtx-render monitor {job}")
+        print(f"monitor with: rtx-render monitor {j['id']}")
         return
-    monitor_job(st[job], mp4=a.mp4)
+    monitor_job(st[j["id"]], mp4=a.mp4)
 
 
 # ------------------------------------------------------------------ monitor
-def poll(j):
-    """One ssh round trip: frames done, finished?, GPU, last progress line per worker."""
-    rdir = j["rdir"]
-    cmd = (f"cd {rdir} 2>/dev/null || exit 3; "
-           f"echo FRAMES $(find frames -type f -size +0 | wc -l); echo STARTED $(cat started 2>/dev/null); "
-           f"echo DONE $(cat done 2>/dev/null); "
-           f"echo GPU $(nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits | head -1); "
-           f"for l in logs/w*.log; do echo \"LOG $(basename $l .log) $(tail -c 400 $l | tr '\\r' '\\n' | grep -E 'Fra:|Error' | tail -1)\"; done")
-    r = subprocess.run(["ssh", *SSH_OPTS, HOST, cmd], capture_output=True, text=True)
-    if r.returncode == 3:
-        return None
-    out = dict(frames=0, started=None, done=None, gpu="?", logs=[])
-    for line in r.stdout.splitlines():
-        key, _, rest = line.partition(" ")
-        if key == "FRAMES":
-            out["frames"] = int(rest or 0)
-        elif key == "STARTED" and rest.strip():
-            out["started"] = int(rest)
-        elif key == "DONE" and rest.strip():
-            out["done"] = int(rest) if rest.strip().isdigit() else int(time.time())
-        elif key == "GPU":
-            out["gpu"] = rest.strip()
-        elif key == "LOG":
-            out["logs"].append(rest.strip())
-    return out
-
-
-def sync(j, settle=True):
-    """Copy finished frames into the out folder (skips files still being written)."""
-    rdir = j["rdir"].replace("~/", "")
-    flt = ["--exclude", "*.tmp"]
-    if settle:   # only files untouched for 3 s, so a half-written PNG never lands locally
-        listing = subprocess.run(["ssh", *SSH_OPTS, HOST,
-                                  f"cd {j['rdir']}/frames && find . -type f -size +0 -not -newermt '-3 seconds' -printf '%P\\n'"],
-                                 capture_output=True, text=True).stdout
-        have = set(os.listdir(j["out"])) if os.path.isdir(j["out"]) else set()
-        todo = [f for f in listing.split() if f not in have]
-        if not todo:
-            return 0
-        with tempfile.NamedTemporaryFile("w", delete=False) as f:
-            f.write("\n".join(todo))
-        flt = ["--files-from", f.name]
+def sync(j):
+    """Download finished frames the out folder doesn't have yet (the server lists only complete ones)."""
+    fr = api("GET", f"/jobs/{j['job']}/frames")["frames"]
+    have = set(os.listdir(j["out"])) if os.path.isdir(j["out"]) else set()
     os.makedirs(j["out"], exist_ok=True)
-    subprocess.run(["rsync", "-a", *flt, "-e", "ssh " + " ".join(SSH_OPTS),
-                    f"{HOST}:{rdir}/frames/", j["out"] + "/"], capture_output=True)
-    if settle:
-        os.unlink(flt[1])
-    return 1
+    n = 0
+    for f in fr:
+        if f["name"] in have:
+            continue
+        r = api("GET", f"/jobs/{j['job']}/frames/{f['n']}", stream=True)
+        tmp = os.path.join(j["out"], "." + f["name"] + ".part")
+        with open(tmp, "wb") as w:
+            while b := r.read(1 << 20):
+                w.write(b)
+        os.replace(tmp, os.path.join(j["out"], f["name"]))
+        n += 1
+    return n
+
+
+def download(path, dest):
+    r = api("GET", path, stream=True, timeout=600)
+    tmp = dest + ".part"
+    with open(tmp, "wb") as w:
+        while b := r.read(1 << 20):
+            w.write(b)
+    os.replace(tmp, dest)
 
 
 def encode(j):
@@ -313,54 +335,45 @@ def encode(j):
 
 
 def monitor_job(j, mp4=False):
-    print(f"monitoring {j['job']} via {HOST} (Ctrl-C detaches; the render keeps going)")
-    t_seen, n_seen = time.time(), 0
+    print(f"monitoring {j['job']} (Ctrl-C detaches; the render keeps going)")
+    shown_err = set()
     try:
         while True:
-            p = poll(j)
-            if p is None:
-                sys.exit("job directory is gone on the server")
+            p = api("GET", f"/jobs/{j['job']}")
             video = j.get("video_only")
-            if not video:
+            if not video and p["done"]:
                 sync(j)
-            n = p["frames"]
-            if n != n_seen:
-                t_seen, n_seen = time.time(), n
-            el = time.time() - p["started"] if p["started"] else 0
-            rate = n / el if el > 0 and n else 0
-            eta = (j["total"] - n) / rate if rate else 0
-            bar = "#" * int(30 * n / j["total"]) + "." * (30 - int(30 * n / j["total"]))
-            gpu = p["gpu"].split(",")
-            gpu_s = f"GPU {gpu[0].strip()}% {int(gpu[1]) / 1024:.1f} GB" if len(gpu) == 2 else "GPU ?"
+            n, total = p["done"], p["total"] or 1
+            bar = "#" * int(30 * n / total) + "." * (30 - int(30 * n / total))
+            g = p.get("gpu") or {}
+            gpu_s = f"GPU {g['util']}% {g['used_mb'] / 1024:.1f} GB" if g.get("total_mb") else "GPU ?"
             local = "-" if video else len([f for f in os.listdir(j["out"]) if f.endswith(j["ext"])])
-            sys.stdout.write("\x1b[2K\r" + f"[{bar}] {n}/{j['total']}  local {local}  "
-                             f"{rate * 60:.1f} f/min  elapsed {fmt_time(el)}  ETA {fmt_time(eta)}  {gpu_s}")
+            what = p.get("waiting") or f"{p['frames_per_min']:.1f} f/min  elapsed {fmt_time(p['elapsed_s'])}  ETA {fmt_time(p['eta_s'])}"
+            sys.stdout.write("\x1b[2K\r" + f"[{bar}] {n}/{p['total']}  local {local}  {what}  {gpu_s}")
             sys.stdout.flush()
-            harmless = ("strokes set empty", "Not freed memory blocks")
-            errors = [l for l in p["logs"] if "Error" in l and not any(h in l for h in harmless)]
-            if errors:
-                print("\n  " + "\n  ".join(errors))
-            if p["done"] and video:
-                mp4_path = j["out"].rstrip("/") + ".mp4"
-                subprocess.run(["rsync", "-a", "-e", "ssh " + " ".join(SSH_OPTS),
-                                f"{HOST}:{j['rdir'].replace('~/', '')}/video.mp4", mp4_path], capture_output=True)
-                print(f"\nfinished: {n}/{j['total']} frames in {fmt_time(p['done'] - p['started'])}; " +
-                      (f"video in {mp4_path}" if os.path.exists(mp4_path) else
-                       f"no video - see ssh {HOST} 'cat {j['rdir']}/logs/ffmpeg.log'"))
-                return
-            if p["done"]:
-                sync(j, settle=False)
+            for l in p.get("logs") or []:
+                if "rror" in l and l not in shown_err:
+                    shown_err.add(l)
+                    print("\n  " + l)
+            if p.get("stalled"):
+                print("\n  no new frame for 15 min (outlines over dense geometry can do this); see the studio page")
+            if p["state"] in ("done", "cancelled", "failed"):
+                took = fmt_time(p["elapsed_s"])
+                if video:
+                    mp4_path = j["out"].rstrip("/") + ".mp4"
+                    if p.get("video"):
+                        download(f"/jobs/{j['job']}/video.mp4", mp4_path)
+                    print(f"\n{p['state']}: {n}/{p['total']} frames in {took}; " +
+                          (f"video in {mp4_path}" if os.path.exists(mp4_path) else "no video (see the studio page for the log)"))
+                    return
+                sync(j)
                 local = len([f for f in os.listdir(j["out"]) if f.endswith(j["ext"])])
-                print(f"\nfinished: {n}/{j['total']} frames in {fmt_time(p['done'] - p['started'])}, "
-                      f"{local} in {j['out']}")
-                if n < j["total"]:
-                    print(f"  some frames are missing; worker logs: ssh {HOST} 'tail {j['rdir']}/logs/*.log'")
+                print(f"\n{p['state']}: {n}/{p['total']} frames in {took}, {local} in {j['out']}")
+                if p["state"] == "done" and n < p["total"]:
+                    print("  some frames are missing; the worker logs are on the studio page")
                 if mp4:
                     encode(j)
                 return
-            if time.time() - t_seen > 900:
-                print(f"\n  no new frame for 15 min - check: ssh {HOST} 'tail {j['rdir']}/logs/*.log'")
-                t_seen = time.time()
             time.sleep(8)
     except KeyboardInterrupt:
         print(f"\ndetached; rtx-render monitor {j['job']} to reattach")
@@ -369,58 +382,60 @@ def monitor_job(j, mp4=False):
 # ------------------------------------------------------------------ other commands
 def status(_):
     st = load_state()
-    if not st:
+    jobs = api("GET", "/jobs")["jobs"]
+    mine = [p for p in jobs if p.get("mine")]
+    if not mine:
         print("no jobs")
-    for j in sorted(st.values(), key=lambda j: j["created"]):
-        p = poll(j)
-        state = "gone" if p is None else ("done" if p["done"] else "running")
-        n = p["frames"] if p else 0
-        print(f"{j['job']:40s} {state:8s} {n:>5}/{j['total']:<5} -> {j['out']}")
+    for p in reversed(mine):
+        out = st.get(p["id"], {}).get("out", "")
+        print(f"{p['id']:40s} {p['state']:9s} {p['done']:>5}/{p['total']:<5} {('-> ' + out) if out else ''}")
 
 
 def cancel(a):
     j = pick_job(load_state(), a.job)
-    # kill by recorded pid only (pgrep can hang on that box); the wrapper exits once its children do
-    ssh(f"cd {j['rdir']} && for p in $(cat pids 2>/dev/null); do kill $p 2>/dev/null; done; date +%s > done; echo ok")
-    print(f"cancelled {j['job']}; frames so far stay in {j['out']} after the next sync")
-    sync(j, settle=False)
+    api("POST", f"/jobs/{j['job']}/cancel")
+    print(f"cancelled {j['job']}; frames so far go to {j['out']}")
+    if not j.get("video_only"):
+        sync(j)
 
 
 def clean(a):
     st = load_state()
-    if a.cache:
-        print(ssh(f"du -sh {REMOTE_ROOT}/cache 2>/dev/null; rm -rf {REMOTE_ROOT}/cache").strip() + "  removed")
-        return
     j = pick_job(st, a.job)
-    p = poll(j)
-    if p and not p["done"]:
+    if api("GET", f"/jobs/{j['job']}")["state"] not in ("done", "cancelled", "failed"):
         sys.exit("job still running; cancel it first")
-    ssh(f"rm -rf {j['rdir']}")
+    api("DELETE", f"/jobs/{j['job']}")
     del st[j["job"]]
     save_state(st)
-    print(f"removed {j['rdir']} from {HOST} (local frames in {j['out']} kept)")
+    print(f"removed {j['job']} from the server (local frames in {j['out']} kept)")
+
+
+def login(_):
+    t = getpass.getpass("render token (from the Blender render page at wa.gpunet.in, Apps): ").strip()
+    if not t.startswith("rtx_"):
+        sys.exit("that isn't a render token (they start with rtx_)")
+    os.environ["RTX_TOKEN"] = t
+    who = api("GET", "/info")
+    os.makedirs(os.path.dirname(TOKEN_FILE), exist_ok=True)
+    fd = os.open(TOKEN_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        f.write(t + "\n")
+    print(f"signed in as {who['user']}; saved in {TOKEN_FILE}")
 
 
 def main():
-    global HOST
-    if any(h in sys.argv[1:] for h in ("-h", "--help")):
-        HOST = "rtxserver"
-    else:
-        HOST = resolve_host()
-    cmds = {"monitor", "status", "cancel", "clean"}
+    cmds = {"monitor", "status", "cancel", "clean", "login"}
     if len(sys.argv) > 1 and sys.argv[1] in cmds:
         ap = argparse.ArgumentParser(prog="rtx-render " + sys.argv[1])
-        if sys.argv[1] != "status":
+        if sys.argv[1] not in ("status", "login"):
             ap.add_argument("job", nargs="?")
         if sys.argv[1] == "monitor":
             ap.add_argument("--mp4", action="store_true", help="encode out/<name>.mp4 when done")
-        if sys.argv[1] == "clean":
-            ap.add_argument("--cache", action="store_true", help="drop the cached scene uploads instead")
         a = ap.parse_args(sys.argv[2:])
         if sys.argv[1] == "monitor":
             monitor_job(pick_job(load_state(), a.job), mp4=a.mp4)
         else:
-            {"status": status, "cancel": cancel, "clean": clean}[sys.argv[1]](a)
+            {"status": status, "cancel": cancel, "clean": clean, "login": login}[sys.argv[1]](a)
         return
     ap = argparse.ArgumentParser(prog="rtx-render", description=__doc__.split("\n\n")[0],
                                  formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__.split("\n\n", 1)[1])
@@ -429,10 +444,10 @@ def main():
     ap.add_argument("-s", "--start", type=int)
     ap.add_argument("-e", "--end", type=int)
     ap.add_argument("-w", "--workers", type=int, default=1,
-                    help="parallel Blender processes on the server (default 1: the GPU is shared; more workers "
-                         "help when CPU-side work like Freestyle dominates - check nvidia-smi first)")
+                    help="parallel Blender processes on the server (default 1: the GPU is shared; 2 helps when "
+                         "CPU-side work like Freestyle dominates)")
     ap.add_argument("--base", help="for a .py: .blend to open before running it")
-    ap.add_argument("--mp4", action="store_true", help="encode out/<name>.mp4 when done")
+    ap.add_argument("--mp4", action="store_true", help="encode out/<name>.mp4 locally when done")
     ap.add_argument("--detach", action="store_true", help="start it and return; use monitor later")
     ap.add_argument("--video-only", action="store_true",
                     help="encode the mp4 on the server and download only that (for slow links / off campus)")

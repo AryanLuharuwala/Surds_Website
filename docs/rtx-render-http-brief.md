@@ -3,7 +3,7 @@
 You're extending the studio app behind wa.gpunet.in (the image/video generator studio) with a **Blender
 render** feature. The goal: anyone on the team can send a Blender scene from anywhere and get frames
 or an mp4 back through the studio's web UI or an HTTP API, with no SSH involved. The rendering runs on the
-RTX 4090 box `rtxserver` (hostname `hci-ws02`, user `nishkal`).
+team's RTX 4090 render box (`rtxserver`; ask Aryan for access details).
 
 ## Start from our working code
 

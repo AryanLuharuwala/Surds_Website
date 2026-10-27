@@ -2,8 +2,8 @@
 # surds_city.py (uses GROUPS, LINKS, NODES, HUB_NODE, TREES, POWER_LINES, helpers).
 import bpy, math, random
 
-F_END = 330          # 11 s at 30 fps; the last second holds on the finished city
-NET_START = 236      # amber network starts drawing once everything is built
+F_END = 230          # ~7.7 s at 30 fps; the last 24 frames hold on the finished city
+NET_START = 160      # amber network starts drawing once everything is built
 EPS = 0.001
 rng = random.Random(11)
 
@@ -77,19 +77,19 @@ def crane(name, x, y, h, jib=11.0):
 bpy.context.view_layer.update()
 
 # ---------------------------------------------------------------- schedule
-HERO_START = {"Power Plant": 22, "Commercial Tower": 28, "Data Center": 40,
-              "Clean Room Lab": 54, "Hospital": 66, "Office Block": 80}
+HERO_START = {"Power Plant": 16, "Commercial Tower": 18, "Data Center": 28,
+              "Clean Room Lab": 36, "Hospital": 44, "Office Block": 54}
 for g in GROUPS:
     if g["name"] in HERO_START:
         start = HERO_START[g["name"]]
     elif g["kind"] == "stack":
-        start = 60 + int(g["name"][-1]) * 7
+        start = 42 + int(g["name"][-1]) * 5
     elif g["kind"] == "substation":
-        start = rng.uniform(110, 150)
+        start = rng.uniform(70, 100)
     else:
-        start = rng.uniform(8, 150)
+        start = rng.uniform(6, 100)
     g["start"] = int(start)
-    g["end"] = int(start + 18 + g["h"] * 2.4)
+    g["end"] = int(start + 12 + g["h"] * 1.6)
 
 # ---------------------------------------------------------------- buildings rise: edge cage first, walls follow
 for g in GROUPS:
@@ -98,18 +98,18 @@ for g in GROUPS:
         parent_keep(part, g["solid"])
     for e in g["edges"]:
         grow_z(e, f0, f1)
-    grow_z(g["solid"], f0 + 6, f1 + 6)
+    grow_z(g["solid"], f0 + 4, f1 + 4)
 
 # ---------------------------------------------------------------- cranes on the hero sites and a few tall fillers
-fillers = [g for g in GROUPS if g["kind"] == "building" and not g["hero"] and g["h"] >= 10.8 and g["start"] >= 26]
+fillers = [g for g in GROUPS if g["kind"] == "building" and not g["hero"] and g["h"] >= 10.8 and g["start"] >= 14]
 rng.shuffle(fillers)
 for g in [g for g in GROUPS if g["hero"]] + fillers[:6]:
     cx, cy = g["x"] - g["w"] / 2 - 1.6, g["y"] + g["d"] / 2 + 1.6     # back-left corner, away from camera
     ch = g["h"] + 7
     mast, jib_o, _ = crane(f"Crane {g['name']}", cx, cy, ch, jib=max(8.0, min(13.0, g["w"] + 2)))
     aim = math.atan2(g["y"] - cy, g["x"] - cx)
-    up0, up1 = g["start"] - 18, g["start"]
-    down0, down1 = g["end"] + 8, g["end"] + 24
+    up0, up1 = g["start"] - 12, g["start"]
+    down0, down1 = g["end"] + 5, g["end"] + 16
     shown(mast, [(1, False), (up0, True), (down1, False)])
     for c in [jib_o] + list(jib_o.children):
         shown(c, [(1, False), (up0, True), (down1, False)])
@@ -122,20 +122,21 @@ for g in [g for g in GROUPS if g["hero"]] + fillers[:6]:
         key(jib_o, "rotation_euler", 2, f, a)
 
 # ---------------------------------------------------------------- trees and power lines
-grow_z(TREES, 180, 228)
+grow_z(TREES, 120, 150)
+grow_z(STREET_LIGHTS, 128, 150)
 for pl in POWER_LINES:
     pl.data.bevel_factor_mapping_end = "SPLINE"
     pl.data.bevel_factor_end = 0.0
-    pl.data.keyframe_insert("bevel_factor_end", frame=170)
+    pl.data.keyframe_insert("bevel_factor_end", frame=110)
     pl.data.bevel_factor_end = 1.0
-    pl.data.keyframe_insert("bevel_factor_end", frame=196)
+    pl.data.keyframe_insert("bevel_factor_end", frame=128)
 
 # ---------------------------------------------------------------- SURDS network draws out from the hub
 pop(HUB_NODE, NET_START - 8, NET_START)
 route_end = {}
 for i, link in enumerate(LINKS):
-    f0 = NET_START + i * 6
-    f1 = f0 + 30
+    f0 = NET_START + i * 4
+    f1 = f0 + 22
     route_end[i] = f1
     link.data.bevel_factor_mapping_end = "SPLINE"
     link.data.bevel_factor_end = 0.0
@@ -146,10 +147,11 @@ for n, i in NODES:
     pop(n, route_end[i] - 6, route_end[i])
 
 # ---------------------------------------------------------------- slow push-in
-cam.data.ortho_scale = 172
-cam.data.keyframe_insert("ortho_scale", frame=1)
-cam.data.ortho_scale = 150
-cam.data.keyframe_insert("ortho_scale", frame=F_END - 30)
+final = cam.location.copy()                          # slow dolly in along the view line
+cam.location = target + d * (CAM_DIST * 1.25)
+cam.keyframe_insert("location", frame=1)
+cam.location = final
+cam.keyframe_insert("location", frame=F_END - 24)
 
 scene.frame_set(F_END)
 print("groups:", len(GROUPS), "| cranes:", len([o for o in col.objects if o.name.endswith(" Mast")]),

@@ -25,6 +25,7 @@ ROUTES = {
     "/enterprise": "/views/enterprise/index.html",
     "/card-tour": "/views/card-tour/index.html",
     "/survey": "/survey.html",
+    "/render": "/views/render/index.html",
 }
 
 SURVEY_DIR = "surds survey"

@@ -4,7 +4,8 @@
     { "source": "/classic", "destination": "/views/main/index.html" },
     { "source": "/enterprise", "destination": "/views/enterprise/index.html" },
     { "source": "/card-tour", "destination": "/views/card-tour/index.html" },
-    { "source": "/survey", "destination": "/survey.html" }
+    { "source": "/survey", "destination": "/survey.html" },
+    { "source": "/render", "destination": "/views/render/index.html" }
   ],
   "functions": {
     "api/surveys.js": { "includeFiles": "surds survey/**" }
